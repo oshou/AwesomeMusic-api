@@ -1,0 +1,354 @@
+openapi: "3.0.0"
+info:
+  title: "AwesomeMusic API"
+  description: "音楽サービス AwesomeMusicのWebAPI"
+  version: "0.0.1"
+  contact:
+    name: oshou
+    email: adf1985adf@gmail.com
+servers:
+  - url: "https://api.awesomemusic.com/v1"
+    description: "Development Server"
+paths:
+  /users:
+    get:
+      description: ユーザー一覧
+      parameters: []
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+                example:
+                  - id: 1
+                    name: john
+                  - id: 2
+                    name: becky
+  /{user_name}/posts:
+    get:
+      description: 特定ユーザーの投稿一覧
+      parameters:
+        - name: user_name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+                example:
+                  - id: 1
+                    url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+                    message: "夏に聴きたい1曲"
+                  - id: 2
+                    url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+                    message: "冬にも聴きたい1曲"
+    post:
+      description: 特定ユーザーの特定POST詳細の新規作成
+      parameters:
+        - name: user_name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: user to create
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  example: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+                message:
+                  type: string
+                  example: "受験勉強中はこれに励まされました！"
+      responses:
+        "201":
+          description: "CREATED"
+  /{user_name}/posts/{post_id}:
+    get:
+      description: 特定ユーザーの特定POST詳細の取得
+      parameters:
+        - name: user_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+              example:
+                url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+                message: "夏に聴きたい1曲"
+    delete:
+      description: 特定ユーザーの特定POSTの削除
+      parameters:
+        - name: user_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: "NO CONTENT"
+  /{user_name}/posts/{post_id}/comments:
+    get:
+      parameters:
+        - name: user_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comment"
+                example:
+                  - id: 1
+                    comment: "受験勉強中はこれで乗り切りました！"
+                  - id: 2
+                    comment: "秋に来日するらしいので絶対ライブ行きます！"
+    post:
+      description: 特定ユーザーの特定POSTへのコメント追加
+      parameters:
+        - name: user_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: add comment
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+              example:
+                - comment: "イントロの入りが最高!歌詞が知りたいかも"
+      responses:
+        "201":
+          description: "CREATED"
+  /{user_name}/posts/{post_id}/comments/{comment_id}:
+    get:
+      parameters:
+        - name: user_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: comment_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+              example:
+                - comment: "受験勉強中はこれで乗り切りました！"
+    delete:
+      parameters:
+        - name: user_name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: post_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: comment_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: "NO CONTENT"
+  /tags:
+    get:
+      parameters: []
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tag"
+                example:
+                  - id: 1
+                    name: "夏に聴きたい1曲"
+                  - id: 2
+                    name: "2019年"
+                  - id: 3
+                    name: "EDM"
+  /search/posts:
+    get:
+      description: 投稿検索
+      parameters: []
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+                example:
+                  - id: 1
+                    url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+                    message: "夏に聴きたい1曲"
+                  - id: 2
+                    url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+                    message: "冬にも聴きたい1曲"
+  /search/tags:
+    get:
+      description: タグ検索
+      parameters: []
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+                example:
+                  - id: 1
+                    url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+                    message: "夏に聴きたい1曲"
+                  - id: 2
+                    url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+                    message: "冬にも聴きたい1曲"
+  /search/users:
+    get:
+      description: ユーザー検索
+      parameters: []
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+                example:
+                  - id: 1
+                    url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+                    message: "夏に聴きたい1曲"
+                  - id: 2
+                    url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+                    message: "冬にも聴きたい1曲"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "kawauso"
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        url:
+          type: string
+          example: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+        message:
+          type: string
+          example: "受験勉強中はこれに励まされました！"
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        comment:
+          type: string
+          example: "この曲を聞いて人生が変わりました！"
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "夏に聴きたい曲"
