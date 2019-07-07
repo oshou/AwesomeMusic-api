@@ -43,9 +43,9 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 func GetComment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	comments := Comment{
-		Id:   1,
-		message: "初めて聴きましたが良い曲でした"
+	comment := Comment{
+		Id:      1,
+		Comment: "初めて聴きましたが良い曲でした",
 	}
 	json.NewEncoder(w).Encode(comment)
 }
@@ -56,12 +56,12 @@ func GetComments(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	comments := []Comment{
 		{
-			Id:   1,
-			message: "初めて聴きましたが良い曲でした"
+			Id:      1,
+			Comment: "初めて聴きましたが良い曲でした",
 		},
 		{
-			Id:   2,
-			message: "秋に来日するらしいので絶対ライブ行きます！"
+			Id:      2,
+			Comment: "秋に来日するらしいので絶対ライブ行きます！",
 		},
 	}
 	json.NewEncoder(w).Encode(comments)
@@ -72,9 +72,9 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	post := Post{
-		Id:   1,
-		url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
-		message: "夏に聴きたい1曲"
+		Id:      1,
+		Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
+		Message: "夏に聴きたい1曲",
 	}
 	json.NewEncoder(w).Encode(post)
 }
@@ -85,14 +85,14 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	posts := []Post{
 		{
-			Id:   1,
-			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
-			message: "夏に聴きたい1曲"
+			Id:      1,
+			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
+			Message: "夏に聴きたい1曲",
 		},
 		{
-			Id:   2,
-			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
-			message: "夏に聴きたい1曲"
+			Id:      2,
+			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
+			Message: "夏に聴きたい1曲",
 		},
 	}
 	json.NewEncoder(w).Encode(posts)
@@ -138,14 +138,14 @@ func SearchByPosts(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	posts := []Post{
 		{
-			Id:   1,
-			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
-			message: "夏に聴きたい1曲"
+			Id:      1,
+			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
+			Message: "夏に聴きたい1曲",
 		},
 		{
-			Id:   2,
-			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
-			message: "夏に聴きたい1曲"
+			Id:      2,
+			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
+			Message: "夏に聴きたい1曲",
 		},
 	}
 	json.NewEncoder(w).Encode(posts)
@@ -157,14 +157,14 @@ func SearchByTags(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	posts := []Post{
 		{
-			Id:   1,
-			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
-			message: "夏に聴きたい1曲"
+			Id:      1,
+			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
+			Message: "夏に聴きたい1曲",
 		},
 		{
-			Id:   2,
-			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
-			message: "夏に聴きたい1曲"
+			Id:      2,
+			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
+			Message: "夏に聴きたい1曲",
 		},
 	}
 	json.NewEncoder(w).Encode(posts)
@@ -176,14 +176,14 @@ func SearchByUsers(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	posts := []Post{
 		{
-			Id:   1,
-			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
-			message: "夏に聴きたい1曲"
+			Id:      1,
+			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
+			Message: "夏に聴きたい1曲",
 		},
 		{
-			Id:   2,
-			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
-			message: "夏に聴きたい1曲"
+			Id:      2,
+			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
+			Message: "夏に聴きたい1曲",
 		},
 	}
 	json.NewEncoder(w).Encode(posts)
