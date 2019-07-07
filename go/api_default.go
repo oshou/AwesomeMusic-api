@@ -11,83 +11,180 @@
 package openapi
 
 import (
+	"encoding/json"
 	"net/http"
 )
 
-// AddComment - 
+// AddComment -
 func AddComment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 }
 
-// AddPost - 
+// AddPost -
 func AddPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 }
 
-// DeleteComment - 
+// DeleteComment -
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 }
 
-// DeletePost - 
+// DeletePost -
 func DeletePost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 }
 
-// GetComment - 
+// GetComment -
 func GetComment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+	comments := Comment{
+		Id:   1,
+		message: "初めて聴きましたが良い曲でした"
+	}
+	json.NewEncoder(w).Encode(comment)
 }
 
-// GetComments - 
+// GetComments -
 func GetComments(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+	comments := []Comment{
+		{
+			Id:   1,
+			message: "初めて聴きましたが良い曲でした"
+		},
+		{
+			Id:   2,
+			message: "秋に来日するらしいので絶対ライブ行きます！"
+		},
+	}
+	json.NewEncoder(w).Encode(comments)
 }
 
-// GetPost - 
+// GetPost -
 func GetPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+	post := Post{
+		Id:   1,
+		url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+		message: "夏に聴きたい1曲"
+	}
+	json.NewEncoder(w).Encode(post)
 }
 
-// GetPosts - 
+// GetPosts -
 func GetPosts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+	posts := []Post{
+		{
+			Id:   1,
+			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+			message: "夏に聴きたい1曲"
+		},
+		{
+			Id:   2,
+			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+			message: "夏に聴きたい1曲"
+		},
+	}
+	json.NewEncoder(w).Encode(posts)
 }
 
-// GetTags - 
+// GetTags -
 func GetTags(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+	tags := []Tag{
+		{
+			Id:   1,
+			Name: "2019年",
+		},
+		{
+			Id:   2,
+			Name: "ロック",
+		},
+	}
+	json.NewEncoder(w).Encode(tags)
 }
 
-// GetUsers - 
+// GetUsers -
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+	users := []User{
+		{
+			Id:   1,
+			Name: "kawauso",
+		},
+		{
+			Id:   2,
+			Name: "kawauso-kun",
+		},
+	}
+	json.NewEncoder(w).Encode(users)
 }
 
-// SearchByPosts - 
+// SearchByPosts -
 func SearchByPosts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+	posts := []Post{
+		{
+			Id:   1,
+			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+			message: "夏に聴きたい1曲"
+		},
+		{
+			Id:   2,
+			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+			message: "夏に聴きたい1曲"
+		},
+	}
+	json.NewEncoder(w).Encode(posts)
 }
 
-// SearchByTags - 
+// SearchByTags -
 func SearchByTags(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+	posts := []Post{
+		{
+			Id:   1,
+			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+			message: "夏に聴きたい1曲"
+		},
+		{
+			Id:   2,
+			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+			message: "夏に聴きたい1曲"
+		},
+	}
+	json.NewEncoder(w).Encode(posts)
 }
 
-// SearchByUsers - 
+// SearchByUsers -
 func SearchByUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
+	posts := []Post{
+		{
+			Id:   1,
+			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+			message: "夏に聴きたい1曲"
+		},
+		{
+			Id:   2,
+			url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+			message: "夏に聴きたい1曲"
+		},
+	}
+	json.NewEncoder(w).Encode(posts)
 }
