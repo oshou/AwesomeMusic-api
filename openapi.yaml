@@ -36,13 +36,7 @@ paths:
       operationId: getPosts
       description: 特定ユーザーの投稿一覧を取得
       parameters:
-        - explode: false
-          in: path
-          name: user_name
-          required: true
-          schema:
-            type: string
-          style: simple
+        $ref: "#/components/paramteters/userNameParam"
       responses:
         200:
           content:
@@ -63,13 +57,7 @@ paths:
       operationId: addPost
       description: 特定ユーザーの特定POSTの新規作成
       parameters:
-        - explode: false
-          in: path
-          name: user_name
-          required: true
-          schema:
-            type: string
-          style: simple
+        $ref: "#/components/paramteters/userNameParam"
       requestBody:
         $ref: "#/components/requestBodies/inline_object"
       responses:
@@ -80,21 +68,8 @@ paths:
       operationId: deletePost
       description: 特定ユーザーの特定POSTの削除
       parameters:
-        - explode: false
-          in: path
-          name: user_name
-          required: true
-          schema:
-            type: string
-          style: simple
-        - explode: false
-          in: path
-          name: post_id
-          required: true
-          schema:
-            format: int64
-            type: integer
-          style: simple
+        $ref: "#/components/paramteters/userNameParam",
+        $ref: "#/components/paramteters/postIdParam"
       responses:
         204:
           description: NO CONTENT
@@ -102,21 +77,8 @@ paths:
       operationId: getPost
       description: 特定ユーザーの特定POSTの取得
       parameters:
-        - explode: false
-          in: path
-          name: user_name
-          required: true
-          schema:
-            type: string
-          style: simple
-        - explode: false
-          in: path
-          name: post_id
-          required: true
-          schema:
-            format: int64
-            type: integer
-          style: simple
+        $ref: "#/components/paramteters/userNameParam",
+        $ref: "#/components/paramteters/postIdParam"
       responses:
         200:
           content:
@@ -132,21 +94,8 @@ paths:
       operationId: getComments
       description: コメント一覧の取得
       parameters:
-        - explode: false
-          in: path
-          name: user_name
-          required: true
-          schema:
-            type: string
-          style: simple
-        - explode: false
-          in: path
-          name: post_id
-          required: true
-          schema:
-            format: int64
-            type: integer
-          style: simple
+        $ref: "#/components/paramteters/userNameParam",
+        $ref: "#/components/paramteters/postIdParam"
       responses:
         200:
           content:
@@ -165,21 +114,8 @@ paths:
       operationId: addComment
       description: コメントの追加
       parameters:
-        - explode: false
-          in: path
-          name: user_name
-          required: true
-          schema:
-            type: string
-          style: simple
-        - explode: false
-          in: path
-          name: post_id
-          required: true
-          schema:
-            format: int64
-            type: integer
-          style: simple
+        $ref: "#/components/paramteters/userNameParam",
+        $ref: "#/components/paramteters/postIdParam"
       requestBody:
         $ref: "#/components/requestBodies/inline_object_1"
       responses:
@@ -190,29 +126,9 @@ paths:
       operationId: deleteComment
       description: コメントの削除
       parameters:
-        - explode: false
-          in: path
-          name: user_name
-          required: true
-          schema:
-            type: string
-          style: simple
-        - explode: false
-          in: path
-          name: post_id
-          required: true
-          schema:
-            format: int64
-            type: integer
-          style: simple
-        - explode: false
-          in: path
-          name: comment_id
-          required: true
-          schema:
-            format: int64
-            type: integer
-          style: simple
+        $ref: "#/components/paramteters/userNameParam",
+        $ref: "#/components/paramteters/postIdParam"
+        $ref: "#/components/paramteters/commentIdParam"
       responses:
         204:
           description: NO CONTENT
@@ -220,29 +136,9 @@ paths:
       operationId: getComment
       description: コメントの取得
       parameters:
-        - explode: false
-          in: path
-          name: user_name
-          required: true
-          schema:
-            type: string
-          style: simple
-        - explode: false
-          in: path
-          name: post_id
-          required: true
-          schema:
-            format: int64
-            type: integer
-          style: simple
-        - explode: false
-          in: path
-          name: comment_id
-          required: true
-          schema:
-            format: int64
-            type: integer
-          style: simple
+        $ref: "#/components/paramteters/userNameParam",
+        $ref: "#/components/paramteters/postIdParam"
+        $ref: "#/components/paramteters/commentIdParam"
       responses:
         200:
           content:
@@ -348,6 +244,33 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/inline_object"
+  parameters:
+    userNameParam:
+      explode: false
+      in: path
+      name: user_name
+      required: true
+      schema:
+        type: string
+      style: simple
+    postIdParam:
+      explode: false
+      in: path
+      name: post_id
+      required: true
+      schema:
+        format: int64
+        type: integer
+      style: simple
+    commentIdParam:
+      explode: false
+      in: path
+      name: comment_id
+      required: true
+      schema:
+        format: int64
+        type: integer
+      style: simple
   schemas:
     User:
       properties:
