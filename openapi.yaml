@@ -36,7 +36,7 @@ paths:
       operationId: getPosts
       description: 特定ユーザーの投稿一覧を取得
       parameters:
-        $ref: "#/components/paramteters/userNameParam"
+        - $ref: "#/components/parameters/userNameParam"
       responses:
         200:
           content:
@@ -57,7 +57,7 @@ paths:
       operationId: addPost
       description: 特定ユーザーの特定POSTの新規作成
       parameters:
-        $ref: "#/components/paramteters/userNameParam"
+        - $ref: "#/components/parameters/userNameParam"
       requestBody:
         $ref: "#/components/requestBodies/inline_object"
       responses:
@@ -68,8 +68,8 @@ paths:
       operationId: deletePost
       description: 特定ユーザーの特定POSTの削除
       parameters:
-        $ref: "#/components/paramteters/userNameParam",
-        $ref: "#/components/paramteters/postIdParam"
+        - $ref: "#/components/parameters/userNameParam"
+        - $ref: "#/components/parameters/postIdParam"
       responses:
         204:
           description: NO CONTENT
@@ -77,8 +77,8 @@ paths:
       operationId: getPost
       description: 特定ユーザーの特定POSTの取得
       parameters:
-        $ref: "#/components/paramteters/userNameParam",
-        $ref: "#/components/paramteters/postIdParam"
+        - $ref: "#/components/parameters/userNameParam"
+        - $ref: "#/components/parameters/postIdParam"
       responses:
         200:
           content:
@@ -94,8 +94,8 @@ paths:
       operationId: getComments
       description: コメント一覧の取得
       parameters:
-        $ref: "#/components/paramteters/userNameParam",
-        $ref: "#/components/paramteters/postIdParam"
+        - $ref: "#/components/parameters/userNameParam"
+        - $ref: "#/components/parameters/postIdParam"
       responses:
         200:
           content:
@@ -114,8 +114,8 @@ paths:
       operationId: addComment
       description: コメントの追加
       parameters:
-        $ref: "#/components/paramteters/userNameParam",
-        $ref: "#/components/paramteters/postIdParam"
+        - $ref: "#/components/parameters/userNameParam"
+        - $ref: "#/components/parameters/postIdParam"
       requestBody:
         $ref: "#/components/requestBodies/inline_object_1"
       responses:
@@ -126,9 +126,9 @@ paths:
       operationId: deleteComment
       description: コメントの削除
       parameters:
-        $ref: "#/components/paramteters/userNameParam",
-        $ref: "#/components/paramteters/postIdParam"
-        $ref: "#/components/paramteters/commentIdParam"
+        - $ref: "#/components/parameters/userNameParam"
+        - $ref: "#/components/parameters/postIdParam"
+        - $ref: "#/components/parameters/commentIdParam"
       responses:
         204:
           description: NO CONTENT
@@ -136,9 +136,9 @@ paths:
       operationId: getComment
       description: コメントの取得
       parameters:
-        $ref: "#/components/paramteters/userNameParam",
-        $ref: "#/components/paramteters/postIdParam"
-        $ref: "#/components/paramteters/commentIdParam"
+        - $ref: "#/components/parameters/userNameParam"
+        - $ref: "#/components/parameters/postIdParam"
+        - $ref: "#/components/parameters/commentIdParam"
       responses:
         200:
           content:
