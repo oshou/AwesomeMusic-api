@@ -163,53 +163,13 @@ paths:
                   $ref: "#/components/schemas/Tag"
                 type: array
           description: OK
-  /search/posts:
+  /search:
     get:
-      operationId: searchByPosts
-      description: 投稿検索
-      parameters: []
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                example:
-                  - id: 1
-                    url: https://www.youtube.com/watch?v=gbx55BK-6_4
-                    message: 夏に聴きたい1曲
-                  - id: 2
-                    url: https://www.youtube.com/watch?v=gbx55BK-6_4
-                    message: 冬にも聴きたい1曲
-                items:
-                  $ref: "#/components/schemas/Post"
-                type: array
-          description: OK
-  /search/tags:
-    get:
-      operationId: searchByTags
-      description: タグ検索
-      parameters: []
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                example:
-                  - id: 1
-                    url: https://www.youtube.com/watch?v=gbx55BK-6_4
-                    message: 夏に聴きたい1曲
-                  - id: 2
-                    url: https://www.youtube.com/watch?v=gbx55BK-6_4
-                    message: 冬にも聴きたい1曲
-                items:
-                  $ref: "#/components/schemas/Post"
-                type: array
-          description: OK
-  /search/users:
-    get:
-      operationId: searchByUsers
-      description: ユーザー検索
-      parameters: []
+      operationId: searchByType
+      description: 検索タイプ別の投稿検索
+      parameters:
+        - $ref: "#/components/parameters/queryParam"
+        - $ref: "#/components/parameters/typeParam"
       responses:
         200:
           content:
@@ -239,32 +199,62 @@ components:
           schema:
             $ref: "#/components/schemas/inline_object"
   parameters:
-    userNameParam:
+    userIdParam:
       explode: false
-      in: path
-      name: user_name
-      required: true
+      in: query
+      name: user_id
+      description: "ユーザーID"
+      required: false
       schema:
-        type: string
-      style: simple
+        type: integer
+      style: form
     postIdParam:
       explode: false
       in: path
       name: post_id
+      description: "投稿ID"
       required: true
       schema:
         format: int64
         type: integer
       style: simple
+    tagIdParam:
+      explode: false
+      in: query
+      name: tag_id
+      description: "タグID"
+      required: false
+      schema:
+        type: integer
+      style: form
     commentIdParam:
       explode: false
       in: path
       name: comment_id
+      description: "コメントID"
       required: true
       schema:
         format: int64
         type: integer
       style: simple
+    queryParam:
+      explode: false
+      in: query
+      name: q
+      description: "検索キーワード"
+      required: true
+      schema:
+        type: string
+      style: form
+    typeParam:
+      explode: false
+      in: query
+      name: type
+      description: "検索タイプ"
+      required: true
+      schema:
+        type: string
+      style: form
   schemas:
     User:
       properties:
