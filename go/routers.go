@@ -59,56 +59,56 @@ var routes = Routes{
 	{
 		"AddComment",
 		strings.ToUpper("Post"),
-		"/v1/{user_name}/posts/{post_id}/comments",
+		"/v1/posts/{post_id}/comments",
 		AddComment,
 	},
 
 	{
 		"AddPost",
 		strings.ToUpper("Post"),
-		"/v1/{user_name}/posts",
+		"/v1/posts",
 		AddPost,
 	},
 
 	{
 		"DeleteComment",
 		strings.ToUpper("Delete"),
-		"/v1/{user_name}/posts/{post_id}/comments/{comment_id}",
+		"/v1/posts/{post_id}/comments/{comment_id}",
 		DeleteComment,
 	},
 
 	{
 		"DeletePost",
 		strings.ToUpper("Delete"),
-		"/v1/{user_name}/posts/{post_id}",
+		"/v1/posts/{post_id}",
 		DeletePost,
 	},
 
 	{
 		"GetComment",
 		strings.ToUpper("Get"),
-		"/v1/{user_name}/posts/{post_id}/comments/{comment_id}",
+		"/v1/posts/{post_id}/comments/{comment_id}",
 		GetComment,
 	},
 
 	{
 		"GetComments",
 		strings.ToUpper("Get"),
-		"/v1/{user_name}/posts/{post_id}/comments",
+		"/v1/posts/{post_id}/comments",
 		GetComments,
 	},
 
 	{
 		"GetPost",
 		strings.ToUpper("Get"),
-		"/v1/{user_name}/posts/{post_id}",
+		"/v1/posts/{post_id}",
 		GetPost,
 	},
 
 	{
 		"GetPosts",
 		strings.ToUpper("Get"),
-		"/v1/{user_name}/posts",
+		"/v1/posts",
 		GetPosts,
 	},
 
@@ -127,23 +127,9 @@ var routes = Routes{
 	},
 
 	{
-		"SearchByPosts",
+		"SearchByType",
 		strings.ToUpper("Get"),
-		"/v1/search/posts",
-		SearchByPosts,
-	},
-
-	{
-		"SearchByTags",
-		strings.ToUpper("Get"),
-		"/v1/search/tags",
-		SearchByTags,
-	},
-
-	{
-		"SearchByUsers",
-		strings.ToUpper("Get"),
-		"/v1/search/users",
-		SearchByUsers,
+		"/v1/search",
+		SearchByType,
 	},
 }
