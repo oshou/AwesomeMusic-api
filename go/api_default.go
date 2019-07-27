@@ -24,24 +24,28 @@ func AddComment(w http.ResponseWriter, r *http.Request) {
 // AddPost -
 func AddPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 }
 
 // DeleteComment -
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 }
 
 // DeletePost -
 func DeletePost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 }
 
 // GetComment -
 func GetComment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	comment := Comment{
 		Id:      1,
@@ -53,6 +57,7 @@ func GetComment(w http.ResponseWriter, r *http.Request) {
 // GetComments -
 func GetComments(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	comments := []Comment{
 		{
@@ -70,6 +75,7 @@ func GetComments(w http.ResponseWriter, r *http.Request) {
 // GetPost -
 func GetPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	post := Post{
 		Id:      1,
@@ -82,6 +88,7 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 // GetPosts -
 func GetPosts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	posts := []Post{
 		{
@@ -116,6 +123,7 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 // GetTags -
 func GetTags(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	tags := []Tag{
 		{
@@ -133,6 +141,7 @@ func GetTags(w http.ResponseWriter, r *http.Request) {
 // GetUsers -
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	users := []User{
 		{
@@ -150,6 +159,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 // SearchByType -
 func SearchByType(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	posts := []Post{
 		{
