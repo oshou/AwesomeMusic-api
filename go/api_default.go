@@ -18,7 +18,6 @@ import (
 // AddComment -
 func AddComment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -157,78 +156,8 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(users)
 }
 
-// SearchByPosts -
-func SearchByPosts(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.WriteHeader(http.StatusOK)
-	posts := []Post{
-		{
-			Id:      1,
-			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
-			Message: "夏に聴きたい1曲",
-		},
-		{
-			Id:      2,
-			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
-			Message: "夏に聴きたい1曲",
-		},
-		{
-			Id:      3,
-			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
-			Message: "夏に聴きたい1曲",
-		},
-		{
-			Id:      4,
-			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
-			Message: "夏に聴きたい1曲",
-		},
-		{
-			Id:      5,
-			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
-			Message: "夏に聴きたい1曲",
-		},
-	}
-	json.NewEncoder(w).Encode(posts)
-}
-
-// SearchByTags -
-func SearchByTags(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.WriteHeader(http.StatusOK)
-	posts := []Post{
-		{
-			Id:      1,
-			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
-			Message: "夏に聴きたい1曲",
-		},
-		{
-			Id:      2,
-			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
-			Message: "夏に聴きたい1曲",
-		},
-		{
-			Id:      3,
-			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
-			Message: "夏に聴きたい1曲",
-		},
-		{
-			Id:      4,
-			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
-			Message: "夏に聴きたい1曲",
-		},
-		{
-			Id:      5,
-			Url:     "https://www.youtube.com/watch?v=gbx55BK-6_4",
-			Message: "夏に聴きたい1曲",
-		},
-	}
-	json.NewEncoder(w).Encode(posts)
-}
-
-// SearchByUsers -
-func SearchByUsers(w http.ResponseWriter, r *http.Request) {
+// SearchByType -
+func SearchByType(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
