@@ -31,12 +31,13 @@ paths:
                   $ref: "#/components/schemas/User"
                 type: array
           description: OK
-  /{user_name}/posts:
+  /posts:
     get:
       operationId: getPosts
-      description: 特定ユーザーの投稿一覧を取得
+      description: 投稿一覧を取得
       parameters:
-        $ref: "#/components/paramteters/userNameParam"
+        - $ref: "#/components/parameters/userIdParam"
+        - $ref: "#/components/parameters/tagIdParam"
       responses:
         200:
           content:
@@ -55,30 +56,27 @@ paths:
           description: OK
     post:
       operationId: addPost
-      description: 特定ユーザーの特定POSTの新規作成
-      parameters:
-        $ref: "#/components/paramteters/userNameParam"
+      description: 投稿の新規作成
+      parameters: []
       requestBody:
         $ref: "#/components/requestBodies/inline_object"
       responses:
         201:
           description: CREATED
-  /{user_name}/posts/{post_id}:
+  /posts/{post_id}:
     delete:
       operationId: deletePost
-      description: 特定ユーザーの特定POSTの削除
+      description: 特定の投稿の削除
       parameters:
-        $ref: "#/components/paramteters/userNameParam",
-        $ref: "#/components/paramteters/postIdParam"
+        - $ref: "#/components/parameters/postIdParam"
       responses:
         204:
           description: NO CONTENT
     get:
       operationId: getPost
-      description: 特定ユーザーの特定POSTの取得
+      description: 特定の投稿の取得
       parameters:
-        $ref: "#/components/paramteters/userNameParam",
-        $ref: "#/components/paramteters/postIdParam"
+        - $ref: "#/components/parameters/postIdParam"
       responses:
         200:
           content:
@@ -89,13 +87,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/Post"
           description: OK
-  /{user_name}/posts/{post_id}/comments:
+  /posts/{post_id}/comments:
     get:
       operationId: getComments
-      description: コメント一覧の取得
+      description: 特定投稿のコメント一覧の取得
       parameters:
-        $ref: "#/components/paramteters/userNameParam",
-        $ref: "#/components/paramteters/postIdParam"
+        - $ref: "#/components/parameters/postIdParam"
       responses:
         200:
           content:
@@ -112,33 +109,30 @@ paths:
           description: OK
     post:
       operationId: addComment
-      description: コメントの追加
+      description: 特定投稿へのコメントの追加
       parameters:
-        $ref: "#/components/paramteters/userNameParam",
-        $ref: "#/components/paramteters/postIdParam"
+        - $ref: "#/components/parameters/postIdParam"
       requestBody:
         $ref: "#/components/requestBodies/inline_object_1"
       responses:
         201:
           description: CREATED
-  /{user_name}/posts/{post_id}/comments/{comment_id}:
+  /posts/{post_id}/comments/{comment_id}:
     delete:
       operationId: deleteComment
-      description: コメントの削除
+      description: 特定投稿のコメントの削除
       parameters:
-        $ref: "#/components/paramteters/userNameParam",
-        $ref: "#/components/paramteters/postIdParam"
-        $ref: "#/components/paramteters/commentIdParam"
+        - $ref: "#/components/parameters/postIdParam"
+        - $ref: "#/components/parameters/commentIdParam"
       responses:
         204:
           description: NO CONTENT
     get:
       operationId: getComment
-      description: コメントの取得
+      description: 特定投稿へのコメントの取得
       parameters:
-        $ref: "#/components/paramteters/userNameParam",
-        $ref: "#/components/paramteters/postIdParam"
-        $ref: "#/components/paramteters/commentIdParam"
+        - $ref: "#/components/parameters/postIdParam"
+        - $ref: "#/components/parameters/commentIdParam"
       responses:
         200:
           content:
@@ -169,53 +163,13 @@ paths:
                   $ref: "#/components/schemas/Tag"
                 type: array
           description: OK
-  /search/posts:
+  /search:
     get:
-      operationId: searchByPosts
-      description: 投稿検索
-      parameters: []
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                example:
-                  - id: 1
-                    url: https://www.youtube.com/watch?v=gbx55BK-6_4
-                    message: 夏に聴きたい1曲
-                  - id: 2
-                    url: https://www.youtube.com/watch?v=gbx55BK-6_4
-                    message: 冬にも聴きたい1曲
-                items:
-                  $ref: "#/components/schemas/Post"
-                type: array
-          description: OK
-  /search/tags:
-    get:
-      operationId: searchByTags
-      description: タグ検索
-      parameters: []
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                example:
-                  - id: 1
-                    url: https://www.youtube.com/watch?v=gbx55BK-6_4
-                    message: 夏に聴きたい1曲
-                  - id: 2
-                    url: https://www.youtube.com/watch?v=gbx55BK-6_4
-                    message: 冬にも聴きたい1曲
-                items:
-                  $ref: "#/components/schemas/Post"
-                type: array
-          description: OK
-  /search/users:
-    get:
-      operationId: searchByUsers
-      description: ユーザー検索
-      parameters: []
+      operationId: searchByType
+      description: 検索タイプ別の投稿検索
+      parameters:
+        - $ref: "#/components/parameters/queryParam"
+        - $ref: "#/components/parameters/typeParam"
       responses:
         200:
           content:
@@ -245,32 +199,62 @@ components:
           schema:
             $ref: "#/components/schemas/inline_object"
   parameters:
-    userNameParam:
+    userIdParam:
       explode: false
-      in: path
-      name: user_name
-      required: true
+      in: query
+      name: user_id
+      description: "ユーザーID"
+      required: false
       schema:
-        type: string
-      style: simple
+        type: integer
+      style: form
     postIdParam:
       explode: false
       in: path
       name: post_id
+      description: "投稿ID"
       required: true
       schema:
         format: int64
         type: integer
       style: simple
+    tagIdParam:
+      explode: false
+      in: query
+      name: tag_id
+      description: "タグID"
+      required: false
+      schema:
+        type: integer
+      style: form
     commentIdParam:
       explode: false
       in: path
       name: comment_id
+      description: "コメントID"
       required: true
       schema:
         format: int64
         type: integer
       style: simple
+    queryParam:
+      explode: false
+      in: query
+      name: q
+      description: "検索キーワード"
+      required: true
+      schema:
+        type: string
+      style: form
+    typeParam:
+      explode: false
+      in: query
+      name: type
+      description: "検索タイプ"
+      required: true
+      schema:
+        type: string
+      style: form
   schemas:
     User:
       properties:
