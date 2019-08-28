@@ -1,11 +1,9 @@
-FROM golang:1.10 AS build
+FROM golang:1.11 AS builder
 WORKDIR /go/src
 COPY go ./go
 COPY main.go .
-
 ENV CGO_ENABLED=0
 RUN go get -d -v ./...
-
 RUN go build -a -installsuffix cgo -o openapi .
 
 FROM scratch AS runtime
