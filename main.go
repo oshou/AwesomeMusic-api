@@ -21,7 +21,7 @@ import (
 	//
 	//    sw "github.com/myname/myrepo/go"
 	//
-	sw "github.com/oshou/AwesomeMusic-api/go"
+	sw "m/go"
 )
 
 func main() {
