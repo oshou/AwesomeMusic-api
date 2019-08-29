@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/oshou/AwesomeMusic-api/db"
+	"github.com/oshou/AwesomeMusic-api/server"
 	"github.com/joho/godotenv"
 )
 
