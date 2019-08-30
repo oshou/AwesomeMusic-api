@@ -13,9 +13,8 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("Error loading .env file: %s", err.Error())
 	}
-	db.Init()
 
-	// 終了時に遅延実行でDBコネクション切断されるよう設定
+	db.Init()
 	defer db.Close()
 
 	// APIサーバ起動
