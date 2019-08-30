@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/oshou/AwesomeMusic-api/entity"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
