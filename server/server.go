@@ -13,9 +13,20 @@ func Init() {
 	r.Run(":" + os.Getenv("API_SERVER_PORT"))
 }
 
+func SetCors() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		ctx.Header("Access-Control-Allow-Origin", "*")
+		ctx.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		ctx.Header("Access-Control-Max-Age", "86400")
+		ctx.Header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	}
+}
+
 // ルーティング定義
 func router() *gin.Engine {
 	r := gin.Default()
+	
+	r.Use(SetCors())
 
 	u := r.Group("/v1/")
 	{
