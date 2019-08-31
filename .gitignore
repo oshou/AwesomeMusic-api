@@ -1,0 +1,8 @@
+# Temporary Config
+.env
+
+# Build output
+main
+
+# Go module lock
+go.sum
