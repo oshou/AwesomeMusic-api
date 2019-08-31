@@ -9,6 +9,9 @@ RUN go get -d -v ./...
 RUN go build -a -installsuffix cgo -ldflags="-s -w" -o main
 
 FROM scratch AS runtime
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /go/src/.env ./
 COPY --from=builder /go/src/main ./
 EXPOSE 8080/tcp
 ENTRYPOINT ["./main"]
