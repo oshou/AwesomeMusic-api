@@ -1,7 +1,7 @@
-# Temporary Config
+# Temporary config
 .env
 
-# Build output
+# Go build output
 main
 
 # Go module lock
