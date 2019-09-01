@@ -11,6 +11,7 @@ build_local:
 	cp -rp .env.local .env
 	$(GOCMD) build -o $(BINARY_NAME)
 	go vet ./...
+	go fmt ./...
 
 run:
 	./$(BINARY_NAME)
