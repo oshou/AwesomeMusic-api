@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -271,5 +272,53 @@ func (c Controller) GetTagById(ctx *gin.Context) {
 		ctx.AbortWithStatus(404)
 	} else {
 		ctx.JSON(200, val)
+	}
+}
+
+// Index action: GET /v1/search
+func (c Controller) SearchByType(ctx *gin.Context) {
+
+	search_type := ctx.Query("type")
+	q := ctx.Query("q")
+
+	var ss service.SearchService
+
+	switch search_type {
+	case "user_id":
+		val, err := ss.GetByUserId(q)
+		if err != nil {
+			fmt.Println(err)
+			ctx.AbortWithStatus(404)
+		} else {
+			ctx.JSON(200, val)
+		}
+	case "user_name":
+		val, err := ss.GetByUserName(q)
+		if err != nil {
+			fmt.Println(err)
+			ctx.AbortWithStatus(404)
+		} else {
+			ctx.JSON(200, val)
+		}
+	case "tag_id":
+		val, err := ss.GetByTagId(q)
+		if err != nil {
+			fmt.Println(err)
+			ctx.AbortWithStatus(404)
+		} else {
+			ctx.JSON(200, val)
+		}
+	case "tag_name":
+		val, err := ss.GetByTagName(q)
+		if err != nil {
+			fmt.Println(err)
+			ctx.AbortWithStatus(404)
+		} else {
+			ctx.JSON(200, val)
+		}
+	default:
+		err := errors.New("undefined")
+		fmt.Println(err)
+		ctx.AbortWithStatus(404)
 	}
 }
