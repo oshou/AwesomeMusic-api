@@ -13,20 +13,31 @@ func Init() {
 	r.Run(":" + os.Getenv("API_SERVER_PORT"))
 }
 
-func SetCors() gin.HandlerFunc {
+func SetCorsPolicy() gin.HandlerFunc {
+
 	return func(ctx *gin.Context) {
-		ctx.Header("Access-Control-Allow-Origin", "*")
-		ctx.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		ctx.Header("Access-Control-Max-Age", "86400")
-		ctx.Header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		if ctx.Request.Method == "OPTIONS" {
+			// for preflight
+			ctx.Header("Access-Control-Allow-Origin", "*")
+			ctx.Header("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE")
+			ctx.Header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+			ctx.Data(200, "text/plain", []byte{})
+			ctx.Abort()
+		} else {
+			// for actual response
+			ctx.Header("Access-Control-Allow-Origin", "*")
+			ctx.Next()
+		}
+
+		return
 	}
 }
 
 // ルーティング定義
 func router() *gin.Engine {
 	r := gin.Default()
-	
-	r.Use(SetCors())
+
+	r.Use(SetCorsPolicy())
 
 	u := r.Group("/v1/")
 	{
@@ -63,7 +74,7 @@ func router() *gin.Engine {
 		u.POST("/tags", ctrl.AddTag)
 		// タグ表示(特定ID)
 		u.GET("/tags/:tag_id", ctrl.GetTagById)
-		
+
 		// // 検索結果
 		// u.GET("/search", ctrl.SearchByType)
 	}
