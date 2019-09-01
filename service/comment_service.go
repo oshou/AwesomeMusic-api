@@ -23,12 +23,12 @@ func (cs CommentService) GetAll(post_id int) ([]Comment, error) {
 	return c, nil
 }
 
-func (cs CommentService) Add(post_id,user_id int, comment string) (Comment, error) {
+func (cs CommentService) Add(post_id, user_id int, comment string) (Comment, error) {
 
 	var c Comment
 	c.PostID = post_id
 	c.UserID = user_id
-	c.Comment= comment
+	c.Comment = comment
 
 	stmt := db.GetDBConn()
 	stmt = stmt.Table("comment")

@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
+	"github.com/joho/godotenv"
 	"github.com/oshou/AwesomeMusic-api/db"
 	"github.com/oshou/AwesomeMusic-api/server"
-	"github.com/joho/godotenv"
 )
 
 func main() {
