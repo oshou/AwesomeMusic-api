@@ -75,8 +75,8 @@ func router() *gin.Engine {
 		// タグ表示(特定ID)
 		u.GET("/tags/:tag_id", ctrl.GetTagById)
 
-		// // 検索結果
-		// u.GET("/search", ctrl.SearchByType)
+		// 検索結果
+		u.GET("/search", ctrl.SearchByType)
 	}
 
 	return r
