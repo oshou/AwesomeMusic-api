@@ -11,7 +11,7 @@ import (
 
 type Controller struct{}
 
-// Index action: GET /v1/users
+// Index: GET /v1/users
 func (c Controller) GetUsers(ctx *gin.Context) {
 
 	var us service.UserService
@@ -25,9 +25,10 @@ func (c Controller) GetUsers(ctx *gin.Context) {
 	}
 }
 
-// Index action: GET /v1/users/:user_id
+// Detail: GET /v1/users/:user_id
 func (c Controller) GetUserById(ctx *gin.Context) {
 
+	// user_id
 	user_id, err := strconv.Atoi(ctx.Param("user_id"))
 	if err != nil {
 		fmt.Println(err)
@@ -45,7 +46,7 @@ func (c Controller) GetUserById(ctx *gin.Context) {
 	}
 }
 
-// Index action: POST /v1/users
+// Create: POST /v1/users
 func (c Controller) AddUser(ctx *gin.Context) {
 
 	name := ctx.Query("name")
@@ -62,7 +63,7 @@ func (c Controller) AddUser(ctx *gin.Context) {
 	}
 }
 
-// Index action: GET /v1/posts
+// Index: GET /v1/posts
 func (c Controller) GetPosts(ctx *gin.Context) {
 
 	var ps service.PostService
@@ -76,7 +77,7 @@ func (c Controller) GetPosts(ctx *gin.Context) {
 	}
 }
 
-// Index action: GET /v1/posts/:post_id
+// Detail: GET /v1/posts/:post_id
 func (c Controller) GetPostById(ctx *gin.Context) {
 
 	post_id, err := strconv.Atoi(ctx.Param("post_id"))
@@ -96,7 +97,7 @@ func (c Controller) GetPostById(ctx *gin.Context) {
 	}
 }
 
-// Index action: POST /v1/posts
+// Index: POST /v1/posts
 func (c Controller) AddPost(ctx *gin.Context) {
 
 	user_id, err := strconv.Atoi(ctx.Query("user_id"))
@@ -119,7 +120,7 @@ func (c Controller) AddPost(ctx *gin.Context) {
 	}
 }
 
-// Index action: DELETE /v1/posts/:post_id
+// Delete: DELETE /v1/posts/:post_id
 func (c Controller) DeletePostById(ctx *gin.Context) {
 
 	id := ctx.Param("post_id")
@@ -139,7 +140,7 @@ func (c Controller) DeletePostById(ctx *gin.Context) {
 	}
 }
 
-// Index action: GET /v1/posts/:post_id/comments
+// Index: GET /v1/posts/:post_id/comments
 func (c Controller) GetComments(ctx *gin.Context) {
 
 	post_id, err := strconv.Atoi(ctx.Param("post_id"))
@@ -159,7 +160,7 @@ func (c Controller) GetComments(ctx *gin.Context) {
 	}
 }
 
-// Index action: POST /v1/posts/:post_id/comments
+// Create: POST /v1/posts/:post_id/comments
 func (c Controller) AddComment(ctx *gin.Context) {
 
 	post_id, err := strconv.Atoi(ctx.Param("post_id"))
@@ -187,7 +188,7 @@ func (c Controller) AddComment(ctx *gin.Context) {
 	}
 }
 
-// Index action: GET /v1/posts/:post_id/comments/:comment_id
+// Detail: GET /v1/posts/:post_id/comments/:comment_id
 func (c Controller) GetCommentById(ctx *gin.Context) {
 
 	comment_id, err := strconv.Atoi(ctx.Param("comment_id"))
@@ -207,7 +208,6 @@ func (c Controller) GetCommentById(ctx *gin.Context) {
 	}
 }
 
-//
 // // Index action: DELETE /v1/posts/:post_id/comments/:comment_id
 // func (c Controller) DeleteComment(ctx *gin.Context) {
 //
@@ -225,7 +225,7 @@ func (c Controller) GetCommentById(ctx *gin.Context) {
 // 	}
 // }
 
-// Index action: GET /v1/tags
+// Index: GET /v1/tags
 func (c Controller) GetTags(ctx *gin.Context) {
 
 	var ts service.TagService
@@ -239,7 +239,7 @@ func (c Controller) GetTags(ctx *gin.Context) {
 	}
 }
 
-// Index action: POST /v1/tags
+// Create: POST /v1/tags
 func (c Controller) AddTag(ctx *gin.Context) {
 
 	name := ctx.Query("name")
@@ -255,7 +255,7 @@ func (c Controller) AddTag(ctx *gin.Context) {
 	}
 }
 
-// Index action: GET /v1/tags/:tag_id
+// Detail: GET /v1/tags/:tag_id
 func (c Controller) GetTagById(ctx *gin.Context) {
 
 	tag_id, err := strconv.Atoi(ctx.Param("tag_id"))
@@ -275,7 +275,7 @@ func (c Controller) GetTagById(ctx *gin.Context) {
 	}
 }
 
-// Index action: GET /v1/search
+// Index: GET /v1/search
 func (c Controller) SearchByType(ctx *gin.Context) {
 
 	search_type := ctx.Query("type")
