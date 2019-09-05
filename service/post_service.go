@@ -15,7 +15,7 @@ func (ps PostService) GetAll() ([]Post, error) {
 
 	stmt := db.GetDBConn()
 	stmt = stmt.Table("post")
-	stmt = stmt.Select("id,user_id,url,message")
+	stmt = stmt.Select("id,user_id,title,url,message")
 	if err := stmt.Find(&p).Error; err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func (ps PostService) GetById(post_id int) (Post, error) {
 
 	stmt := db.GetDBConn()
 	stmt = stmt.Table("post")
-	stmt = stmt.Select("id,user_id,url,message")
+	stmt = stmt.Select("id,user_id,title,url,message")
 	stmt = stmt.Where("id = ?", post_id)
 	if err := stmt.First(&p).Error; err != nil {
 		return p, err

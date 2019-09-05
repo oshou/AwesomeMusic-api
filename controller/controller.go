@@ -284,6 +284,14 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 	var ss service.SearchService
 
 	switch search_type {
+	case "post_title":
+		val, err := ss.GetByPostTitle(q)
+		if err != nil {
+			fmt.Println(err)
+			ctx.AbortWithStatus(404)
+		} else {
+			ctx.JSON(200, val)
+		}
 	case "user_id":
 		val, err := ss.GetByUserId(q)
 		if err != nil {
