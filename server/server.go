@@ -74,6 +74,8 @@ func router() *gin.Engine {
 		u.POST("/tags", ctrl.AddTag)
 		// タグ表示(特定ID)
 		u.GET("/tags/:tag_id", ctrl.GetTagById)
+		// 投稿へのタグ付与
+		u.POST("/posts/:post_id/tags/:tag_id", ctrl.AttachTag)
 
 		// 検索結果
 		u.GET("/search", ctrl.SearchByType)

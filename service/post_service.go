@@ -36,10 +36,11 @@ func (ps PostService) GetById(post_id int) (Post, error) {
 	return p, nil
 }
 
-func (ps PostService) Add(user_id int, url, message string) (Post, error) {
+func (ps PostService) Add(user_id int, title, url, message string) (Post, error) {
 
 	var p Post
 	p.UserID = user_id
+	p.Title = title
 	p.URL = url
 	p.Message = message
 
