@@ -8,6 +8,7 @@ import (
 type TagService struct{}
 
 type Tag entity.Tag
+type PostTag entity.PostTag
 
 func (ts TagService) GetAll() ([]Tag, error) {
 
@@ -47,4 +48,18 @@ func (ts TagService) Add(name string) (Tag, error) {
 		return t, err
 	}
 	return t, nil
+}
+
+func (ts TagService) Attach(post_id, tag_id int) (PostTag, error) {
+
+	var pt PostTag
+	pt.PostID = post_id
+	pt.TagID = tag_id
+
+	stmt := db.GetDBConn()
+	stmt = stmt.Table("post_tag")
+	if err := stmt.Create(&pt).Error; err != nil {
+		return pt, err
+	}
+	return pt, nil
 }

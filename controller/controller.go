@@ -107,10 +107,11 @@ func (c Controller) AddPost(ctx *gin.Context) {
 		return
 	}
 	url := ctx.Query("url")
+	title := ctx.Query("title")
 	message := ctx.Query("message")
 
 	var ps service.PostService
-	val, err := ps.Add(user_id, url, message)
+	val, err := ps.Add(user_id, title, url, message)
 
 	if err != nil {
 		fmt.Println(err)
@@ -272,6 +273,32 @@ func (c Controller) GetTagById(ctx *gin.Context) {
 		ctx.AbortWithStatus(404)
 	} else {
 		ctx.JSON(200, val)
+	}
+}
+
+// Create: POST /v1/posts/:post_id/tags/:tag_id
+func (c Controller) AttachTag(ctx *gin.Context) {
+
+	post_id, err := strconv.Atoi(ctx.Param("post_id"))
+	if err != nil {
+		fmt.Println(err)
+		ctx.AbortWithStatus(400)
+	}
+
+	tag_id, err := strconv.Atoi(ctx.Param("tag_id"))
+	if err != nil {
+		fmt.Println(err)
+		ctx.AbortWithStatus(400)
+	}
+
+	var ts service.TagService
+	val, err := ts.Attach(post_id, tag_id)
+
+	if err != nil {
+		fmt.Println(err)
+		ctx.AbortWithStatus(400)
+	} else {
+		ctx.JSON(201, val)
 	}
 }
 
