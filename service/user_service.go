@@ -36,6 +36,20 @@ func (us UserService) GetById(user_id int) (User, error) {
 	return u, nil
 }
 
+func (us UserService) GetByName(name string) ([]User, error) {
+
+	var u []User
+
+	stmt := db.GetDBConn()
+	stmt = stmt.Table("user")
+	stmt = stmt.Select("id,name")
+	stmt = stmt.Where("name LIKE ?", "%"+name+"%")
+	if err := stmt.Find(&u).Error; err != nil {
+		return u, err
+	}
+	return u, nil
+}
+
 func (us UserService) Add(name string) (User, error) {
 
 	var u User
