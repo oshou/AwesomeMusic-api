@@ -25,6 +25,23 @@ func (c Controller) GetUsers(ctx *gin.Context) {
 	}
 }
 
+// Create: POST /v1/users
+func (c Controller) AddUser(ctx *gin.Context) {
+
+	name := ctx.Query("name")
+
+	var us service.UserService
+	val, err := us.Add(name)
+
+	if err != nil {
+		fmt.Println(err)
+		ctx.AbortWithStatus(400)
+		return
+	} else {
+		ctx.JSON(201, val)
+	}
+}
+
 // Detail: GET /v1/users/:user_id
 func (c Controller) GetUserById(ctx *gin.Context) {
 
@@ -46,23 +63,6 @@ func (c Controller) GetUserById(ctx *gin.Context) {
 	}
 }
 
-// Create: POST /v1/users
-func (c Controller) AddUser(ctx *gin.Context) {
-
-	name := ctx.Query("name")
-
-	var us service.UserService
-	val, err := us.Add(name)
-
-	if err != nil {
-		fmt.Println(err)
-		ctx.AbortWithStatus(400)
-		return
-	} else {
-		ctx.JSON(201, val)
-	}
-}
-
 // Index: GET /v1/posts
 func (c Controller) GetPosts(ctx *gin.Context) {
 
@@ -72,26 +72,6 @@ func (c Controller) GetPosts(ctx *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		ctx.AbortWithStatus(404)
-	} else {
-		ctx.JSON(200, val)
-	}
-}
-
-// Detail: GET /v1/posts/:post_id
-func (c Controller) GetPostById(ctx *gin.Context) {
-
-	post_id, err := strconv.Atoi(ctx.Param("post_id"))
-	if err != nil {
-		fmt.Println(err)
-		ctx.AbortWithStatus(400)
-	}
-
-	var ps service.PostService
-	val, err := ps.GetById(post_id)
-
-	if err != nil {
-		ctx.AbortWithStatus(404)
-		fmt.Println(err)
 	} else {
 		ctx.JSON(200, val)
 	}
@@ -121,25 +101,83 @@ func (c Controller) AddPost(ctx *gin.Context) {
 	}
 }
 
-// Delete: DELETE /v1/posts/:post_id
-func (c Controller) DeletePostById(ctx *gin.Context) {
+// Detail: GET /v1/posts/:post_id
+func (c Controller) GetPostById(ctx *gin.Context) {
 
-	id := ctx.Param("post_id")
-	post_id, err := strconv.Atoi(id)
+	post_id, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
 		fmt.Println(err)
 		ctx.AbortWithStatus(400)
-		return
 	}
 
 	var ps service.PostService
-	if err := ps.DeleteById(post_id); err != nil {
+	val, err := ps.GetById(post_id)
+
+	if err != nil {
+		ctx.AbortWithStatus(404)
 		fmt.Println(err)
-		ctx.AbortWithStatus(400)
 	} else {
-		ctx.JSON(204, gin.H{"id #" + id: "deleted"})
+		ctx.JSON(200, val)
 	}
 }
+
+// Detail: GET /v1/tags/:tag_id/posts
+func (c Controller) GetPostsByTagId(ctx *gin.Context) {
+
+	tag_id, err := strconv.Atoi(ctx.Param("tag_id"))
+	if err != nil {
+		fmt.Println(err)
+		ctx.AbortWithStatus(400)
+	}
+
+	var ps service.PostService
+	val, err := ps.GetByTagId(tag_id)
+	if err != nil {
+		fmt.Println(err)
+		ctx.AbortWithStatus(404)
+	} else {
+		ctx.JSON(200, val)
+	}
+}
+
+// Detail: GET /v1/tags/:tag_id/users
+func (c Controller) GetPostsByUserId(ctx *gin.Context) {
+
+	user_id, err := strconv.Atoi(ctx.Param("user_id"))
+	if err != nil {
+		fmt.Println(err)
+		ctx.AbortWithStatus(400)
+	}
+
+	var ps service.PostService
+	val, err := ps.GetByUserId(user_id)
+	if err != nil {
+		fmt.Println(err)
+		ctx.AbortWithStatus(404)
+	} else {
+		ctx.JSON(200, val)
+	}
+}
+
+// Delete: DELETE /v1/posts/:post_id
+//func (c Controller) DeletePostById(ctx *gin.Context) {
+//
+//	id := ctx.Param("post_id")
+//	post_id, err := strconv.Atoi(id)
+//	if err != nil {
+//		fmt.Println(err)
+//		ctx.AbortWithStatus(400)
+//		return
+//	}
+//
+//	var ps service.PostService
+//	if err := ps.DeleteById(post_id); err != nil {
+//		fmt.Println(err)
+//		ctx.AbortWithStatus(400)
+//	} else {
+//		ctx.JSON(204, gin.H{"id #" + id: "deleted"})
+//	}
+//}
 
 // Index: GET /v1/posts/:post_id/comments
 func (c Controller) GetComments(ctx *gin.Context) {
@@ -276,6 +314,26 @@ func (c Controller) GetTagById(ctx *gin.Context) {
 	}
 }
 
+// Index: GET /v1/posts/:post_id/tags
+func (c Controller) GetTagsByPostId(ctx *gin.Context) {
+
+	post_id, err := strconv.Atoi(ctx.Param("post_id"))
+	if err != nil {
+		fmt.Println(err)
+		ctx.AbortWithStatus(400)
+	}
+
+	var ts service.TagService
+	val, err := ts.GetByPostId(post_id)
+
+	if err != nil {
+		fmt.Println(err)
+		ctx.AbortWithStatus(404)
+	} else {
+		ctx.JSON(200, val)
+	}
+}
+
 // Create: POST /v1/posts/:post_id/tags/:tag_id
 func (c Controller) AttachTag(ctx *gin.Context) {
 
@@ -319,24 +377,9 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 		} else {
 			ctx.JSON(200, val)
 		}
-	case "user_id":
-		val, err := ss.GetByUserId(q)
-		if err != nil {
-			fmt.Println(err)
-			ctx.AbortWithStatus(404)
-		} else {
-			ctx.JSON(200, val)
-		}
 	case "user_name":
-		val, err := ss.GetByUserName(q)
-		if err != nil {
-			fmt.Println(err)
-			ctx.AbortWithStatus(404)
-		} else {
-			ctx.JSON(200, val)
-		}
-	case "tag_id":
-		val, err := ss.GetByTagId(q)
+		var us service.UserService
+		val, err := us.GetByName(q)
 		if err != nil {
 			fmt.Println(err)
 			ctx.AbortWithStatus(404)
@@ -344,7 +387,8 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 			ctx.JSON(200, val)
 		}
 	case "tag_name":
-		val, err := ss.GetByTagName(q)
+		var ts service.TagService
+		val, err := ts.GetByName(q)
 		if err != nil {
 			fmt.Println(err)
 			ctx.AbortWithStatus(404)

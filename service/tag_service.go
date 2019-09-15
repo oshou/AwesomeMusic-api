@@ -37,10 +37,39 @@ func (ts TagService) GetById(tag_id int) (Tag, error) {
 	return t, nil
 }
 
-func (ts TagService) Add(name string) (Tag, error) {
+func (ts TagService) GetByName(tag_name string) ([]Tag, error) {
+
+	var t []Tag
+
+	stmt := db.GetDBConn()
+	stmt = stmt.Table("tag")
+	stmt = stmt.Select("id,name")
+	stmt = stmt.Where("name LIKE ?", "%"+tag_name+"%")
+	if err := stmt.Find(&t).Error; err != nil {
+		return t, err
+	}
+	return t, nil
+}
+
+func (ts TagService) GetByPostId(post_id int) ([]Tag, error) {
+
+	var t []Tag
+
+	stmt := db.GetDBConn()
+	stmt = stmt.Table("tag")
+	stmt = stmt.Select("tag.id,tag.name")
+	stmt = stmt.Joins("INNER JOIN post_tag ON tag.id = post_tag.tag_id")
+	stmt = stmt.Where("post_tag.post_id = ?", post_id)
+	if err := stmt.Find(&t).Error; err != nil {
+		return t, err
+	}
+	return t, nil
+}
+
+func (ts TagService) Add(tag_name string) (Tag, error) {
 
 	var t Tag
-	t.Name = name
+	t.Name = tag_name
 
 	stmt := db.GetDBConn()
 	stmt = stmt.Table("tag")
