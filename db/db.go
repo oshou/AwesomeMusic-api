@@ -15,7 +15,7 @@ var (
 
 // DBコネクション作成
 func Init() {
-	db, err = gorm.Open(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_HOST")+")/"+os.Getenv("DB_NAME")+"?"+os.Getenv("DB_OPTION"))
+	db, err = gorm.Open(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_HOST")+":"+os.Getenv("DB_PORT")+")/"+os.Getenv("DB_NAME")+"?"+os.Getenv("DB_OPTION"))
 	// db.LogMode(true)
 	if err != nil {
 		log.Fatalf("Unable to connect DB : %s", err.Error())
