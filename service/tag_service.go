@@ -11,83 +11,99 @@ type Tag entity.Tag
 type PostTag entity.PostTag
 
 func (ts TagService) GetAll() ([]Tag, error) {
-
-	var t []Tag
-
-	stmt := db.GetDBConn()
-	stmt = stmt.Table("tag")
-	stmt = stmt.Select("id,name")
-	if err := stmt.Find(&t).Error; err != nil {
+	var tt []Tag
+	query := `SELECT
+							id,
+							name
+						FROM
+							tag`
+	conn := db.DBConn()
+	if err := conn.Select(&tt, query); err != nil {
 		return nil, err
 	}
-	return t, nil
+	return tt, nil
 }
 
 func (ts TagService) GetById(tag_id int) (Tag, error) {
-
 	var t Tag
-
-	stmt := db.GetDBConn()
-	stmt = stmt.Table("tag")
-	stmt = stmt.Select("id,name")
-	stmt = stmt.Where("id = ?", tag_id)
-	if err := stmt.First(&t).Error; err != nil {
+	query := `SELECT
+							id,
+							name
+						FROM
+							tag
+						WHERE
+							id = ?`
+	conn := db.DBConn()
+	if err := conn.Get(&t, query, tag_id); err != nil {
 		return t, err
 	}
 	return t, nil
 }
 
 func (ts TagService) GetByName(tag_name string) ([]Tag, error) {
-
-	var t []Tag
-
-	stmt := db.GetDBConn()
-	stmt = stmt.Table("tag")
-	stmt = stmt.Select("id,name")
-	stmt = stmt.Where("name LIKE ?", "%"+tag_name+"%")
-	if err := stmt.Find(&t).Error; err != nil {
-		return t, err
+	var tt []Tag
+	query := `SELECT
+							id,
+							name
+						FROM
+							tag
+						WHERE
+							name LIKE ?`
+	conn := db.DBConn()
+	if err := conn.Select(&tt, query, "%"+tag_name+"%"); err != nil {
+		return tt, err
 	}
-	return t, nil
+	return tt, nil
 }
 
 func (ts TagService) GetByPostId(post_id int) ([]Tag, error) {
-
-	var t []Tag
-
-	stmt := db.GetDBConn()
-	stmt = stmt.Table("tag")
-	stmt = stmt.Select("tag.id,tag.name")
-	stmt = stmt.Joins("INNER JOIN post_tag ON tag.id = post_tag.tag_id")
-	stmt = stmt.Where("post_tag.post_id = ?", post_id)
-	if err := stmt.Find(&t).Error; err != nil {
-		return t, err
+	var tt []Tag
+	query := `SELECT
+							t.id,
+							t.name
+						FROM
+							tag AS t
+						INNER JOIN post_tag AS pt
+							ON t.id = pt.tag_id
+						WHERE
+							pt.post_id = ?`
+	conn := db.DBConn()
+	if err := conn.Select(&tt, query, post_id); err != nil {
+		return tt, err
 	}
-	return t, nil
+	return tt, nil
 }
 
 func (ts TagService) Add(tag_name string) (Tag, error) {
-
-	var t Tag
-	t.Name = tag_name
-
-	stmt := db.GetDBConn()
-	stmt = stmt.Table("tag")
-	if err := stmt.Create(&t).Error; err != nil {
+	var t = Tag{
+		Name: tag_name,
+	}
+	query := `INSERT INTO
+							tag(name)
+						VALUES
+							(?)`
+	conn := db.DBConn()
+	result, err := conn.Exec(query, tag_name)
+	if err != nil {
 		return t, err
 	}
+	i64, _ := result.LastInsertId()
+	t.ID = int(i64)
 	return t, nil
 }
 
 func (ts TagService) Attach(post_id, tag_id int) (PostTag, error) {
-
-	var pt PostTag
-	pt.PostID = post_id
-	pt.TagID = tag_id
-
-	stmt := db.GetDBConn()
-	stmt = stmt.Table("post_tag")
-	if err := stmt.Create(&pt).Error; err != nil {
+	var pt = PostTag{
+		PostID: post_id,
+		TagID:  tag_id,
+	}
+	query := `INSERT INTO
+							post_tag(post_id, tag_id)
+						VALUES
+							(?, ?)`
+	conn := db.DBConn()
+	_, err := conn.Exec(query, post_id, tag_id)
+	if err != nil {
 		return pt, err
 	}
 	return pt, nil
