@@ -4,30 +4,29 @@ import (
 	"log"
 	"os"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 var (
-	db  *gorm.DB
-	err error
+	conn *sqlx.DB
+	err  error
 )
 
 // DBコネクション作成
 func Init() {
-	db, err = gorm.Open(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_HOST")+":"+os.Getenv("DB_PORT")+")/"+os.Getenv("DB_NAME")+"?"+os.Getenv("DB_OPTION"))
-	// db.LogMode(true)
+	conn, err = sqlx.Connect(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_HOST")+":"+os.Getenv("DB_PORT")+")/"+os.Getenv("DB_NAME")+"?"+os.Getenv("DB_OPTION"))
 	if err != nil {
-		log.Fatalf("Unable to connect DB : %s", err.Error())
+		log.Fatalf("error connecting database: %s", err.Error())
 	}
 }
 
 // 作成済DBコネクションの取得
-func GetDBConn() *gorm.DB {
-	return db
+func DBConn() *sqlx.DB {
+	return conn
 }
 
 // DBコネクション切断
 func Close() {
-	db.Close()
+	conn.Close()
 }
