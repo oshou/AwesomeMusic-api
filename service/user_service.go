@@ -17,7 +17,7 @@ func (us UserService) GetAll() ([]User, error) {
 						FROM
 							user`
 	conn := db.DBConn()
-	if err := conn.Select(uu, query); err != nil {
+	if err := conn.Select(&uu, query); err != nil {
 		return nil, err
 	}
 	return uu, nil
@@ -33,7 +33,7 @@ func (us UserService) GetById(user_id int) (User, error) {
 						WHERE
 							id = ?`
 	conn := db.DBConn()
-	if err := conn.Get(u, query, user_id); err != nil {
+	if err := conn.Get(&u, query, user_id); err != nil {
 		return u, err
 	}
 	return u, nil
@@ -49,7 +49,7 @@ func (us UserService) GetByName(name string) ([]User, error) {
 						WHERE
 							name LIKE ?`
 	conn := db.DBConn()
-	if err := conn.Select(uu, query, "%"+name+"%"); err != nil {
+	if err := conn.Select(&uu, query, "%"+name+"%"); err != nil {
 		return uu, err
 	}
 	return uu, nil
