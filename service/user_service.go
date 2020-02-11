@@ -10,55 +10,65 @@ type UserService struct{}
 type User entity.User
 
 func (us UserService) GetAll() ([]User, error) {
-
-	var u []User
-
-	stmt := db.GetDBConn()
-	stmt = stmt.Table("user")
-	stmt = stmt.Select("id,name")
-	if err := stmt.Find(&u).Error; err != nil {
+	var uu []User
+	query := `SELECT
+							id,
+							name
+						FROM
+							user`
+	conn := db.DBConn()
+	if err := conn.Select(uu, query); err != nil {
 		return nil, err
 	}
-	return u, nil
+	return uu, nil
 }
 
 func (us UserService) GetById(user_id int) (User, error) {
-
 	var u User
-
-	stmt := db.GetDBConn()
-	stmt = stmt.Table("user")
-	stmt = stmt.Select("id,name")
-	stmt = stmt.Where("id = ?", user_id)
-	if err := stmt.First(&u).Error; err != nil {
+	query := `SELECT
+							id,
+							name
+						FROM
+							user
+						WHERE
+							id = ?`
+	conn := db.DBConn()
+	if err := conn.Get(u, query, user_id); err != nil {
 		return u, err
 	}
 	return u, nil
 }
 
 func (us UserService) GetByName(name string) ([]User, error) {
-
-	var u []User
-
-	stmt := db.GetDBConn()
-	stmt = stmt.Table("user")
-	stmt = stmt.Select("id,name")
-	stmt = stmt.Where("name LIKE ?", "%"+name+"%")
-	if err := stmt.Find(&u).Error; err != nil {
-		return u, err
+	var uu []User
+	query := `SELECT
+							id,
+							name
+						FROM
+							user
+						WHERE
+							name LIKE ?`
+	conn := db.DBConn()
+	if err := conn.Select(uu, query, "%"+name+"%"); err != nil {
+		return uu, err
 	}
-	return u, nil
+	return uu, nil
 }
 
 func (us UserService) Add(name string) (User, error) {
-
-	var u User
-	u.Name = name
-
-	stmt := db.GetDBConn()
-	stmt = stmt.Table("user")
-	if err := stmt.Create(&u).Error; err != nil {
+	var u = User{
+		Name: name,
+	}
+	query := `INSERT INTO
+							user(name)
+						VALUES
+							(?)`
+	conn := db.DBConn()
+	result, err := conn.Exec(query, name)
+	if err != nil {
 		return u, err
 	}
+	i64, _ := result.LastInsertId()
+	u.ID = int(i64)
 	return u, nil
 }
