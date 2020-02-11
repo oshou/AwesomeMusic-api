@@ -2,7 +2,7 @@ package controller
 
 import (
 	"errors"
-	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +18,7 @@ func (c Controller) GetUsers(ctx *gin.Context) {
 	val, err := us.GetAll()
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(404)
 	} else {
 		ctx.JSON(200, val)
@@ -34,7 +34,7 @@ func (c Controller) AddUser(ctx *gin.Context) {
 	val, err := us.Add(name)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 		return
 	} else {
@@ -48,7 +48,7 @@ func (c Controller) GetUserById(ctx *gin.Context) {
 	// user_id
 	user_id, err := strconv.Atoi(ctx.Param("user_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	}
 
@@ -56,7 +56,7 @@ func (c Controller) GetUserById(ctx *gin.Context) {
 	val, err := us.GetById(user_id)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(404)
 	} else {
 		ctx.JSON(200, val)
@@ -70,7 +70,7 @@ func (c Controller) GetPosts(ctx *gin.Context) {
 	val, err := ps.GetAll()
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(404)
 	} else {
 		ctx.JSON(200, val)
@@ -82,7 +82,7 @@ func (c Controller) AddPost(ctx *gin.Context) {
 
 	user_id, err := strconv.Atoi(ctx.Query("user_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 		return
 	}
@@ -94,7 +94,7 @@ func (c Controller) AddPost(ctx *gin.Context) {
 	val, err := ps.Add(user_id, title, url, message)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	} else {
 		ctx.JSON(201, val)
@@ -106,7 +106,7 @@ func (c Controller) GetPostById(ctx *gin.Context) {
 
 	post_id, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	}
 
@@ -115,7 +115,7 @@ func (c Controller) GetPostById(ctx *gin.Context) {
 
 	if err != nil {
 		ctx.AbortWithStatus(404)
-		fmt.Println(err)
+		log.Println(err)
 	} else {
 		ctx.JSON(200, val)
 	}
@@ -126,14 +126,14 @@ func (c Controller) GetPostsByTagId(ctx *gin.Context) {
 
 	tag_id, err := strconv.Atoi(ctx.Param("tag_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	}
 
 	var ps service.PostService
 	val, err := ps.GetByTagId(tag_id)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(404)
 	} else {
 		ctx.JSON(200, val)
@@ -145,14 +145,14 @@ func (c Controller) GetPostsByUserId(ctx *gin.Context) {
 
 	user_id, err := strconv.Atoi(ctx.Param("user_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	}
 
 	var ps service.PostService
 	val, err := ps.GetByUserId(user_id)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(404)
 	} else {
 		ctx.JSON(200, val)
@@ -165,14 +165,14 @@ func (c Controller) GetPostsByUserId(ctx *gin.Context) {
 //	id := ctx.Param("post_id")
 //	post_id, err := strconv.Atoi(id)
 //	if err != nil {
-//		fmt.Println(err)
+//		log.Println(err)
 //		ctx.AbortWithStatus(400)
 //		return
 //	}
 //
 //	var ps service.PostService
 //	if err := ps.DeleteById(post_id); err != nil {
-//		fmt.Println(err)
+//		log.Println(err)
 //		ctx.AbortWithStatus(400)
 //	} else {
 //		ctx.JSON(204, gin.H{"id #" + id: "deleted"})
@@ -184,7 +184,7 @@ func (c Controller) GetComments(ctx *gin.Context) {
 
 	post_id, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	}
 
@@ -192,7 +192,7 @@ func (c Controller) GetComments(ctx *gin.Context) {
 	val, err := cs.GetAll(post_id)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(404)
 	} else {
 		ctx.JSON(200, val)
@@ -204,13 +204,13 @@ func (c Controller) AddComment(ctx *gin.Context) {
 
 	post_id, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 		return
 	}
 	user_id, err := strconv.Atoi(ctx.Query("user_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 		return
 	}
@@ -220,7 +220,7 @@ func (c Controller) AddComment(ctx *gin.Context) {
 	val, err := cs.Add(post_id, user_id, comment)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	} else {
 		ctx.JSON(201, val)
@@ -232,7 +232,7 @@ func (c Controller) GetCommentById(ctx *gin.Context) {
 
 	comment_id, err := strconv.Atoi(ctx.Param("comment_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	}
 
@@ -240,7 +240,7 @@ func (c Controller) GetCommentById(ctx *gin.Context) {
 	val, err := cs.GetById(comment_id)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(404)
 	} else {
 		ctx.JSON(200, val)
@@ -257,7 +257,7 @@ func (c Controller) GetCommentById(ctx *gin.Context) {
 // 	val, err := s.DeleteComment(comment_id)
 //
 // 	if err != nil {
-// 		fmt.Println(err)
+// 		log.Println(err)
 // 		ctx.AbortWithStatus(404)
 // 	} else {
 // 		ctx.JSON(200, val)
@@ -271,7 +271,7 @@ func (c Controller) GetTags(ctx *gin.Context) {
 	val, err := ts.GetAll()
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(404)
 	} else {
 		ctx.JSON(200, val)
@@ -287,7 +287,7 @@ func (c Controller) AddTag(ctx *gin.Context) {
 	val, err := ts.Add(name)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	} else {
 		ctx.JSON(201, val)
@@ -299,7 +299,7 @@ func (c Controller) GetTagById(ctx *gin.Context) {
 
 	tag_id, err := strconv.Atoi(ctx.Param("tag_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	}
 
@@ -307,7 +307,7 @@ func (c Controller) GetTagById(ctx *gin.Context) {
 	val, err := ts.GetById(tag_id)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(404)
 	} else {
 		ctx.JSON(200, val)
@@ -319,7 +319,7 @@ func (c Controller) GetTagsByPostId(ctx *gin.Context) {
 
 	post_id, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	}
 
@@ -327,7 +327,7 @@ func (c Controller) GetTagsByPostId(ctx *gin.Context) {
 	val, err := ts.GetByPostId(post_id)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(404)
 	} else {
 		ctx.JSON(200, val)
@@ -339,13 +339,13 @@ func (c Controller) AttachTag(ctx *gin.Context) {
 
 	post_id, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	}
 
 	tag_id, err := strconv.Atoi(ctx.Param("tag_id"))
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	}
 
@@ -353,7 +353,7 @@ func (c Controller) AttachTag(ctx *gin.Context) {
 	val, err := ts.Attach(post_id, tag_id)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(400)
 	} else {
 		ctx.JSON(201, val)
@@ -372,7 +372,7 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 	case "post_title":
 		val, err := ss.GetByPostTitle(q)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			ctx.AbortWithStatus(404)
 		} else {
 			ctx.JSON(200, val)
@@ -381,7 +381,7 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 		var us service.UserService
 		val, err := us.GetByName(q)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			ctx.AbortWithStatus(404)
 		} else {
 			ctx.JSON(200, val)
@@ -390,14 +390,14 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 		var ts service.TagService
 		val, err := ts.GetByName(q)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			ctx.AbortWithStatus(404)
 		} else {
 			ctx.JSON(200, val)
 		}
 	default:
 		err := errors.New("undefined")
-		fmt.Println(err)
+		log.Println(err)
 		ctx.AbortWithStatus(404)
 	}
 }
