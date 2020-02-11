@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -10,11 +11,12 @@ import (
 // APIサーバ起動
 func Init() {
 	r := router()
-	r.Run(":" + os.Getenv("API_SERVER_PORT"))
+	if err := r.Run(":" + os.Getenv("API_SERVER_PORT")); err != nil {
+		log.Fatalln(err)
+	}
 }
 
 func SetCorsPolicy() gin.HandlerFunc {
-
 	return func(ctx *gin.Context) {
 		if ctx.Request.Method == "OPTIONS" {
 			// for preflight
@@ -28,8 +30,6 @@ func SetCorsPolicy() gin.HandlerFunc {
 			ctx.Header("Access-Control-Allow-Origin", "*")
 			ctx.Next()
 		}
-
-		return
 	}
 }
 
