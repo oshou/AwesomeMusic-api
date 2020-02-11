@@ -18,7 +18,7 @@ func (ts TagService) GetAll() ([]Tag, error) {
 						FROM
 							tag`
 	conn := db.DBConn()
-	if err := conn.Select(tt, query); err != nil {
+	if err := conn.Select(&tt, query); err != nil {
 		return nil, err
 	}
 	return tt, nil
@@ -34,7 +34,7 @@ func (ts TagService) GetById(tag_id int) (Tag, error) {
 						WHERE
 							id = ?`
 	conn := db.DBConn()
-	if err := conn.Get(t, query, tag_id); err != nil {
+	if err := conn.Get(&t, query, tag_id); err != nil {
 		return t, err
 	}
 	return t, nil
@@ -50,7 +50,7 @@ func (ts TagService) GetByName(tag_name string) ([]Tag, error) {
 						WHERE
 							name LIKE ?`
 	conn := db.DBConn()
-	if err := conn.Select(tt, query, "%"+tag_name+"%"); err != nil {
+	if err := conn.Select(&tt, query, "%"+tag_name+"%"); err != nil {
 		return tt, err
 	}
 	return tt, nil
@@ -62,13 +62,13 @@ func (ts TagService) GetByPostId(post_id int) ([]Tag, error) {
 							t.id,
 							t.name
 						FROM
-							tag AS tag
+							tag AS t
 						INNER JOIN post_tag AS pt
 							ON t.id = pt.tag_id
 						WHERE
 							pt.post_id = ?`
 	conn := db.DBConn()
-	if err := conn.Select(tt, query, post_id); err != nil {
+	if err := conn.Select(&tt, query, post_id); err != nil {
 		return tt, err
 	}
 	return tt, nil

@@ -20,7 +20,7 @@ func (ps PostService) GetAll() ([]Post, error) {
 						FROM
 							post`
 	conn := db.DBConn()
-	if err := conn.Select(pp, query); err != nil {
+	if err := conn.Select(&pp, query); err != nil {
 		return nil, err
 	}
 	return pp, nil
@@ -37,7 +37,7 @@ func (ps PostService) GetById(post_id int) (Post, error) {
 							post
 						WHERE id = ?`
 	conn := db.DBConn()
-	if err := conn.Get(p, query, post_id); err != nil {
+	if err := conn.Get(&p, query, post_id); err != nil {
 		return p, err
 	}
 	return p, nil
@@ -58,7 +58,7 @@ func (ps PostService) GetByTagId(tag_id int) ([]Post, error) {
 						WHERE
 							t.id = ?`
 	conn := db.DBConn()
-	if err := conn.Select(pp, query, tag_id); err != nil {
+	if err := conn.Select(&pp, query, tag_id); err != nil {
 		return nil, err
 	}
 	return pp, nil
@@ -78,7 +78,7 @@ func (ps PostService) GetByUserId(user_id int) ([]Post, error) {
 						WHERE
 							u.id = ?`
 	conn := db.DBConn()
-	if err := conn.Select(pp, query, user_id); err != nil {
+	if err := conn.Select(&pp, query, user_id); err != nil {
 		return nil, err
 	}
 	return pp, nil

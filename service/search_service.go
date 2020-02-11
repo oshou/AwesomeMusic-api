@@ -21,7 +21,7 @@ func (ss SearchService) GetByPostTitle(q string) ([]Post, error) {
 						WHERE
 							title LIKE ?`
 	conn := db.DBConn()
-	if err := conn.Select(pp, query, "%"+q+"%"); err != nil {
+	if err := conn.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err
 	}
 	return pp, nil
@@ -40,7 +40,7 @@ func (ss SearchService) GetByUserName(q string) ([]Post, error) {
 						WHERE
 							name LIKE ?`
 	conn := db.DBConn()
-	if err := conn.Select(pp, query, "%"+q+"%"); err != nil {
+	if err := conn.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err
 	}
 	return pp, nil
@@ -63,7 +63,7 @@ func (ss SearchService) GetByTagName(q string) ([]Post, error) {
 						WHERE
 							t.name LIKE ?`
 	conn := db.DBConn()
-	if err := conn.Select(pp, query, "%"+q+"%"); err != nil {
+	if err := conn.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err
 	}
 	return pp, nil
