@@ -1,0 +1,18 @@
+version: "2.1"
+
+jobs:
+  deploy_prd:
+    docker:
+      - image: circleci/golang:latest
+    steps:
+      - checkout
+      - make deploy_hub
+
+workflows:
+  version: 2
+  build_deploy:
+    jobs:
+      - deploy_prd:
+        filters:
+          branches:
+            only: master

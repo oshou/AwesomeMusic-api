@@ -107,7 +107,10 @@ func (ps PostService) Add(user_id int, title, url, message string) (Post, error)
 
 func (ps PostService) DeleteById(post_id int) error {
 	conn := db.DBConn()
-	query := `DELETE FROM post WHERE id = ?`
+	query := `DELETE FROM
+							post
+						WHERE
+							id = ?`
 	if _, err := conn.Exec(query, post_id); err != nil {
 		return err
 	}
