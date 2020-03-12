@@ -1,7 +1,7 @@
 version: "2.1"
 
 commands:
-  deply_hub:
+  deploy_hub:
     steps:
       - run:
           name: Deploy Docker Registry
