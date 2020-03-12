@@ -15,3 +15,4 @@ COPY --from=builder /go/src/.env ./
 COPY --from=builder /go/src/main ./
 EXPOSE 8080/tcp
 ENTRYPOINT ["./main"]
+
