@@ -1,18 +1,25 @@
 version: "2.1"
 
+commands:
+  deply_hub:
+    steps:
+      - run:
+          name: Deploy Docker Registry
+          command: make deploy_hub
+
 jobs:
   deploy_prd:
     docker:
       - image: circleci/golang:latest
     steps:
       - checkout
-      - make deploy_hub
+      - deploy_hub
   deploy_test:
     docker:
       - image: circleci/golang:latest
     steps:
       - checkout
-      - make deploy_hub
+      - deploy_hub
 
 workflows:
   version: 2
