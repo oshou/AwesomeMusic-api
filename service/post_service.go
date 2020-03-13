@@ -11,6 +11,7 @@ type Post entity.Post
 
 func (ps PostService) GetAll() ([]Post, error) {
 	var pp []Post
+
 	query := `SELECT
 							id,
 							user_id,
@@ -19,15 +20,18 @@ func (ps PostService) GetAll() ([]Post, error) {
 							message
 						FROM
 							post`
+
 	conn := db.DBConn()
 	if err := conn.Select(&pp, query); err != nil {
 		return nil, err
 	}
+
 	return pp, nil
 }
 
-func (ps PostService) GetById(post_id int) (Post, error) {
+func (ps PostService) GetByID(postID int) (Post, error) {
 	var p Post
+
 	query := `SELECT
 							id,
 							user_id,
@@ -36,15 +40,18 @@ func (ps PostService) GetById(post_id int) (Post, error) {
 						FROM
 							post
 						WHERE id = ?`
+
 	conn := db.DBConn()
-	if err := conn.Get(&p, query, post_id); err != nil {
+	if err := conn.Get(&p, query, postID); err != nil {
 		return p, err
 	}
+
 	return p, nil
 }
 
-func (ps PostService) GetByTagId(tag_id int) ([]Post, error) {
+func (ps PostService) GetByTagID(tagID int) ([]Post, error) {
 	var pp []Post
+
 	query := `SELECT
 							p.id,
 							p.user_id,
@@ -57,15 +64,18 @@ func (ps PostService) GetByTagId(tag_id int) ([]Post, error) {
 						INNER JOIN tag AS t ON pt.tag_id= t.id
 						WHERE
 							t.id = ?`
+
 	conn := db.DBConn()
-	if err := conn.Select(&pp, query, tag_id); err != nil {
+	if err := conn.Select(&pp, query, tagID); err != nil {
 		return nil, err
 	}
+
 	return pp, nil
 }
 
-func (ps PostService) GetByUserId(user_id int) ([]Post, error) {
+func (ps PostService) GetByUserID(userID int) ([]Post, error) {
 	var pp []Post
+
 	query := `SELECT
 							p.id,
 							p.user_id,
@@ -77,42 +87,51 @@ func (ps PostService) GetByUserId(user_id int) ([]Post, error) {
 						INNER JOIN user AS u ON u.id = p.user_id
 						WHERE
 							u.id = ?`
+
 	conn := db.DBConn()
-	if err := conn.Select(&pp, query, user_id); err != nil {
+	if err := conn.Select(&pp, query, userID); err != nil {
 		return nil, err
 	}
+
 	return pp, nil
 }
 
-func (ps PostService) Add(user_id int, title, url, message string) (Post, error) {
+func (ps PostService) Add(userID int, title, url, message string) (Post, error) {
 	var p = Post{
-		UserID:  user_id,
+		UserID:  userID,
 		Title:   title,
 		URL:     url,
 		Message: message,
 	}
-	conn := db.DBConn()
+
 	query := `INSERT INTO
 							post(user_id, title, url, message)
 						VALUES
 							(?, ?, ?, ?)`
-	result, err := conn.Exec(query, user_id, title, url, message)
+
+	conn := db.DBConn()
+	result, err := conn.Exec(query, userID, title, url, message)
+
 	if err != nil {
 		return p, err
 	}
+
 	i64, _ := result.LastInsertId()
 	p.ID = int(i64)
+
 	return p, nil
 }
 
-func (ps PostService) DeleteById(post_id int) error {
-	conn := db.DBConn()
+func (ps PostService) DeleteByID(postID int) error {
 	query := `DELETE FROM
 							post
 						WHERE
 							id = ?`
-	if _, err := conn.Exec(query, post_id); err != nil {
+
+	conn := db.DBConn()
+	if _, err := conn.Exec(query, postID); err != nil {
 		return err
 	}
+
 	return nil
 }

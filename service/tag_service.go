@@ -12,20 +12,24 @@ type PostTag entity.PostTag
 
 func (ts TagService) GetAll() ([]Tag, error) {
 	var tt []Tag
+
 	query := `SELECT
 							id,
 							name
 						FROM
 							tag`
+
 	conn := db.DBConn()
 	if err := conn.Select(&tt, query); err != nil {
 		return nil, err
 	}
+
 	return tt, nil
 }
 
-func (ts TagService) GetById(tag_id int) (Tag, error) {
+func (ts TagService) GetByID(tagID int) (Tag, error) {
 	var t Tag
+
 	query := `SELECT
 							id,
 							name
@@ -33,15 +37,18 @@ func (ts TagService) GetById(tag_id int) (Tag, error) {
 							tag
 						WHERE
 							id = ?`
+
 	conn := db.DBConn()
-	if err := conn.Get(&t, query, tag_id); err != nil {
+	if err := conn.Get(&t, query, tagID); err != nil {
 		return t, err
 	}
+
 	return t, nil
 }
 
-func (ts TagService) GetByName(tag_name string) ([]Tag, error) {
+func (ts TagService) GetByName(tagName string) ([]Tag, error) {
 	var tt []Tag
+
 	query := `SELECT
 							id,
 							name
@@ -49,15 +56,18 @@ func (ts TagService) GetByName(tag_name string) ([]Tag, error) {
 							tag
 						WHERE
 							name LIKE ?`
+
 	conn := db.DBConn()
-	if err := conn.Select(&tt, query, "%"+tag_name+"%"); err != nil {
+	if err := conn.Select(&tt, query, "%"+tagName+"%"); err != nil {
 		return tt, err
 	}
+
 	return tt, nil
 }
 
-func (ts TagService) GetByPostId(post_id int) ([]Tag, error) {
+func (ts TagService) GetByPostID(postID int) ([]Tag, error) {
 	var tt []Tag
+
 	query := `SELECT
 							t.id,
 							t.name
@@ -67,44 +77,55 @@ func (ts TagService) GetByPostId(post_id int) ([]Tag, error) {
 							ON t.id = pt.tag_id
 						WHERE
 							pt.post_id = ?`
+
 	conn := db.DBConn()
-	if err := conn.Select(&tt, query, post_id); err != nil {
+	if err := conn.Select(&tt, query, postID); err != nil {
 		return tt, err
 	}
+
 	return tt, nil
 }
 
-func (ts TagService) Add(tag_name string) (Tag, error) {
+func (ts TagService) Add(tagName string) (Tag, error) {
 	var t = Tag{
-		Name: tag_name,
+		Name: tagName,
 	}
+
 	query := `INSERT INTO
 							tag(name)
 						VALUES
 							(?)`
+
 	conn := db.DBConn()
-	result, err := conn.Exec(query, tag_name)
+	result, err := conn.Exec(query, tagName)
+
 	if err != nil {
 		return t, err
 	}
+
 	i64, _ := result.LastInsertId()
 	t.ID = int(i64)
+
 	return t, nil
 }
 
-func (ts TagService) Attach(post_id, tag_id int) (PostTag, error) {
+func (ts TagService) Attach(postID, tagID int) (PostTag, error) {
 	var pt = PostTag{
-		PostID: post_id,
-		TagID:  tag_id,
+		PostID: postID,
+		TagID:  tagID,
 	}
+
 	query := `INSERT INTO
 							post_tag(post_id, tag_id)
 						VALUES
 							(?, ?)`
+
 	conn := db.DBConn()
-	_, err := conn.Exec(query, post_id, tag_id)
+	_, err := conn.Exec(query, postID, tagID)
+
 	if err != nil {
 		return pt, err
 	}
+
 	return pt, nil
 }

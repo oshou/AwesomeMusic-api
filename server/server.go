@@ -8,6 +8,10 @@ import (
 	"github.com/oshou/AwesomeMusic-api/controller"
 )
 
+const (
+	OK = 200
+)
+
 // APIサーバ起動
 func Init() {
 	r := router()
@@ -23,7 +27,7 @@ func SetCorsPolicy() gin.HandlerFunc {
 			ctx.Header("Access-Control-Allow-Origin", "*")
 			ctx.Header("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE")
 			ctx.Header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-			ctx.Data(200, "text/plain", []byte{})
+			ctx.Data(OK, "text/plain", []byte{})
 			ctx.Abort()
 		} else {
 			// for actual response
@@ -48,27 +52,27 @@ func router() *gin.Engine {
 		// ユーザー新規追加
 		u.POST("/users", ctrl.AddUser)
 		// 特定ユーザー表示
-		u.GET("/users/:user_id", ctrl.GetUserById)
+		u.GET("/users/:user_id", ctrl.GetUserByID)
 
 		// 投稿一覧
 		u.GET("/posts", ctrl.GetPosts)
 		// 投稿新規追加
 		u.POST("/posts", ctrl.AddPost)
 		// 特定投稿表示
-		u.GET("/posts/:post_id", ctrl.GetPostById)
+		u.GET("/posts/:post_id", ctrl.GetPostByID)
 		// 特定タグの投稿一覧
-		u.GET("/tags/:tag_id/posts", ctrl.GetPostsByTagId)
+		u.GET("/tags/:tag_id/posts", ctrl.GetPostsByTagID)
 		// 特定ユーザーの投稿一覧
-		u.GET("/users/:user_id/posts", ctrl.GetPostsByUserId)
+		u.GET("/users/:user_id/posts", ctrl.GetPostsByUserID)
 		// // 投稿削除
-		// u.DELETE("/posts/:post_id", ctrl.DeletePostById)
+		// u.DELETE("/posts/:post_id", ctrl.DeletePostByID)
 
 		// コメント一覧
 		u.GET("/posts/:post_id/comments", ctrl.GetComments)
 		// コメント新規追加
 		u.POST("/posts/:post_id/comments", ctrl.AddComment)
 		// 特定コメント表示
-		u.GET("/posts/:post_id/comments/:comment_id", ctrl.GetCommentById)
+		u.GET("/posts/:post_id/comments/:comment_id", ctrl.GetCommentByID)
 		// // コメント削除
 		// u.DELETE("/posts/:post_id/comments/:comment_id", ctrl.DeleteComment)
 
@@ -77,9 +81,9 @@ func router() *gin.Engine {
 		// タグ新規追加
 		u.POST("/tags", ctrl.AddTag)
 		// タグ表示(特定ID)
-		u.GET("/tags/:tag_id", ctrl.GetTagById)
+		u.GET("/tags/:tag_id", ctrl.GetTagByID)
 		// 投稿に紐付いているタグ一覧
-		u.GET("/posts/:post_id/tags", ctrl.GetTagsByPostId)
+		u.GET("/posts/:post_id/tags", ctrl.GetTagsByPostID)
 		// 投稿へのタグ付与
 		u.POST("/posts/:post_id/tags/:tag_id", ctrl.AttachTag)
 

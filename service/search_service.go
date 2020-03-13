@@ -10,6 +10,7 @@ type SearchService struct{}
 
 func (ss SearchService) GetByPostTitle(q string) ([]Post, error) {
 	var pp []Post
+
 	query := `SELECT
 							id,
 							user_id,
@@ -20,15 +21,18 @@ func (ss SearchService) GetByPostTitle(q string) ([]Post, error) {
 							post
 						WHERE
 							title LIKE ?`
+
 	conn := db.DBConn()
 	if err := conn.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err
 	}
+
 	return pp, nil
 }
 
 func (ss SearchService) GetByUserName(q string) ([]Post, error) {
 	var pp []Post
+
 	query := `SELECT
 							id,
 							user_id,
@@ -39,15 +43,18 @@ func (ss SearchService) GetByUserName(q string) ([]Post, error) {
 							user
 						WHERE
 							name LIKE ?`
+
 	conn := db.DBConn()
 	if err := conn.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err
 	}
+
 	return pp, nil
 }
 
 func (ss SearchService) GetByTagName(q string) ([]Post, error) {
 	var pp []Post
+
 	query := `SELECT
 							p.id,
 							p.user_id,
@@ -62,9 +69,11 @@ func (ss SearchService) GetByTagName(q string) ([]Post, error) {
 							ON pt.tag_id = t.id
 						WHERE
 							t.name LIKE ?`
+
 	conn := db.DBConn()
 	if err := conn.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err
 	}
+
 	return pp, nil
 }
