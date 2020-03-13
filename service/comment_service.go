@@ -22,7 +22,7 @@ func (cs CommentService) GetAll(postID int) ([]Comment, error) {
 						WHERE
 							post_id = ?`
 
-	conn := db.DBcon()
+	conn := db.DBConn()
 	if err := conn.Select(&cc, query, postID); err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (cs CommentService) GetByID(commentID int) (Comment, error) {
 						WHERE
 							id = ?`
 
-	conn := db.DBcon()
+	conn := db.Get()
 	if err := conn.Get(&c, query, commentID); err != nil {
 		return c, err
 	}
@@ -63,7 +63,7 @@ func (cs CommentService) Add(postID, userID int, comment string) (Comment, error
 						VALUES
 							(?, ?, ?)`
 
-	conn := db.DBCon()
+	conn := db.DBConn()
 	result, err := conn.Exec(query, postID, userID, comment)
 
 	if err != nil {

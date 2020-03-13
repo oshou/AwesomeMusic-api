@@ -15,7 +15,7 @@ func main() {
 		log.Fatalf("error loading .env file: %s", err.Error())
 	}
 
-	db.Init()
+	db := db.NewDB()
 	defer db.Close()
 
 	// APIサーバ起動

@@ -29,11 +29,13 @@ func SetCorsPolicy() gin.HandlerFunc {
 			ctx.Header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 			ctx.Data(OK, "text/plain", []byte{})
 			ctx.Abort()
-		} else {
-			// for actual response
-			ctx.Header("Access-Control-Allow-Origin", "*")
-			ctx.Next()
+
+			return
 		}
+
+		// for actual response
+		ctx.Header("Access-Control-Allow-Origin", "*")
+		ctx.Next()
 	}
 }
 
