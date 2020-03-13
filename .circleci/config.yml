@@ -14,19 +14,10 @@ commands:
     steps:
       - run:
           name: Install golangci-lint
-          command: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.23.8
-      - run:
-          name: pwd
-          command: pwd
-      - run:
-          name: ls
-          command: ls -la
-      - run:
-          name: ls bin/
-          command: ls -la bin/
+          command: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /usr/local/bin v1.23.8
       - run:
           name: Add Path
-          command: export PATH=$PATH:/go/src/github.com/oshou/Awesomemusic-api/bin
+          command: export PATH=$PATH:/usr/local/bin
       - run:
           name: reload
           command: source ~/.bashrc
