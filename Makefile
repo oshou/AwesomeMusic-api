@@ -18,14 +18,14 @@ BINARY_NAME=main
 build_local:
 	$(GOCMD) fmt ./...
 	$(GOCMD) vet ./...
-	golangci-lint run
+	# golangci-lint run --enable-all
 	cp -rp .env.local .env
 	$(GOCMD) build -o $(BINARY_NAME)
 
 build_prd:
 	$(GOCMD) fmt ./...
 	$(GOCMD) vet ./...
-	golangci-lint run
+	golangci-lint run --enable-all
 	cp -rp .env.local .env
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOCMD) build -a -installsuffix cgo -ldflags="-s -w" -o $(BINARY_NAME)
 
