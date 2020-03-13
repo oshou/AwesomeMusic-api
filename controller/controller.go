@@ -251,6 +251,7 @@ func (c Controller) AddComment(ctx *gin.Context) {
 
 	var cs service.CommentService
 	val, err := cs.Add(postID, userID, comment)
+
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(BadRequest)
@@ -273,6 +274,7 @@ func (c Controller) GetCommentByID(ctx *gin.Context) {
 
 	var cs service.CommentService
 	val, err := cs.GetByID(commentID)
+
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(NotFound)
@@ -304,6 +306,7 @@ func (c Controller) GetCommentByID(ctx *gin.Context) {
 func (c Controller) GetTags(ctx *gin.Context) {
 	var ts service.TagService
 	val, err := ts.GetAll()
+
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(NotFound)
@@ -320,6 +323,7 @@ func (c Controller) AddTag(ctx *gin.Context) {
 
 	var ts service.TagService
 	val, err := ts.Add(name)
+
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(BadRequest)
@@ -342,6 +346,7 @@ func (c Controller) GetTagByID(ctx *gin.Context) {
 
 	var ts service.TagService
 	val, err := ts.GetByID(tagID)
+
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(NotFound)
@@ -364,6 +369,7 @@ func (c Controller) GetTagsByPostID(ctx *gin.Context) {
 
 	var ts service.TagService
 	val, err := ts.GetByPostID(postID)
+
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(NotFound)
@@ -394,6 +400,7 @@ func (c Controller) AttachTag(ctx *gin.Context) {
 
 	var ts service.TagService
 	val, err := ts.Attach(postID, tagID)
+
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(BadRequest)
@@ -425,6 +432,7 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 	case "user_name":
 		var us service.UserService
 		val, err := us.GetByName(q)
+
 		if err != nil {
 			log.Println(err)
 			ctx.AbortWithStatus(NotFound)
@@ -436,6 +444,7 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 	case "tag_name":
 		var ts service.TagService
 		val, err := ts.GetByName(q)
+
 		if err != nil {
 			log.Println(err)
 			ctx.AbortWithStatus(NotFound)

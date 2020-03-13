@@ -21,7 +21,7 @@ func Init() {
 }
 
 // 作成済DBコネクションの取得
-func DBConn() *sqlx.DB {
+func DBCon() *sqlx.DB {
 	return conn
 }
 

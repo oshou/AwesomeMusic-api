@@ -18,7 +18,7 @@ BINARY_NAME=main
 build_local:
 	$(GOCMD) fmt ./...
 	$(GOCMD) vet ./...
-	# golangci-lint run --enable-all
+	golangci-lint run --enable-all
 	cp -rp .env.local .env
 	$(GOCMD) build -o $(BINARY_NAME)
 

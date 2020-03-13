@@ -19,7 +19,7 @@ func (ts TagService) GetAll() ([]Tag, error) {
 						FROM
 							tag`
 
-	conn := db.DBConn()
+	conn := db.DBcon()
 	if err := conn.Select(&tt, query); err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func (ts TagService) GetByID(tagID int) (Tag, error) {
 						WHERE
 							id = ?`
 
-	conn := db.DBConn()
+	conn := db.DBcon()
 	if err := conn.Get(&t, query, tagID); err != nil {
 		return t, err
 	}
@@ -57,7 +57,7 @@ func (ts TagService) GetByName(tagName string) ([]Tag, error) {
 						WHERE
 							name LIKE ?`
 
-	conn := db.DBConn()
+	conn := db.DBcon()
 	if err := conn.Select(&tt, query, "%"+tagName+"%"); err != nil {
 		return tt, err
 	}
@@ -78,7 +78,7 @@ func (ts TagService) GetByPostID(postID int) ([]Tag, error) {
 						WHERE
 							pt.post_id = ?`
 
-	conn := db.DBConn()
+	conn := db.DBcon()
 	if err := conn.Select(&tt, query, postID); err != nil {
 		return tt, err
 	}
@@ -96,7 +96,7 @@ func (ts TagService) Add(tagName string) (Tag, error) {
 						VALUES
 							(?)`
 
-	conn := db.DBConn()
+	conn := db.DBcon()
 	result, err := conn.Exec(query, tagName)
 
 	if err != nil {
@@ -120,7 +120,7 @@ func (ts TagService) Attach(postID, tagID int) (PostTag, error) {
 						VALUES
 							(?, ?)`
 
-	conn := db.DBConn()
+	conn := db.DBcon()
 	_, err := conn.Exec(query, postID, tagID)
 
 	if err != nil {
