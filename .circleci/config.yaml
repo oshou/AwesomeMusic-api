@@ -1,4 +1,15 @@
-version: "2.1"
+version: 2.1
+command:
+  deploy_hub:
+    steps:
+      - run:
+          name: Deploy Docker Registry
+          command: make deploy_hub
+  install_golangci_lint:
+    steps:
+      - run:
+          name: Install golangci-lint
+          command: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.23.8
 
 jobs:
   deploy_prd:
@@ -6,6 +17,14 @@ jobs:
       - image: circleci/golang:latest
     steps:
       - checkout
+      - install_golangci_lint
+      - make deploy_hub
+  deploy_test:
+    docker:
+      - image: circleci/golang:latest
+    steps:
+      - checkout
+      - install_golangci_lint
       - make deploy_hub
 
 workflows:
@@ -16,3 +35,7 @@ workflows:
         filters:
           branches:
             only: master
+      - deploy_test:
+        filters:
+          branches:
+            only: feature/deploy-test
