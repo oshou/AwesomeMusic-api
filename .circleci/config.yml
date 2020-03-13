@@ -1,5 +1,10 @@
 version: 2.1
-command:
+executors:
+  default:
+    working_directory: /go/src/github.com/oshou/Awesomemusic-api
+    docker:
+      - image: circleci/golang:latest
+commands:
   deploy_hub:
     steps:
       - run:
@@ -10,32 +15,29 @@ command:
       - run:
           name: Install golangci-lint
           command: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.23.8
-
 jobs:
   deploy_prd:
-    docker:
-      - image: circleci/golang:latest
+    executor: default
     steps:
       - checkout
       - install_golangci_lint
-      - make deploy_hub
+      - deploy_hub
   deploy_test:
-    docker:
-      - image: circleci/golang:latest
+    executor: default
     steps:
       - checkout
       - install_golangci_lint
-      - make deploy_hub
+      - deploy_hub
 
 workflows:
   version: 2
   build_deploy:
     jobs:
       - deploy_prd:
-        filters:
-          branches:
-            only: master
+          filters:
+            branches:
+              only: master
       - deploy_test:
-        filters:
-          branches:
-            only: feature/deploy-test
+          filters:
+            branches:
+              only: feature/deploy-test
