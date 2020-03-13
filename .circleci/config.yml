@@ -19,6 +19,12 @@ commands:
           name: pwd
           command: pwd
       - run:
+          name: ls
+          command: ls -la
+      - run:
+          name: ls bin/
+          command: ls -la bin/
+      - run:
           name: Add Path
           command: export PATH=$PATH:/go/src/github.com/oshou/Awesomemusic-api/bin
       - run:
