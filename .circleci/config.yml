@@ -28,7 +28,7 @@ jobs:
       - checkout
       - install_golangci_lint
       - deploy_hub
-  deploy_test:
+  deploy_dev:
     executor: default
     steps:
       - checkout
@@ -43,7 +43,7 @@ workflows:
           filters:
             branches:
               only: master
-      - deploy_test:
+      - deploy_dev:
           filters:
             branches:
-              only: feature/deploy-test
+              only: develop
