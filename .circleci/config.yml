@@ -17,7 +17,10 @@ commands:
           command: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.23.8
       - run:
           name: Add Path
-          command: export PATH = $PATH:/go/src/github.com/oshou/Awesomemusic-api/bin
+          command: export PATH=$PATH:/go/src/github.com/oshou/Awesomemusic-api/bin
+      - run:
+          name: reload
+          command: source ~/.bashrc
 jobs:
   deploy_prd:
     executor: default
