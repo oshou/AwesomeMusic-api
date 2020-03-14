@@ -21,7 +21,7 @@ type Controller struct{}
 // Index: GET /v1/users
 func (c Controller) GetUsers(ctx *gin.Context) {
 	var us service.UserService
-	val, err := us.GetAll()
+	users, err := us.GetAll()
 
 	if err != nil {
 		log.Println(err)
@@ -30,7 +30,7 @@ func (c Controller) GetUsers(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(OK, val)
+	ctx.JSON(OK, users)
 }
 
 // Create: POST /v1/users
@@ -38,7 +38,7 @@ func (c Controller) AddUser(ctx *gin.Context) {
 	name := ctx.Query("name")
 
 	var us service.UserService
-	val, err := us.Add(name)
+	user, err := us.Add(name)
 
 	if err != nil {
 		log.Println(err)
@@ -47,7 +47,7 @@ func (c Controller) AddUser(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(CREATED, val)
+	ctx.JSON(CREATED, user)
 }
 
 // Detail: GET /v1/users/:user_id
@@ -62,7 +62,7 @@ func (c Controller) GetUserByID(ctx *gin.Context) {
 	}
 
 	var us service.UserService
-	val, err := us.GetByID(userID)
+	user, err := us.GetByID(userID)
 
 	if err != nil {
 		log.Println(err)
@@ -71,13 +71,13 @@ func (c Controller) GetUserByID(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(OK, val)
+	ctx.JSON(OK, user)
 }
 
 // Index: GET /v1/posts
 func (c Controller) GetPosts(ctx *gin.Context) {
 	var ps service.PostService
-	val, err := ps.GetAll()
+	posts, err := ps.GetAll()
 
 	if err != nil {
 		log.Println(err)
@@ -86,7 +86,7 @@ func (c Controller) GetPosts(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(OK, val)
+	ctx.JSON(OK, posts)
 }
 
 // Index: POST /v1/posts
@@ -104,7 +104,7 @@ func (c Controller) AddPost(ctx *gin.Context) {
 	message := ctx.Query("message")
 
 	var ps service.PostService
-	val, err := ps.Add(userID, title, url, message)
+	post, err := ps.Add(userID, title, url, message)
 
 	if err != nil {
 		log.Println(err)
@@ -113,7 +113,7 @@ func (c Controller) AddPost(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(CREATED, val)
+	ctx.JSON(CREATED, post)
 }
 
 // Detail: GET /v1/posts/:post_id
@@ -127,7 +127,7 @@ func (c Controller) GetPostByID(ctx *gin.Context) {
 	}
 
 	var ps service.PostService
-	val, err := ps.GetByID(postID)
+	post, err := ps.GetByID(postID)
 
 	if err != nil {
 		ctx.AbortWithStatus(NotFound)
@@ -136,7 +136,7 @@ func (c Controller) GetPostByID(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(OK, val)
+	ctx.JSON(OK, post)
 }
 
 // Detail: GET /v1/tags/:tag_id/posts
@@ -150,7 +150,7 @@ func (c Controller) GetPostsByTagID(ctx *gin.Context) {
 	}
 
 	var ps service.PostService
-	val, err := ps.GetByTagID(tagID)
+	posts, err := ps.GetByTagID(tagID)
 
 	if err != nil {
 		log.Println(err)
@@ -159,7 +159,7 @@ func (c Controller) GetPostsByTagID(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(OK, val)
+	ctx.JSON(OK, posts)
 }
 
 // Detail: GET /v1/tags/:tag_id/users
@@ -173,7 +173,7 @@ func (c Controller) GetPostsByUserID(ctx *gin.Context) {
 	}
 
 	var ps service.PostService
-	val, err := ps.GetByUserID(userID)
+	posts, err := ps.GetByUserID(userID)
 
 	if err != nil {
 		log.Println(err)
@@ -182,7 +182,7 @@ func (c Controller) GetPostsByUserID(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(OK, val)
+	ctx.JSON(OK, posts)
 }
 
 // Delete: DELETE /v1/posts/:post_id
@@ -217,7 +217,7 @@ func (c Controller) GetComments(ctx *gin.Context) {
 	}
 
 	var cs service.CommentService
-	val, err := cs.GetAll(postID)
+	comments, err := cs.GetAll(postID)
 
 	if err != nil {
 		log.Println(err)
@@ -226,7 +226,7 @@ func (c Controller) GetComments(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(OK, val)
+	ctx.JSON(OK, comments)
 }
 
 // Create: POST /v1/posts/:post_id/comments
@@ -250,7 +250,7 @@ func (c Controller) AddComment(ctx *gin.Context) {
 	comment := ctx.Query("comment")
 
 	var cs service.CommentService
-	val, err := cs.Add(postID, userID, comment)
+	comment, err := cs.Add(postID, userID, comment)
 
 	if err != nil {
 		log.Println(err)
@@ -259,7 +259,7 @@ func (c Controller) AddComment(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(CREATED, val)
+	ctx.JSON(CREATED, comment)
 }
 
 // Detail: GET /v1/posts/:post_id/comments/:comment_id
@@ -273,7 +273,7 @@ func (c Controller) GetCommentByID(ctx *gin.Context) {
 	}
 
 	var cs service.CommentService
-	val, err := cs.GetByID(commentID)
+	comment, err := cs.GetByID(commentID)
 
 	if err != nil {
 		log.Println(err)
@@ -282,7 +282,7 @@ func (c Controller) GetCommentByID(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(OK, val)
+	ctx.JSON(OK, comment)
 }
 
 // // Index action: DELETE /v1/posts/:post_id/comments/:comment_id
@@ -291,7 +291,7 @@ func (c Controller) GetCommentByID(ctx *gin.Context) {
 // 	commentID := ctx.Param("comment_id")
 //
 // 	var s post.Service
-// 	val, err := s.DeleteComment(commentID)
+// 	comment, err := s.DeleteComment(commentID)
 // 	if err != nil {
 // 		log.Println(err)
 // 		ctx.AbortWithStatus(NotFound)
@@ -299,13 +299,13 @@ func (c Controller) GetCommentByID(ctx *gin.Context) {
 // 		return
 // 	}
 //
-// 	ctx.JSON(OK, val)
+// 	ctx.JSON(OK, comment)
 // }
 
 // Index: GET /v1/tags
 func (c Controller) GetTags(ctx *gin.Context) {
 	var ts service.TagService
-	val, err := ts.GetAll()
+	tags, err := ts.GetAll()
 
 	if err != nil {
 		log.Println(err)
@@ -314,7 +314,7 @@ func (c Controller) GetTags(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(OK, val)
+	ctx.JSON(OK, tags)
 }
 
 // Create: POST /v1/tags
@@ -322,7 +322,7 @@ func (c Controller) AddTag(ctx *gin.Context) {
 	name := ctx.Query("name")
 
 	var ts service.TagService
-	val, err := ts.Add(name)
+	tag, err := ts.Add(name)
 
 	if err != nil {
 		log.Println(err)
@@ -331,7 +331,7 @@ func (c Controller) AddTag(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(CREATED, val)
+	ctx.JSON(CREATED, tag)
 }
 
 // Detail: GET /v1/tags/:tag_id
@@ -345,7 +345,7 @@ func (c Controller) GetTagByID(ctx *gin.Context) {
 	}
 
 	var ts service.TagService
-	val, err := ts.GetByID(tagID)
+	tag, err := ts.GetByID(tagID)
 
 	if err != nil {
 		log.Println(err)
@@ -354,7 +354,7 @@ func (c Controller) GetTagByID(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(OK, val)
+	ctx.JSON(OK, tag)
 }
 
 // Index: GET /v1/posts/:post_id/tags
@@ -368,7 +368,7 @@ func (c Controller) GetTagsByPostID(ctx *gin.Context) {
 	}
 
 	var ts service.TagService
-	val, err := ts.GetByPostID(postID)
+	tags, err := ts.GetByPostID(postID)
 
 	if err != nil {
 		log.Println(err)
@@ -377,7 +377,7 @@ func (c Controller) GetTagsByPostID(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(OK, val)
+	ctx.JSON(OK, tags)
 }
 
 // Create: POST /v1/posts/:post_id/tags/:tag_id
@@ -399,7 +399,7 @@ func (c Controller) AttachTag(ctx *gin.Context) {
 	}
 
 	var ts service.TagService
-	val, err := ts.Attach(postID, tagID)
+	postTag, err := ts.Attach(postID, tagID)
 
 	if err != nil {
 		log.Println(err)
@@ -408,7 +408,7 @@ func (c Controller) AttachTag(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(CREATED, val)
+	ctx.JSON(CREATED, postTag)
 }
 
 // Index: GET /v1/search
@@ -420,7 +420,7 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 
 	switch searchType {
 	case "post_title":
-		val, err := ss.GetByPostTitle(q)
+		posts, err := ss.GetByPostTitle(q)
 		if err != nil {
 			log.Println(err)
 			ctx.AbortWithStatus(NotFound)
@@ -428,10 +428,10 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 			return
 		}
 
-		ctx.JSON(OK, val)
+		ctx.JSON(OK, posts)
 	case "user_name":
 		var us service.UserService
-		val, err := us.GetByName(q)
+		users, err := us.GetByName(q)
 
 		if err != nil {
 			log.Println(err)
@@ -440,10 +440,10 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 			return
 		}
 
-		ctx.JSON(OK, val)
+		ctx.JSON(OK, users)
 	case "tag_name":
 		var ts service.TagService
-		val, err := ts.GetByName(q)
+		tags, err := ts.GetByName(q)
 
 		if err != nil {
 			log.Println(err)
@@ -452,7 +452,7 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 			return
 		}
 
-		ctx.JSON(OK, val)
+		ctx.JSON(OK, tags)
 	default:
 		err := errors.New("undefined")
 		log.Println(err)

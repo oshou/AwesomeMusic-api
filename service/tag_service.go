@@ -57,7 +57,7 @@ func (ts TagService) GetByName(tagName string) ([]Tag, error) {
 						WHERE
 							name LIKE ?`
 
-	conn := db.DBcon()
+	conn := db.Conn.DBConn()
 	if err := conn.Select(&tt, query, "%"+tagName+"%"); err != nil {
 		return tt, err
 	}

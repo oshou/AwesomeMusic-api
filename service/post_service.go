@@ -21,7 +21,7 @@ func (ps PostService) GetAll() ([]Post, error) {
 						FROM
 							post`
 
-	conn := db.DBcon()
+	conn := db.DBConn()
 	if err := conn.Select(&pp, query); err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (ps PostService) GetByID(postID int) (Post, error) {
 							post
 						WHERE id = ?`
 
-	conn := db.DBcon()
+	conn := db.DBConn()
 	if err := conn.Get(&p, query, postID); err != nil {
 		return p, err
 	}
@@ -65,7 +65,7 @@ func (ps PostService) GetByTagID(tagID int) ([]Post, error) {
 						WHERE
 							t.id = ?`
 
-	conn := db.DBcon()
+	conn := db.DBConn()
 	if err := conn.Select(&pp, query, tagID); err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func (ps PostService) GetByUserID(userID int) ([]Post, error) {
 						WHERE
 							u.id = ?`
 
-	conn := db.DBcon()
+	conn := db.DBConn()
 	if err := conn.Select(&pp, query, userID); err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func (ps PostService) Add(userID int, title, url, message string) (Post, error) 
 						VALUES
 							(?, ?, ?, ?)`
 
-	conn := db.DBcon()
+	conn := db.DBConn()
 	result, err := conn.Exec(query, userID, title, url, message)
 
 	if err != nil {
@@ -128,7 +128,7 @@ func (ps PostService) DeleteByID(postID int) error {
 						WHERE
 							id = ?`
 
-	conn := db.DBcon()
+	conn := db.DBConn()
 	if _, err := conn.Exec(query, postID); err != nil {
 		return err
 	}
