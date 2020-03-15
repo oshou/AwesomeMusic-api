@@ -7,22 +7,30 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var (
+var conn Repositry
+
+type Repositry interface {
+	DBConn() Repositry
+}
+
+type DB struct {
 	conn *sqlx.DB
-	err  error
-)
+}
 
 // DBコネクション作成
-func Init() {
-	conn, err = sqlx.Connect(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_HOST")+":"+os.Getenv("DB_PORT")+")/"+os.Getenv("DB_NAME")+"?"+os.Getenv("DB_OPTION"))
+func NewDB() DB {
+	conn, err := sqlx.Connect(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_HOST")+":"+os.Getenv("DB_PORT")+")/"+os.Getenv("DB_NAME")+"?"+os.Getenv("DB_OPTION"))
 	if err != nil {
 		log.Fatalf("error connecting database: %s", err.Error())
+	}
+	return DB{
+		conn: conn,
 	}
 }
 
 // 作成済DBコネクションの取得
-func DBCon() *sqlx.DB {
-	return conn
+func (db *DB) DBConn() Repositry {
+	return db.conn
 }
 
 // DBコネクション切断

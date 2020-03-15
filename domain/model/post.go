@@ -1,4 +1,4 @@
-package entity
+package model
 
 type Post struct {
 	ID      int    `json:"id,omitempty" db:"id"`

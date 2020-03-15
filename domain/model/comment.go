@@ -1,4 +1,4 @@
-package entity
+package model
 
 type Comment struct {
 	ID      int    `json:"id,omitempty" db:"id"`

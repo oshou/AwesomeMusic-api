@@ -6,12 +6,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/oshou/AwesomeMusic-api/service"
+	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
 const (
 	OK         = 200
-	CREATED    = 201
+	Created    = 201
+	NoContent  = 204
 	BadRequest = 400
 	NotFound   = 404
 )
@@ -20,7 +21,7 @@ type Controller struct{}
 
 // Index: GET /v1/users
 func (c Controller) GetUsers(ctx *gin.Context) {
-	var us service.UserService
+	var us repository.UserRepository
 	users, err := us.GetAll()
 
 	if err != nil {
@@ -37,7 +38,7 @@ func (c Controller) GetUsers(ctx *gin.Context) {
 func (c Controller) AddUser(ctx *gin.Context) {
 	name := ctx.Query("name")
 
-	var us service.UserService
+	var us repository.UserRepository
 	user, err := us.Add(name)
 
 	if err != nil {
@@ -47,7 +48,7 @@ func (c Controller) AddUser(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(CREATED, user)
+	ctx.JSON(Created, user)
 }
 
 // Detail: GET /v1/users/:user_id
@@ -61,7 +62,7 @@ func (c Controller) GetUserByID(ctx *gin.Context) {
 		return
 	}
 
-	var us service.UserService
+	var us repository.UserRepository
 	user, err := us.GetByID(userID)
 
 	if err != nil {
@@ -76,7 +77,7 @@ func (c Controller) GetUserByID(ctx *gin.Context) {
 
 // Index: GET /v1/posts
 func (c Controller) GetPosts(ctx *gin.Context) {
-	var ps service.PostService
+	var ps repository.PostRepository
 	posts, err := ps.GetAll()
 
 	if err != nil {
@@ -103,7 +104,7 @@ func (c Controller) AddPost(ctx *gin.Context) {
 	title := ctx.Query("title")
 	message := ctx.Query("message")
 
-	var ps service.PostService
+	var ps repository.PostRepository
 	post, err := ps.Add(userID, title, url, message)
 
 	if err != nil {
@@ -113,7 +114,7 @@ func (c Controller) AddPost(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(CREATED, post)
+	ctx.JSON(Created, post)
 }
 
 // Detail: GET /v1/posts/:post_id
@@ -126,7 +127,7 @@ func (c Controller) GetPostByID(ctx *gin.Context) {
 		return
 	}
 
-	var ps service.PostService
+	var ps repository.PostRepository
 	post, err := ps.GetByID(postID)
 
 	if err != nil {
@@ -149,7 +150,7 @@ func (c Controller) GetPostsByTagID(ctx *gin.Context) {
 		return
 	}
 
-	var ps service.PostService
+	var ps repository.PostRepository
 	posts, err := ps.GetByTagID(tagID)
 
 	if err != nil {
@@ -172,7 +173,7 @@ func (c Controller) GetPostsByUserID(ctx *gin.Context) {
 		return
 	}
 
-	var ps service.PostService
+	var ps repository.PostRepository
 	posts, err := ps.GetByUserID(userID)
 
 	if err != nil {
@@ -196,14 +197,14 @@ func (c Controller) GetPostsByUserID(ctx *gin.Context) {
 //		return
 //	}
 //
-//	var ps service.PostService
+//	var ps repository.PostRepository
 //	if err := ps.DeleteByID(postID); err != nil {
 //		log.Println(err)
 //		ctx.AbortWithStatus(BadRequest)
 //    return
 //	}
 //
-//	ctx.JSON(204, gin.H{"id #" + id: "deleted"})
+//	ctx.JSON(NoContent, gin.H{"id #" + id: "deleted"})
 //}
 
 // Index: GET /v1/posts/:post_id/comments
@@ -216,7 +217,7 @@ func (c Controller) GetComments(ctx *gin.Context) {
 		return
 	}
 
-	var cs service.CommentService
+	var cs repository.CommentRepository
 	comments, err := cs.GetAll(postID)
 
 	if err != nil {
@@ -249,7 +250,7 @@ func (c Controller) AddComment(ctx *gin.Context) {
 
 	comment := ctx.Query("comment")
 
-	var cs service.CommentService
+	var cs repository.CommentRepository
 	comment, err := cs.Add(postID, userID, comment)
 
 	if err != nil {
@@ -259,7 +260,7 @@ func (c Controller) AddComment(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(CREATED, comment)
+	ctx.JSON(Created, comment)
 }
 
 // Detail: GET /v1/posts/:post_id/comments/:comment_id
@@ -272,7 +273,7 @@ func (c Controller) GetCommentByID(ctx *gin.Context) {
 		return
 	}
 
-	var cs service.CommentService
+	var cs repository.CommentRepository
 	comment, err := cs.GetByID(commentID)
 
 	if err != nil {
@@ -290,8 +291,8 @@ func (c Controller) GetCommentByID(ctx *gin.Context) {
 // 	postID := ctx.Param("post_id")
 // 	commentID := ctx.Param("comment_id")
 //
-// 	var s post.Service
-// 	comment, err := s.DeleteComment(commentID)
+// 	var cs repository.CommentRepository
+// 	comment, err := cs.DeleteByID(commentID)
 // 	if err != nil {
 // 		log.Println(err)
 // 		ctx.AbortWithStatus(NotFound)
@@ -304,7 +305,7 @@ func (c Controller) GetCommentByID(ctx *gin.Context) {
 
 // Index: GET /v1/tags
 func (c Controller) GetTags(ctx *gin.Context) {
-	var ts service.TagService
+	var ts repository.TagRepository
 	tags, err := ts.GetAll()
 
 	if err != nil {
@@ -321,7 +322,7 @@ func (c Controller) GetTags(ctx *gin.Context) {
 func (c Controller) AddTag(ctx *gin.Context) {
 	name := ctx.Query("name")
 
-	var ts service.TagService
+	var ts repository.TagRepository
 	tag, err := ts.Add(name)
 
 	if err != nil {
@@ -331,7 +332,7 @@ func (c Controller) AddTag(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(CREATED, tag)
+	ctx.JSON(Created, tag)
 }
 
 // Detail: GET /v1/tags/:tag_id
@@ -344,7 +345,7 @@ func (c Controller) GetTagByID(ctx *gin.Context) {
 		return
 	}
 
-	var ts service.TagService
+	var ts repository.TagRepository
 	tag, err := ts.GetByID(tagID)
 
 	if err != nil {
@@ -367,7 +368,7 @@ func (c Controller) GetTagsByPostID(ctx *gin.Context) {
 		return
 	}
 
-	var ts service.TagService
+	var ts repository.TagRepository
 	tags, err := ts.GetByPostID(postID)
 
 	if err != nil {
@@ -398,7 +399,7 @@ func (c Controller) AttachTag(ctx *gin.Context) {
 		return
 	}
 
-	var ts service.TagService
+	var ts repository.TagRepository
 	postTag, err := ts.Attach(postID, tagID)
 
 	if err != nil {
@@ -408,7 +409,7 @@ func (c Controller) AttachTag(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(CREATED, postTag)
+	ctx.JSON(Created, postTag)
 }
 
 // Index: GET /v1/search
@@ -416,7 +417,7 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 	searchType := ctx.Query("type")
 	q := ctx.Query("q")
 
-	var ss service.SearchService
+	var ss repository.SearchRepository
 
 	switch searchType {
 	case "post_title":
@@ -430,8 +431,8 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 
 		ctx.JSON(OK, posts)
 	case "user_name":
-		var us service.UserService
-		users, err := us.GetByName(q)
+		var us repository.SearchRepository
+		users, err := us.GetByUserName(q)
 
 		if err != nil {
 			log.Println(err)
@@ -442,8 +443,8 @@ func (c Controller) SearchByType(ctx *gin.Context) {
 
 		ctx.JSON(OK, users)
 	case "tag_name":
-		var ts service.TagService
-		tags, err := ts.GetByName(q)
+		var ts repository.SearchRepository
+		tags, err := ts.GetByTagName(q)
 
 		if err != nil {
 			log.Println(err)

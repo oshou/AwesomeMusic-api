@@ -1,12 +1,10 @@
-package service
+package datastore
 
-import (
-	"github.com/oshou/AwesomeMusic-api/db"
-)
+import "github.com/jmoiron/sqlx"
 
-type SearchService struct{}
-
-//type Post entity.Post
+type PostStore struct {
+	DB *sqlx.DB
+}
 
 func (ss SearchService) GetByPostTitle(q string) ([]Post, error) {
 	var pp []Post

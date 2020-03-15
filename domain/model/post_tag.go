@@ -1,4 +1,4 @@
-package entity
+package model
 
 type PostTag struct {
 	PostID int `json:"post_id,omitempty" db:"post_id"`
