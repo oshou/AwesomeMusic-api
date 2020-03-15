@@ -6,20 +6,19 @@ https://github.com/oshou/Portfolio
 ## 概要
 
 - JSON 形式でレスポンス
-- 変数はレポジトリ直下の.env を読み込む
+- 環境変数はレポジトリ直下の.env を読み込む
 - Port8080 で受付
 
 ## 処理フロー
 
 ```plantuml
 @startuml
-title Request Flow
-
 activate server
-[-> server :request
+server -> server: APIサーバ起動
 server -> server: 環境変数読み込み
 server -> server: DBコネクション生成
 server -> server: CQRSポリシー設定
+[-> server :request
 server -> controller: routing
 controller -> controller: requestパラメータ解釈
 controller -> service: serviceを実行
@@ -67,7 +66,3 @@ server ->[: response
   - make build_local
 - バイナリ実行
   - make run
-
-```
-
-```
