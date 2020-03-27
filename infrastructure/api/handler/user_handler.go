@@ -1,12 +1,12 @@
-package controller
+package handler
 
 import (
 	"errors"
 	"log"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
-	"github.com/oshou/AwesomeMusic-api/domain/repository"
+	"github.com/oshou/AwesomeMusic-api/infrastructure/datastore"
+	"github.com/oshou/AwesomeMusic-api/usecase/repository"
 )
 
 const (
@@ -21,7 +21,7 @@ type Controller struct{}
 
 // Index: GET /v1/users
 func (c Controller) GetUsers(ctx *gin.Context) {
-	var us repository.UserRepository
+	var us datastore.UserStore
 	users, err := us.GetAll()
 
 	if err != nil {
@@ -38,7 +38,7 @@ func (c Controller) GetUsers(ctx *gin.Context) {
 func (c Controller) AddUser(ctx *gin.Context) {
 	name := ctx.Query("name")
 
-	var us repository.UserRepository
+	var us datastore.UserStore
 	user, err := us.Add(name)
 
 	if err != nil {

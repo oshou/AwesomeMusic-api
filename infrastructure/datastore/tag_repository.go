@@ -3,28 +3,38 @@ package datastore
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/model"
+	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
-type TagStore struct {
+type tagRepository struct {
 	DB *sqlx.DB
 }
 
-func (ts *TagStore) GetAll() ([]model.Tag, error) {
+var _ repository.TagRepository = tagRepository{}
+
+func NewTagRepository(db *sqlx.DB) repository.TagRepository {
+	return &tagRepository{
+		DB: db,
+	}
+}
+
+func (tr *tagRepository) GetAll() ([]*model.Tag, error) {
 	var tt []model.Tag
+
 	query := `SELECT
 							id,
 							name
 						FROM
 							tag`
 
-	if err := ts.DB.Select(&tt, query); err != nil {
+	if err := tr.DB.Select(&tt, query); err != nil {
 		return nil, err
 	}
 
 	return tt, nil
 }
 
-func (ts *TagStore) GetByID(tagID int) (model.Tag, error) {
+func (tr *tagRepository) GetByID(tagID int) (*model.Tag, error) {
 	var t model.Tag
 
 	query := `SELECT
@@ -35,14 +45,14 @@ func (ts *TagStore) GetByID(tagID int) (model.Tag, error) {
 						WHERE
 							id = ?`
 
-	if err := ts.DB.Get(&t, query, tagID); err != nil {
+	if err := tr.DB.Get(&t, query, tagID); err != nil {
 		return t, err
 	}
 
 	return t, nil
 }
 
-func (ts *TagStore) GetByName(tagName string) ([]model.Tag, error) {
+func (tr *tagRepository) GetByName(tagName string) ([]*model.Tag, error) {
 	var tt []model.Tag
 
 	query := `SELECT
@@ -53,14 +63,14 @@ func (ts *TagStore) GetByName(tagName string) ([]model.Tag, error) {
 						WHERE
 							name LIKE ?`
 
-	if err := ts.DB.Select(&tt, query, "%"+tagName+"%"); err != nil {
+	if err != tr.DB.Select(&tt, query, "%"+tagName+"%"); err != nil {
 		return tt, err
 	}
 
 	return tt, nil
 }
 
-func (ts *TagStore) GetByPostID(postID int) ([]model.Tag, error) {
+func (ts *tagRepository) GetByPostID(postID int) ([]*model.Tag, error) {
 	var tt []model.Tag
 
 	query := `SELECT
@@ -73,14 +83,14 @@ func (ts *TagStore) GetByPostID(postID int) ([]model.Tag, error) {
 						WHERE
 							pt.post_id = ?`
 
-	if err := ts.DB.Select(&tt, query, postID); err != nil {
+	if err := tr.DB.Select(&tt, query, postID); err != nil {
 		return tt, err
 	}
 
 	return tt, nil
 }
 
-func (ts *TagStore) Add(tagName string) (model.Tag, error) {
+func (tr *tagRepository) Add(tagName string) (*model.Tag, error) {
 	var t = model.Tag{
 		Name: tagName,
 	}
@@ -90,7 +100,7 @@ func (ts *TagStore) Add(tagName string) (model.Tag, error) {
 						VALUES
 							(?)`
 
-	result, err := ts.DB.Exec(query, tagName)
+	result, err := tr.DB.Exec(query, tagName)
 
 	if err != nil {
 		return t, err
@@ -102,7 +112,7 @@ func (ts *TagStore) Add(tagName string) (model.Tag, error) {
 	return t, nil
 }
 
-func (ts *TagStore) Attach(postID, tagID int) (model.PostTag, error) {
+func (tr *tagRepository) Attach(postID, tagID int) (*model.PostTag, error) {
 	var pt = model.PostTag{
 		PostID: postID,
 		TagID:  tagID,
@@ -113,7 +123,7 @@ func (ts *TagStore) Attach(postID, tagID int) (model.PostTag, error) {
 						VALUES
 							(?, ?)`
 
-	_, err := ts.DB.Exec(query, postID, tagID)
+	_, err := tr.DB.Exec(query, postID, tagID)
 
 	if err != nil {
 		return pt, err

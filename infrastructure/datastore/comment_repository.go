@@ -1,15 +1,24 @@
-package datastore
+package infrastructure
 
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/model"
+	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
-type CommentStore struct {
+type commentRepository struct {
 	DB *sqlx.DB
 }
 
-func (cs *CommentStore) GetAll(postID int) ([]model.Comment, error) {
+var _ repository.CommentRepository = commentRepository{}
+
+func NewCommentRepository(db *sqlx.DB) repository.CommentRepository {
+	return &commentRepository{
+		DB: db,
+	}
+}
+
+func (cr *commentRepository) GetAll(postID int) ([]*model.Comment, error) {
 	var cc []model.Comment
 
 	query := `SELECT
@@ -22,14 +31,14 @@ func (cs *CommentStore) GetAll(postID int) ([]model.Comment, error) {
 						WHERE
 							post_id = ?`
 
-	if err := cs.DB.Select(&cc, query, postID); err != nil {
+	if err := cr.DB.Select(&cc, query, postID); err != nil {
 		return nil, err
 	}
 
 	return cc, nil
 }
 
-func (cs *CommentStore) GetByID(commentID int) (model.Comment, error) {
+func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
 	var c model.Comment
 
 	query := `SELECT
@@ -42,14 +51,14 @@ func (cs *CommentStore) GetByID(commentID int) (model.Comment, error) {
 						WHERE
 							id = ?`
 
-	if err := cs.DB.Get(&c, query, commentID); err != nil {
+	if err := cr.DB.Get(&c, query, commentID); err != nil {
 		return c, err
 	}
 
 	return c, nil
 }
 
-func (cs *CommentStore) Add(postID, userID int, comment string) (model.Comment, error) {
+func (cr *commentRepository) Add(postID, userID int, comment string) (model.Comment, error) {
 	var c = model.Comment{
 		UserID:  userID,
 		PostID:  postID,
@@ -61,7 +70,7 @@ func (cs *CommentStore) Add(postID, userID int, comment string) (model.Comment, 
 						VALUES
 							(?, ?, ?)`
 
-	result, err := cs.DB.Exec(query, postID, userID, comment)
+	result, err := cr.DB.Exec(query, postID, userID, comment)
 
 	if err != nil {
 		return c, err

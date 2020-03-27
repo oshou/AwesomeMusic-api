@@ -13,6 +13,39 @@ https://github.com/oshou/Portfolio
 
 ```plantuml
 @startuml
+box "interface" #LightBlue
+  participant server
+  participant controller
+end box
+box "usecase" #Yellow
+  participant service
+end box
+box "domain" #Pink
+  participant repository
+  participant domain
+end box
+
+activate server
+server -> server: APIサーバ起動
+server -> server: 環境変数読み込み
+server -> server: DBコネクション生成
+server -> server: CQRSポリシー設定
+[-> server :request
+server -> controller: routing
+controller -> controller: request解釈
+controller -> service: service呼出
+service -> repository: Modelメソッド呼出
+repository -> domain:
+domain -> repository:
+repository -> service: 呼出結果返却
+service -> controller: 呼出結果返却
+controller -> controller: response生成
+controller -> server: response
+@enduml
+```
+
+```plantuml
+@startuml
 activate server
 server -> server: APIサーバ起動
 server -> server: 環境変数読み込み
