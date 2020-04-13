@@ -1,4 +1,4 @@
-package datastore
+package infrastructure
 
 import (
 	"github.com/jmoiron/sqlx"
@@ -19,7 +19,7 @@ func NewTagRepository(db *sqlx.DB) repository.TagRepository {
 }
 
 func (tr *tagRepository) GetAll() ([]*model.Tag, error) {
-	var tt []model.Tag
+	var tt []*model.Tag
 
 	query := `SELECT
 							id,
@@ -35,7 +35,7 @@ func (tr *tagRepository) GetAll() ([]*model.Tag, error) {
 }
 
 func (tr *tagRepository) GetByID(tagID int) (*model.Tag, error) {
-	var t model.Tag
+	var t *model.Tag
 
 	query := `SELECT
 							id,
@@ -53,7 +53,7 @@ func (tr *tagRepository) GetByID(tagID int) (*model.Tag, error) {
 }
 
 func (tr *tagRepository) GetByName(tagName string) ([]*model.Tag, error) {
-	var tt []model.Tag
+	var tt []*model.Tag
 
 	query := `SELECT
 							id,
@@ -63,15 +63,15 @@ func (tr *tagRepository) GetByName(tagName string) ([]*model.Tag, error) {
 						WHERE
 							name LIKE ?`
 
-	if err != tr.DB.Select(&tt, query, "%"+tagName+"%"); err != nil {
-		return tt, err
+	if err := tr.DB.Select(&tt, query, "%"+tagName+"%"); err != nil {
+		return nil, err
 	}
 
 	return tt, nil
 }
 
-func (ts *tagRepository) GetByPostID(postID int) ([]*model.Tag, error) {
-	var tt []model.Tag
+func (tr *tagRepository) GetByPostID(postID int) ([]*model.Tag, error) {
+	var tt []*model.Tag
 
 	query := `SELECT
 							t.id,
@@ -91,21 +91,19 @@ func (ts *tagRepository) GetByPostID(postID int) ([]*model.Tag, error) {
 }
 
 func (tr *tagRepository) Add(tagName string) (*model.Tag, error) {
-	var t = model.Tag{
-		Name: tagName,
-	}
-
 	query := `INSERT INTO
 							tag(name)
 						VALUES
 							(?)`
 
 	result, err := tr.DB.Exec(query, tagName)
-
 	if err != nil {
 		return t, err
 	}
 
+	var t = &model.Tag{
+		Name: tagName,
+	}
 	i64, _ := result.LastInsertId()
 	t.ID = int(i64)
 
@@ -113,11 +111,6 @@ func (tr *tagRepository) Add(tagName string) (*model.Tag, error) {
 }
 
 func (tr *tagRepository) Attach(postID, tagID int) (*model.PostTag, error) {
-	var pt = model.PostTag{
-		PostID: postID,
-		TagID:  tagID,
-	}
-
 	query := `INSERT INTO
 							post_tag(post_id, tag_id)
 						VALUES
@@ -126,7 +119,12 @@ func (tr *tagRepository) Attach(postID, tagID int) (*model.PostTag, error) {
 	_, err := tr.DB.Exec(query, postID, tagID)
 
 	if err != nil {
-		return pt, err
+		return nil, err
+	}
+
+	var pt = &model.PostTag{
+		PostID: postID,
+		TagID:  tagID,
 	}
 
 	return pt, nil

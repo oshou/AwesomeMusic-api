@@ -14,12 +14,12 @@ var _ repository.UserRepository = userRepository{}
 
 func NewUserRepository(db *sqlx.DB) repository.UserRepository {
 	return &userRepository{
-		Conn: db,
+		DB: db,
 	}
 }
 
-func (ur *userRepository) GetAll() ([]model.User, error) {
-	var uu []model.User
+func (ur *userRepository) GetAll() ([]*model.User, error) {
+	var uu []*model.User
 
 	query := `SELECT
 							id,
@@ -34,8 +34,8 @@ func (ur *userRepository) GetAll() ([]model.User, error) {
 	return uu, nil
 }
 
-func (ur *userRepository) GetByID(userID int) (model.User, error) {
-	var u model.User
+func (ur *userRepository) GetByID(userID int) (*model.User, error) {
+	var u *model.User
 
 	query := `SELECT
 							id,
@@ -52,8 +52,8 @@ func (ur *userRepository) GetByID(userID int) (model.User, error) {
 	return u, nil
 }
 
-func (ur *userRepository) GetByName(name string) ([]model.User, error) {
-	var uu []model.User
+func (ur *userRepository) GetByName(name string) ([]*model.User, error) {
+	var uu []*model.User
 
 	query := `SELECT
 							id,
@@ -70,8 +70,8 @@ func (ur *userRepository) GetByName(name string) ([]model.User, error) {
 	return uu, nil
 }
 
-func (ur *userRepository) Add(name string) (model.User, error) {
-	var u = model.User{
+func (ur *userRepository) Add(name string) (*model.User, error) {
+	var u = &model.User{
 		Name: name,
 	}
 

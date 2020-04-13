@@ -10,7 +10,7 @@ type commentRepository struct {
 	DB *sqlx.DB
 }
 
-var _ repository.CommentRepository = commentRepository{}
+var _ repository.CommentRepository = &commentRepository{}
 
 func NewCommentRepository(db *sqlx.DB) repository.CommentRepository {
 	return &commentRepository{
@@ -19,7 +19,7 @@ func NewCommentRepository(db *sqlx.DB) repository.CommentRepository {
 }
 
 func (cr *commentRepository) GetAll(postID int) ([]*model.Comment, error) {
-	var cc []model.Comment
+	var cc []*model.Comment
 
 	query := `SELECT
 							id,
@@ -39,7 +39,7 @@ func (cr *commentRepository) GetAll(postID int) ([]*model.Comment, error) {
 }
 
 func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
-	var c model.Comment
+	var c *model.Comment
 
 	query := `SELECT
 							id,
@@ -58,24 +58,22 @@ func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
 	return c, nil
 }
 
-func (cr *commentRepository) Add(postID, userID int, comment string) (model.Comment, error) {
-	var c = model.Comment{
-		UserID:  userID,
-		PostID:  postID,
-		Comment: comment,
-	}
-
+func (cr *commentRepository) Add(postID, userID int, comment string) (*model.Comment, error) {
 	query := `INSERT INTO
 							comment(post_id, user_id, comment)
 						VALUES
 							(?, ?, ?)`
 
 	result, err := cr.DB.Exec(query, postID, userID, comment)
-
 	if err != nil {
-		return c, err
+		return nil, err
 	}
 
+	var c = &model.Comment{
+		UserID:  userID,
+		PostID:  postID,
+		Comment: comment,
+	}
 	i64, _ := result.LastInsertId()
 	c.ID = int(i64)
 

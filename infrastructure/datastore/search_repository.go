@@ -1,16 +1,25 @@
-package datastore
+package infrastructure
 
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/model"
+	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
-type SearchStore struct {
+type searchRepository struct {
 	DB *sqlx.DB
 }
 
-func (ss SearchStore) GetByPostTitle(q string) ([]model.Post, error) {
-	var pp []model.Post
+var _ repository.SearchRepository = searchRepository{}
+
+func NewSearchRepository(db *sqlx.DB) repository.SearchRepository {
+	return &searchRepository{
+		DB: db,
+	}
+}
+
+func (sr *searchRepository) GetByPostTitle(q string) ([]*model.Post, error) {
+	var pp []*model.Post
 
 	query := `SELECT
 							id,
@@ -23,15 +32,15 @@ func (ss SearchStore) GetByPostTitle(q string) ([]model.Post, error) {
 						WHERE
 							title LIKE ?`
 
-	if err := ss.DB.Select(&pp, query, "%"+q+"%"); err != nil {
+	if err := sr.DB.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err
 	}
 
 	return pp, nil
 }
 
-func (ss SearchStore) GetByUserName(q string) ([]model.Post, error) {
-	var pp []model.Post
+func (sr *searchRepository) GetByUserName(q string) ([]*model.Post, error) {
+	var pp []*model.Post
 
 	query := `SELECT
 							id,
@@ -44,15 +53,15 @@ func (ss SearchStore) GetByUserName(q string) ([]model.Post, error) {
 						WHERE
 							name LIKE ?`
 
-	if err := ss.DB.Select(&pp, query, "%"+q+"%"); err != nil {
+	if err := sr.DB.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err
 	}
 
 	return pp, nil
 }
 
-func (ss SearchStore) GetByTagName(q string) ([]model.Post, error) {
-	var pp []model.Post
+func (sr *searchRepository) GetByTagName(q string) ([]*model.Post, error) {
+	var pp []*model.Post
 
 	query := `SELECT
 							p.id,
@@ -69,7 +78,7 @@ func (ss SearchStore) GetByTagName(q string) ([]model.Post, error) {
 						WHERE
 							t.name LIKE ?`
 
-	if err := ss.DB.Select(&pp, query, "%"+q+"%"); err != nil {
+	if err := sr.DB.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err
 	}
 
