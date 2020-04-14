@@ -1,4 +1,4 @@
-package infrastructure
+package datastore
 
 import (
 	"github.com/jmoiron/sqlx"
@@ -10,9 +10,9 @@ type tagRepository struct {
 	DB *sqlx.DB
 }
 
-var _ repository.TagRepository = tagRepository{}
+var _ repository.ITagRepository = (*tagRepository)(nil)
 
-func NewTagRepository(db *sqlx.DB) repository.TagRepository {
+func NewTagRepository(db *sqlx.DB) repository.ITagRepository {
 	return &tagRepository{
 		DB: db,
 	}
@@ -35,7 +35,7 @@ func (tr *tagRepository) GetAll() ([]*model.Tag, error) {
 }
 
 func (tr *tagRepository) GetByID(tagID int) (*model.Tag, error) {
-	var t *model.Tag
+	t := &model.Tag{}
 
 	query := `SELECT
 							id,
@@ -45,7 +45,7 @@ func (tr *tagRepository) GetByID(tagID int) (*model.Tag, error) {
 						WHERE
 							id = ?`
 
-	if err := tr.DB.Get(&t, query, tagID); err != nil {
+	if err := tr.DB.Get(t, query, tagID); err != nil {
 		return t, err
 	}
 
@@ -91,6 +91,9 @@ func (tr *tagRepository) GetByPostID(postID int) ([]*model.Tag, error) {
 }
 
 func (tr *tagRepository) Add(tagName string) (*model.Tag, error) {
+	t := &model.Tag{
+		Name: tagName,
+	}
 	query := `INSERT INTO
 							tag(name)
 						VALUES
@@ -101,9 +104,6 @@ func (tr *tagRepository) Add(tagName string) (*model.Tag, error) {
 		return t, err
 	}
 
-	var t = &model.Tag{
-		Name: tagName,
-	}
 	i64, _ := result.LastInsertId()
 	t.ID = int(i64)
 

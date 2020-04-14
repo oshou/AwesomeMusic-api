@@ -1,4 +1,4 @@
-package infrastructure
+package datastore
 
 import (
 	"github.com/jmoiron/sqlx"
@@ -10,9 +10,9 @@ type postRepository struct {
 	DB *sqlx.DB
 }
 
-var _ repository.PostRepository = postRepository{}
+var _ repository.IPostRepository = (*postRepository)(nil)
 
-func NewPostRepository(db *sqlx.DB) repository.PostRepository {
+func NewPostRepository(db *sqlx.DB) repository.IPostRepository {
 	return &postRepository{
 		DB: db,
 	}
@@ -38,7 +38,7 @@ func (pr *postRepository) GetAll() ([]*model.Post, error) {
 }
 
 func (pr *postRepository) GetByID(postID int) (*model.Post, error) {
-	var p *model.Post
+	p := &model.Post{}
 
 	query := `SELECT
 							id,
@@ -51,7 +51,7 @@ func (pr *postRepository) GetByID(postID int) (*model.Post, error) {
 						WHERE
 							id = ?`
 
-	if err := pr.DB.Select(&p, query, postID); err != nil {
+	if err := pr.DB.Get(p, query, postID); err != nil {
 		return nil, err
 	}
 
@@ -112,7 +112,7 @@ func (pr *postRepository) Add(userID int, title, url, message string) (*model.Po
 						VALUES
 							(?, ?, ?, ?)`
 
-	result, err := pr.DB.Exec(query, query, userID)
+	result, err := pr.DB.Exec(query, userID, title, url, message)
 	if err != nil {
 		return nil, err
 	}

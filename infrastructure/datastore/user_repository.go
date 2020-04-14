@@ -1,18 +1,18 @@
-package infrastructure
+package datastore
 
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/model"
-	"github.com/oshou/AwesomeMusic-api/usecase/repository"
+	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
 type userRepository struct {
 	DB *sqlx.DB
 }
 
-var _ repository.UserRepository = userRepository{}
+var _ repository.IUserRepository = (*userRepository)(nil)
 
-func NewUserRepository(db *sqlx.DB) repository.UserRepository {
+func NewUserRepository(db *sqlx.DB) repository.IUserRepository {
 	return &userRepository{
 		DB: db,
 	}
@@ -35,7 +35,7 @@ func (ur *userRepository) GetAll() ([]*model.User, error) {
 }
 
 func (ur *userRepository) GetByID(userID int) (*model.User, error) {
-	var u *model.User
+	u := &model.User{}
 
 	query := `SELECT
 							id,
@@ -45,7 +45,7 @@ func (ur *userRepository) GetByID(userID int) (*model.User, error) {
 						WHERE
 							id = ?`
 
-	if err := ur.DB.Get(&u, query, userID); err != nil {
+	if err := ur.DB.Get(u, query, userID); err != nil {
 		return u, err
 	}
 
@@ -71,10 +71,9 @@ func (ur *userRepository) GetByName(name string) ([]*model.User, error) {
 }
 
 func (ur *userRepository) Add(name string) (*model.User, error) {
-	var u = &model.User{
+	u := &model.User{
 		Name: name,
 	}
-
 	query := `INSERT INTO
 							user(name)
 						VALUES

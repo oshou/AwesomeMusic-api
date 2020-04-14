@@ -5,32 +5,32 @@ import (
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
-type UserUsecase interface {
+type IUserUsecase interface {
 	GetUsers() ([]*model.User, error)
-	GetUserByID() (*model.User, error)
-	AddUser() (*model.User, error)
+	GetUserByID(userID int) (*model.User, error)
+	AddUser(name string) (*model.User, error)
 }
 
 type userUsecase struct {
-	repo repository.UserRepository
+	repo repository.IUserRepository
 }
 
-var _ UserUsecase = &userUsecase{}
+var _ IUserUsecase = (*userUsecase)(nil)
 
-func NewUserUsecase(repo repository.UserRepository) UserUsecase {
+func NewUserUsecase(repo repository.IUserRepository) IUserUsecase {
 	return &userUsecase{
 		repo: repo,
 	}
 }
 
-func (uu *userUsecase) GetUsers(uu []*model.User) ([]*model.User, error) {
+func (uu *userUsecase) GetUsers() ([]*model.User, error) {
 	return uu.repo.GetAll()
 }
 
-func (uu *userUsecase) GetUserByID(userID int, u *model.User) (*model.User, error) {
-	return uu.repo.GetByID()
+func (uu *userUsecase) GetUserByID(userID int) (*model.User, error) {
+	return uu.repo.GetByID(userID)
 }
 
-func (uu *userUsecase) AddUser(name string, u *model.User) (*model.User, error) {
+func (uu *userUsecase) AddUser(name string) (*model.User, error) {
 	return uu.repo.Add(name)
 }

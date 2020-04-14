@@ -15,6 +15,9 @@ DEPLOY_REPO="oshou/awesome-music-api"
 BINARY_NAME=main
 
 ## 各環境別ビルドコマンド
+lint:
+	golangci-lint run --enable-all
+
 build_local:
 	$(GOCMD) fmt ./...
 	$(GOCMD) vet ./...

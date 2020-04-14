@@ -4,10 +4,13 @@ import (
 	"log"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
-	"github.com/oshou/AwesomeMusic-api/repository"
-	"github.com/oshou/AwesomeMusic-api/server"
+	"github.com/oshou/AwesomeMusic-api/db"
+	"github.com/oshou/AwesomeMusic-api/interactor"
+	"github.com/oshou/AwesomeMusic-api/presenter/middleware"
+	"github.com/oshou/AwesomeMusic-api/presenter/router"
 )
 
 func main() {
@@ -16,14 +19,13 @@ func main() {
 		log.Fatalf("error loading .env file: %s", err.Error())
 	}
 
-	conn, err := sqlx.Connect(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_HOST")+":"+os.Getenv("DB_PORT")+")/"+os.Getenv("DB_NAME")+"?"+os.Getenv("DB_OPTION"))
-	if err != nil {
-		log.Fatalf("error connecting database: %s", err.Error())
+	conn := db.NewDBConn()
+	i := interactor.NewInteractor(conn)
+	e := gin.Default()
+	h := i.NewAppHandler()
+	router.NewRouter(e, h)
+	middleware.NewMiddleware(e)
+	if err := e.Run(":" + os.Getenv("API_SERVER_PORT")); err != nil {
+		log.Fatalln(err)
 	}
-	userRepository := repository.NewMysqlUserRepository(conn)
-	userUsecase := usecase.NewUserUsecase(userRepository)
-	userPresentor := presentor.userPresentor(userUsecase)
-
-	// APIサーバ起動
-	server.Init()
 }

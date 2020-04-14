@@ -1,4 +1,4 @@
-package infrastructure
+package datastore
 
 import (
 	"github.com/jmoiron/sqlx"
@@ -10,15 +10,15 @@ type searchRepository struct {
 	DB *sqlx.DB
 }
 
-var _ repository.SearchRepository = searchRepository{}
+var _ repository.ISearchRepository = (*searchRepository)(nil)
 
-func NewSearchRepository(db *sqlx.DB) repository.SearchRepository {
+func NewSearchRepository(db *sqlx.DB) repository.ISearchRepository {
 	return &searchRepository{
 		DB: db,
 	}
 }
 
-func (sr *searchRepository) GetByPostTitle(q string) ([]*model.Post, error) {
+func (sr *searchRepository) GetByTitle(q string) ([]*model.Post, error) {
 	var pp []*model.Post
 
 	query := `SELECT
@@ -43,15 +43,17 @@ func (sr *searchRepository) GetByUserName(q string) ([]*model.Post, error) {
 	var pp []*model.Post
 
 	query := `SELECT
-							id,
-							user_id,
-							title,
-							url,
-							message
+							p.id,
+							p.user_id,
+							p.title,
+							p.url,
+							p.message
 						FROM
-							user
+							post AS p
+						INNER JOIN user AS u
+						  ON u.id = p.user_id
 						WHERE
-							name LIKE ?`
+							u.name LIKE ?`
 
 	if err := sr.DB.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err

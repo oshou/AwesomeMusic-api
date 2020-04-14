@@ -1,33 +1,36 @@
 @startuml
 package Domain(業務ロジック) {
-  class Model
-  interface IRepository
+  class Model << DomainModel >>
+  interface IRepository << DataAccess >>
 }
 package Usecase(アプリケーションロジック) {
   class Usecase
   interface IUsecase
-  interface IPorts
 }
 
 package adapter {
   package Infrastructure {
     class Datastore
-    class Adapters
   }
   package Presentor {
     class Router
+    class Middleware
     interface IHandler
     class Handler
   }
 }
 
+package cmd {
+  class EntryPoint
+}
+
 Model <-right- IRepository
 IUsecase -up-> IRepository
-IUsecase -right-> IPorts
 Usecase -right-> IUsecase: DI
 IHandler -up-> IUsecase
-Handler -> IHandler: DI
+Handler -right-> IHandler: DI
 Router -up-> IHandler
 Datastore -up-> IRepository: DI
-Adapters -up-> IPorts: DI
+EntryPoint -up-> Router
+EntryPoint -up-> Middleware
 @enduml

@@ -1,4 +1,4 @@
-package infrastructure
+package datastore
 
 import (
 	"github.com/jmoiron/sqlx"
@@ -10,9 +10,9 @@ type commentRepository struct {
 	DB *sqlx.DB
 }
 
-var _ repository.CommentRepository = &commentRepository{}
+var _ repository.ICommentRepository = (*commentRepository)(nil)
 
-func NewCommentRepository(db *sqlx.DB) repository.CommentRepository {
+func NewCommentRepository(db *sqlx.DB) repository.ICommentRepository {
 	return &commentRepository{
 		DB: db,
 	}
@@ -39,7 +39,7 @@ func (cr *commentRepository) GetAll(postID int) ([]*model.Comment, error) {
 }
 
 func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
-	var c *model.Comment
+	c := &model.Comment{}
 
 	query := `SELECT
 							id,
@@ -51,7 +51,7 @@ func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
 						WHERE
 							id = ?`
 
-	if err := cr.DB.Get(&c, query, commentID); err != nil {
+	if err := cr.DB.Get(c, query, commentID); err != nil {
 		return c, err
 	}
 
@@ -69,7 +69,7 @@ func (cr *commentRepository) Add(postID, userID int, comment string) (*model.Com
 		return nil, err
 	}
 
-	var c = &model.Comment{
+	c := &model.Comment{
 		UserID:  userID,
 		PostID:  postID,
 		Comment: comment,
