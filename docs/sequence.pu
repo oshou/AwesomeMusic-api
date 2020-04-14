@@ -1,0 +1,57 @@
+```plantuml
+@startuml
+participant main
+box "UI" #LightBlue
+  participant handler
+end box
+box "Application" #Yellow
+  participant usecase
+end box
+box "Domain Service" #Orange
+  participant repository
+end box
+box "Domain Model" #Pink
+  participant domain
+
+main -> main: Load Env
+main -> main: Create DB Connection
+main -> main: DI
+activate main
+main -> main: Create Server
+main -> main: Set CORS Policy
+main -> main: Create Router
+[-> main : Request
+main -> handler: Routing
+handler -> handler: Parse Request
+handler -> usecase: Call usecase
+usecase -> repository: Call Domain-Logic
+repository -> domain: CRUD
+repository <-- domain:
+usecase <-- repository:
+handler <-- usecase:
+handler -> handler: Create Response
+[<- handler: Response
+@enduml
+```
+
+```plantuml
+@startuml
+activate main
+main -> main: APIサーバ起動
+main -> main: 環境変数読み込み
+main -> main: DBコネクション生成
+main -> main: CQRSポリシー設定
+[-> main :request
+main -> handler: routing
+handler -> handler: requestパラメータ解釈
+handler -> service: serviceを実行
+service -> service: ビジネスロジック前処理
+service -> DB: modelメソッドを実行
+DB -> service: 処理結果返却
+service -> service: ビジネスロジック後処理
+service -> handler: 処理結果返却
+handler-> handler: responseデータ生成
+handler-> main: response
+main ->[: response
+@enduml
+```

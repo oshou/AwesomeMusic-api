@@ -21,10 +21,10 @@ func main() {
 
 	conn := db.NewDBConn()
 	i := interactor.NewInteractor(conn)
-	e := gin.Default()
 	h := i.NewAppHandler()
-	router.NewRouter(e, h)
+	e := gin.Default()
 	middleware.NewMiddleware(e)
+	router.NewRouter(e, h)
 	if err := e.Run(":" + os.Getenv("API_SERVER_PORT")); err != nil {
 		log.Fatalln(err)
 	}

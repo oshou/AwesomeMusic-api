@@ -1,0 +1,14 @@
+@startuml
+left to right direction
+:APIClient:
+rectangle User {
+  APIClient --> (Get Users)
+  APIClient --> (Get User by ID)
+  APIClient --> (Add User)
+}
+rectangle Post {
+  APIClient --> (Get PostList)
+  APIClient --> (Get PostLista)
+  APIClient --> (Add Post)
+}
+@enduml

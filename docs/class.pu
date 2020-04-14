@@ -1,0 +1,37 @@
+@startuml
+package DomainModel {
+  class Model
+}
+
+package DomainService {
+  interface IRepository
+}
+
+package Usecase {
+  class Usecase
+  interface IUsecase
+}
+
+package Infrastructure {
+  class Datastore
+  class Mail
+  class Notification
+}
+package UI {
+  class Router
+  class Middleware
+  interface IHandler
+  class Handler
+}
+class main
+
+Model <-up- IRepository
+IUsecase -up-> IRepository
+Usecase -right-> IUsecase: DI
+IHandler -up-> IUsecase
+Handler -right-> IHandler: DI
+Router -up-> IHandler
+Datastore -up-> IRepository: DI
+main -up-> Router
+main -up-> Middleware
+@enduml
