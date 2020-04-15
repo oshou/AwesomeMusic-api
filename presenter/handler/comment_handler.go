@@ -2,18 +2,11 @@ package handler
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/oshou/AwesomeMusic-api/usecase"
-)
-
-const (
-	OK         = 200
-	Created    = 201
-	NoContent  = 204
-	BadRequest = 400
-	NotFound   = 404
 )
 
 type ICommentHandler interface {
@@ -39,7 +32,7 @@ func (ch *commentHandler) GetComments(ctx *gin.Context) {
 	postID, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
 		log.Println(err)
-		ctx.AbortWithStatus(BadRequest)
+		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
 	}
@@ -47,19 +40,19 @@ func (ch *commentHandler) GetComments(ctx *gin.Context) {
 	comments, err := ch.usecase.GetComments(postID)
 	if err != nil {
 		log.Println(err)
-		ctx.AbortWithStatus(NotFound)
+		ctx.AbortWithStatus(http.StatusNotFound)
 
 		return
 	}
 
-	ctx.JSON(OK, comments)
+	ctx.JSON(http.StatusOK, comments)
 }
 
 func (ch *commentHandler) AddComment(ctx *gin.Context) {
 	postID, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
 		log.Println(err)
-		ctx.AbortWithStatus(BadRequest)
+		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
 	}
@@ -67,7 +60,7 @@ func (ch *commentHandler) AddComment(ctx *gin.Context) {
 	userID, err := strconv.Atoi(ctx.Query("user_id"))
 	if err != nil {
 		log.Println(err)
-		ctx.AbortWithStatus(BadRequest)
+		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
 	}
@@ -77,19 +70,19 @@ func (ch *commentHandler) AddComment(ctx *gin.Context) {
 
 	if err != nil {
 		log.Println(err)
-		ctx.AbortWithStatus(BadRequest)
+		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
 	}
 
-	ctx.JSON(Created, comment)
+	ctx.JSON(http.StatusCreated, comment)
 }
 
 func (ch *commentHandler) GetCommentByID(ctx *gin.Context) {
 	commentID, err := strconv.Atoi(ctx.Param("comment_id"))
 	if err != nil {
 		log.Println(err)
-		ctx.AbortWithStatus(BadRequest)
+		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
 	}
@@ -97,10 +90,10 @@ func (ch *commentHandler) GetCommentByID(ctx *gin.Context) {
 	comment, err := ch.usecase.GetCommentByID(commentID)
 	if err != nil {
 		log.Println(err)
-		ctx.AbortWithStatus(NotFound)
+		ctx.AbortWithStatus(http.StatusNotFound)
 
 		return
 	}
 
-	ctx.JSON(OK, comment)
+	ctx.JSON(http.StatusOK, comment)
 }

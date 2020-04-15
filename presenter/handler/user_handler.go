@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -30,12 +31,12 @@ func (uh *userHandler) GetUsers(ctx *gin.Context) {
 	users, err := uh.usecase.GetUsers()
 	if err != nil {
 		log.Println(err)
-		ctx.AbortWithStatus(NotFound)
+		ctx.AbortWithStatus(http.StatusNotFound)
 
 		return
 	}
 
-	ctx.JSON(OK, users)
+	ctx.JSON(http.StatusOK, users)
 }
 
 // Create: POST /v1/users
@@ -45,12 +46,12 @@ func (uh *userHandler) AddUser(ctx *gin.Context) {
 	user, err := uh.usecase.AddUser(name)
 	if err != nil {
 		log.Println(err)
-		ctx.AbortWithStatus(BadRequest)
+		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
 	}
 
-	ctx.JSON(Created, user)
+	ctx.JSON(http.StatusCreated, user)
 }
 
 // Detail: GET /v1/users/:user_id
@@ -58,7 +59,7 @@ func (uh *userHandler) GetUserByID(ctx *gin.Context) {
 	userID, err := strconv.Atoi(ctx.Param("user_id"))
 	if err != nil {
 		log.Println(err)
-		ctx.AbortWithStatus(BadRequest)
+		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
 	}
@@ -66,10 +67,10 @@ func (uh *userHandler) GetUserByID(ctx *gin.Context) {
 	user, err := uh.usecase.GetUserByID(userID)
 	if err != nil {
 		log.Println(err)
-		ctx.AbortWithStatus(NotFound)
+		ctx.AbortWithStatus(http.StatusNotFound)
 
 		return
 	}
 
-	ctx.JSON(OK, user)
+	ctx.JSON(http.StatusOK, user)
 }

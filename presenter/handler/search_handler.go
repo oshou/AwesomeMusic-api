@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/oshou/AwesomeMusic-api/usecase"
@@ -32,31 +33,31 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 		posts, err := sh.usecase.GetPostsByTitle(q)
 		if err != nil {
 			log.Println(err)
-			ctx.AbortWithStatus(BadRequest)
+			ctx.AbortWithStatus(http.StatusBadRequest)
 
 			return
 		}
 
-		ctx.JSON(OK, posts)
+		ctx.JSON(http.StatusOK, posts)
 	case "user_name":
 		posts, err := sh.usecase.GetPostsByUserName(q)
 		if err != nil {
 			log.Println(err)
-			ctx.AbortWithStatus(BadRequest)
+			ctx.AbortWithStatus(http.StatusBadRequest)
 
 			return
 		}
 
-		ctx.JSON(OK, posts)
+		ctx.JSON(http.StatusOK, posts)
 	case "tag_name":
 		posts, err := sh.usecase.GetPostsByTagName(q)
 		if err != nil {
 			log.Println(err)
-			ctx.AbortWithStatus(BadRequest)
+			ctx.AbortWithStatus(http.StatusBadRequest)
 
 			return
 		}
 
-		ctx.JSON(OK, posts)
+		ctx.JSON(http.StatusOK, posts)
 	}
 }
