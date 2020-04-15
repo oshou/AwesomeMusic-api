@@ -16,7 +16,7 @@ https://github.com/oshou/Portfolio
 ## クラス構成(のようなもの)
 ![class](https://user-images.githubusercontent.com/4841735/79293889-bb30dc80-7f0f-11ea-89d7-36a980dc11ef.png)
 
-### ディレクトリ構成
+## ディレクトリ構成
 
 - Makefile
   - タスクランナー
