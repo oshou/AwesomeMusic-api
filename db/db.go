@@ -32,11 +32,6 @@ func NewDBConn() *sqlx.DB {
 	return conn
 }
 
-// 作成済DBコネクションの取得
-func (c *Conn) DBConn() *sqlx.DB {
-	return c.conn
-}
-
 // DBコネクション切断
 func (c *Conn) Close() {
 	c.conn.Close()
