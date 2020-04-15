@@ -13,10 +13,10 @@ end box
 box "Domain Model" #Pink
   participant domain
 
+activate main
 main -> main: Load Env
 main -> main: Create DB Connection
 main -> main: DI
-activate main
 main -> main: Create Server
 main -> main: Set CORS Policy
 main -> main: Create Router

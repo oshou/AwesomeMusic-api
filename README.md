@@ -11,60 +11,8 @@ https://github.com/oshou/Portfolio
 
 ## 処理フロー
 
-```plantuml
-@startuml
-box "interface" #LightBlue
-  participant server
-  participant controller
-end box
-box "usecase" #Yellow
-  participant service
-end box
-box "domain" #Pink
-  participant repository
-  participant domain
-end box
-
-activate server
-server -> server: APIサーバ起動
-server -> server: 環境変数読み込み
-server -> server: DBコネクション生成
-server -> server: CQRSポリシー設定
-[-> server :request
-server -> controller: routing
-controller -> controller: request解釈
-controller -> service: service呼出
-service -> repository: Modelメソッド呼出
-repository -> domain:
-domain -> repository:
-repository -> service: 呼出結果返却
-service -> controller: 呼出結果返却
-controller -> controller: response生成
-controller -> server: response
-@enduml
-```
-
-```plantuml
-@startuml
-activate server
-server -> server: APIサーバ起動
-server -> server: 環境変数読み込み
-server -> server: DBコネクション生成
-server -> server: CQRSポリシー設定
-[-> server :request
-server -> controller: routing
-controller -> controller: requestパラメータ解釈
-controller -> service: serviceを実行
-service -> service: ビジネスロジック前処理
-service -> DB: modelメソッドを実行
-DB -> service: 処理結果返却
-service -> service: ビジネスロジック後処理
-service -> controller: 処理結果返却
-controller-> controller: responseデータ生成
-controller-> server: response
-server ->[: response
-@enduml
-```
+![class](https://user-images.githubusercontent.com/4841735/79293889-bb30dc80-7f0f-11ea-89d7-36a980dc11ef.png)
+![sequence](https://user-images.githubusercontent.com/4841735/79293900-c2f08100-7f0f-11ea-9ddd-cfa521302759.png)
 
 ### ディレクトリ構成
 
@@ -73,17 +21,24 @@ server ->[: response
 - main.go
   - エントリポイント
 - go.mod, go.sum
-  - Go パッケージ管理
-- server/
-  - API サーバ起動、ルーティング、環境変数読み込み、CQRS 対応
-- controller/
-  - リクエストの Parse,レスポンス生成
+  - Golang パッケージ管理
 - db/
   - DB 接続
-- entity/
-  - DB テーブル定義
-- facade/
-  - ビジネスロジック
+- interactor/
+  - 簡易 DI
+- domain/
+  - model/
+    - Domain Model 層
+  - repository/
+    - Domain Service 層
+- usecase/
+  - Application 層
+- presenter/
+  - UI 層
+- infrastructure/
+  - Infrastructure 層
+- docs/
+  - UML 等
 - .env.xxx
   - 環境変数
   - .env が利用される、利用時は.env.xxx を.env として別名コピーが必要
@@ -95,7 +50,9 @@ server ->[: response
 
 ## 操作方法
 
+- リンター実行
+  - make lint
 - ビルド
   - make build_local
-- バイナリ実行
+- exec binary
   - make run

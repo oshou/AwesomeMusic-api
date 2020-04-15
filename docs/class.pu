@@ -14,8 +14,6 @@ package Usecase {
 
 package Infrastructure {
   class Datastore
-  class Mail
-  class Notification
 }
 package UI {
   class Router

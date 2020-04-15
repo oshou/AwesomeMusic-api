@@ -6,3 +6,5 @@ main
 
 # Go module lock
 go.sum
+
+*.png
