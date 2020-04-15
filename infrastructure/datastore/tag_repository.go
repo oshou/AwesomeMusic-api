@@ -7,14 +7,14 @@ import (
 )
 
 type tagRepository struct {
-	DB *sqlx.DB
+	db *sqlx.DB
 }
 
 var _ repository.ITagRepository = (*tagRepository)(nil)
 
 func NewTagRepository(db *sqlx.DB) repository.ITagRepository {
 	return &tagRepository{
-		DB: db,
+		db: db,
 	}
 }
 
@@ -27,7 +27,7 @@ func (tr *tagRepository) GetAll() ([]*model.Tag, error) {
 						FROM
 							tag`
 
-	if err := tr.DB.Select(&tt, query); err != nil {
+	if err := tr.db.Select(&tt, query); err != nil {
 		return nil, err
 	}
 
@@ -45,7 +45,7 @@ func (tr *tagRepository) GetByID(tagID int) (*model.Tag, error) {
 						WHERE
 							id = ?`
 
-	if err := tr.DB.Get(t, query, tagID); err != nil {
+	if err := tr.db.Get(t, query, tagID); err != nil {
 		return t, err
 	}
 
@@ -63,7 +63,7 @@ func (tr *tagRepository) GetByName(tagName string) ([]*model.Tag, error) {
 						WHERE
 							name LIKE ?`
 
-	if err := tr.DB.Select(&tt, query, "%"+tagName+"%"); err != nil {
+	if err := tr.db.Select(&tt, query, "%"+tagName+"%"); err != nil {
 		return nil, err
 	}
 
@@ -83,7 +83,7 @@ func (tr *tagRepository) GetByPostID(postID int) ([]*model.Tag, error) {
 						WHERE
 							pt.post_id = ?`
 
-	if err := tr.DB.Select(&tt, query, postID); err != nil {
+	if err := tr.db.Select(&tt, query, postID); err != nil {
 		return tt, err
 	}
 
@@ -99,7 +99,7 @@ func (tr *tagRepository) Add(tagName string) (*model.Tag, error) {
 						VALUES
 							(?)`
 
-	result, err := tr.DB.Exec(query, tagName)
+	result, err := tr.db.Exec(query, tagName)
 	if err != nil {
 		return t, err
 	}
@@ -116,7 +116,7 @@ func (tr *tagRepository) Attach(postID, tagID int) (*model.PostTag, error) {
 						VALUES
 							(?, ?)`
 
-	_, err := tr.DB.Exec(query, postID, tagID)
+	_, err := tr.db.Exec(query, postID, tagID)
 
 	if err != nil {
 		return nil, err

@@ -7,14 +7,14 @@ import (
 )
 
 type postRepository struct {
-	DB *sqlx.DB
+	db *sqlx.DB
 }
 
 var _ repository.IPostRepository = (*postRepository)(nil)
 
 func NewPostRepository(db *sqlx.DB) repository.IPostRepository {
 	return &postRepository{
-		DB: db,
+		db: db,
 	}
 }
 
@@ -30,7 +30,7 @@ func (pr *postRepository) GetAll() ([]*model.Post, error) {
 						FROM
 							post`
 
-	if err := pr.DB.Select(&pp, query); err != nil {
+	if err := pr.db.Select(&pp, query); err != nil {
 		return nil, err
 	}
 
@@ -51,7 +51,7 @@ func (pr *postRepository) GetByID(postID int) (*model.Post, error) {
 						WHERE
 							id = ?`
 
-	if err := pr.DB.Get(p, query, postID); err != nil {
+	if err := pr.db.Get(p, query, postID); err != nil {
 		return nil, err
 	}
 
@@ -76,7 +76,7 @@ func (pr *postRepository) GetByTagID(tagID int) ([]*model.Post, error) {
 						WHERE
 							t.id = ?`
 
-	if err := pr.DB.Select(&pp, query, tagID); err != nil {
+	if err := pr.db.Select(&pp, query, tagID); err != nil {
 		return nil, err
 	}
 
@@ -99,7 +99,7 @@ func (pr *postRepository) GetByUserID(userID int) ([]*model.Post, error) {
 						WHERE
 							u.id = ?`
 
-	if err := pr.DB.Select(&pp, query, userID); err != nil {
+	if err := pr.db.Select(&pp, query, userID); err != nil {
 		return nil, err
 	}
 
@@ -112,7 +112,7 @@ func (pr *postRepository) Add(userID int, title, url, message string) (*model.Po
 						VALUES
 							(?, ?, ?, ?)`
 
-	result, err := pr.DB.Exec(query, userID, title, url, message)
+	result, err := pr.db.Exec(query, userID, title, url, message)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +135,7 @@ func (pr *postRepository) DeleteByID(postID int) error {
 						WHERE
 							id = ?`
 
-	if _, err := pr.DB.Exec(query, postID); err != nil {
+	if _, err := pr.db.Exec(query, postID); err != nil {
 		return err
 	}
 	return nil

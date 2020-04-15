@@ -7,14 +7,14 @@ import (
 )
 
 type commentRepository struct {
-	DB *sqlx.DB
+	db *sqlx.DB
 }
 
 var _ repository.ICommentRepository = (*commentRepository)(nil)
 
 func NewCommentRepository(db *sqlx.DB) repository.ICommentRepository {
 	return &commentRepository{
-		DB: db,
+		db: db,
 	}
 }
 
@@ -31,7 +31,7 @@ func (cr *commentRepository) GetAll(postID int) ([]*model.Comment, error) {
 						WHERE
 							post_id = ?`
 
-	if err := cr.DB.Select(&cc, query, postID); err != nil {
+	if err := cr.db.Select(&cc, query, postID); err != nil {
 		return nil, err
 	}
 
@@ -51,7 +51,7 @@ func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
 						WHERE
 							id = ?`
 
-	if err := cr.DB.Get(c, query, commentID); err != nil {
+	if err := cr.db.Get(c, query, commentID); err != nil {
 		return c, err
 	}
 
@@ -64,7 +64,7 @@ func (cr *commentRepository) Add(postID, userID int, comment string) (*model.Com
 						VALUES
 							(?, ?, ?)`
 
-	result, err := cr.DB.Exec(query, postID, userID, comment)
+	result, err := cr.db.Exec(query, postID, userID, comment)
 	if err != nil {
 		return nil, err
 	}

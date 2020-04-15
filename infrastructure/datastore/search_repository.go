@@ -7,14 +7,14 @@ import (
 )
 
 type searchRepository struct {
-	DB *sqlx.DB
+	db *sqlx.DB
 }
 
 var _ repository.ISearchRepository = (*searchRepository)(nil)
 
 func NewSearchRepository(db *sqlx.DB) repository.ISearchRepository {
 	return &searchRepository{
-		DB: db,
+		db: db,
 	}
 }
 
@@ -32,7 +32,7 @@ func (sr *searchRepository) GetByTitle(q string) ([]*model.Post, error) {
 						WHERE
 							title LIKE ?`
 
-	if err := sr.DB.Select(&pp, query, "%"+q+"%"); err != nil {
+	if err := sr.db.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err
 	}
 
@@ -55,7 +55,7 @@ func (sr *searchRepository) GetByUserName(q string) ([]*model.Post, error) {
 						WHERE
 							u.name LIKE ?`
 
-	if err := sr.DB.Select(&pp, query, "%"+q+"%"); err != nil {
+	if err := sr.db.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err
 	}
 
@@ -80,7 +80,7 @@ func (sr *searchRepository) GetByTagName(q string) ([]*model.Post, error) {
 						WHERE
 							t.name LIKE ?`
 
-	if err := sr.DB.Select(&pp, query, "%"+q+"%"); err != nil {
+	if err := sr.db.Select(&pp, query, "%"+q+"%"); err != nil {
 		return nil, err
 	}
 

@@ -34,14 +34,14 @@ type IInteractor interface {
 }
 
 type interactor struct {
-	Conn *sqlx.DB
+	conn *sqlx.DB
 }
 
 var _ IInteractor = (*interactor)(nil)
 
 func NewInteractor(conn *sqlx.DB) IInteractor {
 	return &interactor{
-		Conn: conn,
+		conn: conn,
 	}
 }
 
@@ -66,7 +66,7 @@ func (i *interactor) NewAppHandler() handler.IAppHandler {
 
 // User
 func (i *interactor) NewUserRepository() repository.IUserRepository {
-	return datastore.NewUserRepository(i.Conn)
+	return datastore.NewUserRepository(i.conn)
 }
 
 func (i *interactor) NewUserUsecase() usecase.IUserUsecase {
@@ -79,7 +79,7 @@ func (i *interactor) NewUserHandler() handler.IUserHandler {
 
 // Comment
 func (i *interactor) NewCommentRepository() repository.ICommentRepository {
-	return datastore.NewCommentRepository(i.Conn)
+	return datastore.NewCommentRepository(i.conn)
 }
 
 func (i *interactor) NewCommentUsecase() usecase.ICommentUsecase {
@@ -92,7 +92,7 @@ func (i *interactor) NewCommentHandler() handler.ICommentHandler {
 
 // Post
 func (i *interactor) NewPostRepository() repository.IPostRepository {
-	return datastore.NewPostRepository(i.Conn)
+	return datastore.NewPostRepository(i.conn)
 }
 
 func (i *interactor) NewPostUsecase() usecase.IPostUsecase {
@@ -105,7 +105,7 @@ func (i *interactor) NewPostHandler() handler.IPostHandler {
 
 // Tag
 func (i *interactor) NewTagRepository() repository.ITagRepository {
-	return datastore.NewTagRepository(i.Conn)
+	return datastore.NewTagRepository(i.conn)
 }
 
 func (i *interactor) NewTagUsecase() usecase.ITagUsecase {
@@ -118,7 +118,7 @@ func (i *interactor) NewTagHandler() handler.ITagHandler {
 
 // Search
 func (i *interactor) NewSearchRepository() repository.ISearchRepository {
-	return datastore.NewSearchRepository(i.Conn)
+	return datastore.NewSearchRepository(i.conn)
 }
 
 func (i *interactor) NewSearchUsecase() usecase.ISearchUsecase {

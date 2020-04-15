@@ -7,14 +7,14 @@ import (
 )
 
 type userRepository struct {
-	DB *sqlx.DB
+	db *sqlx.DB
 }
 
 var _ repository.IUserRepository = (*userRepository)(nil)
 
 func NewUserRepository(db *sqlx.DB) repository.IUserRepository {
 	return &userRepository{
-		DB: db,
+		db: db,
 	}
 }
 
@@ -27,7 +27,7 @@ func (ur *userRepository) GetAll() ([]*model.User, error) {
 						FROM
 							user`
 
-	if err := ur.DB.Select(&uu, query); err != nil {
+	if err := ur.db.Select(&uu, query); err != nil {
 		return nil, err
 	}
 
@@ -45,7 +45,7 @@ func (ur *userRepository) GetByID(userID int) (*model.User, error) {
 						WHERE
 							id = ?`
 
-	if err := ur.DB.Get(u, query, userID); err != nil {
+	if err := ur.db.Get(u, query, userID); err != nil {
 		return u, err
 	}
 
@@ -63,7 +63,7 @@ func (ur *userRepository) GetByName(name string) ([]*model.User, error) {
 						WHERE
 							name LIKE ?`
 
-	if err := ur.DB.Select(&uu, query, "%"+name+"%"); err != nil {
+	if err := ur.db.Select(&uu, query, "%"+name+"%"); err != nil {
 		return uu, err
 	}
 
@@ -79,7 +79,7 @@ func (ur *userRepository) Add(name string) (*model.User, error) {
 						VALUES
 							(?)`
 
-	result, err := ur.DB.Exec(query, name)
+	result, err := ur.db.Exec(query, name)
 
 	if err != nil {
 		return u, err
