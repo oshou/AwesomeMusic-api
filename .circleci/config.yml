@@ -27,12 +27,14 @@ jobs:
     steps:
       - checkout
       - install_golangci_lint
+      - setup_remote_docker
       - deploy_hub
   deploy_dev:
     executor: default
     steps:
       - checkout
       - install_golangci_lint
+      - setup_remote_docker
       - deploy_hub
 
 workflows:
