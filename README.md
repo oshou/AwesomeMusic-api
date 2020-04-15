@@ -8,11 +8,13 @@ https://github.com/oshou/Portfolio
 - JSON 形式でレスポンス
 - 環境変数はレポジトリ直下の.env を読み込む
 - Port8080 で受付
+- OnionArchitectureを採用
 
 ## 処理フロー
-
-![class](https://user-images.githubusercontent.com/4841735/79293889-bb30dc80-7f0f-11ea-89d7-36a980dc11ef.png)
 ![sequence](https://user-images.githubusercontent.com/4841735/79293900-c2f08100-7f0f-11ea-9ddd-cfa521302759.png)
+
+## クラス構成(のようなもの)
+![class](https://user-images.githubusercontent.com/4841735/79293889-bb30dc80-7f0f-11ea-89d7-36a980dc11ef.png)
 
 ### ディレクトリ構成
 
