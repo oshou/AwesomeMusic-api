@@ -36,6 +36,13 @@ jobs:
       - install_golangci_lint
       - setup_remote_docker
       - deploy_hub
+  deploy_test:
+    executor: default
+    steps:
+      - checkout
+      - install_golangci_lint
+      - setup_remote_docker
+      - deploy_hub
 
 workflows:
   version: 2
@@ -49,3 +56,7 @@ workflows:
           filters:
             branches:
               only: develop
+      - deploy_test:
+          filters:
+            branches:
+              only: feature/modify_ci_logic
