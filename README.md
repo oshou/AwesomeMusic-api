@@ -1,60 +1,50 @@
-# AwesomeMusic-api サーバ
+# AwesomeMusic-api Server
 
 音楽サービス AwesomeMusic の API サーバ
 https://github.com/oshou/Portfolio
 
 ## 概要
 
-- JSON 形式でレスポンス
-- 環境変数はレポジトリ直下の.env を読み込む
-- Port8080 で受付
-- OnionArchitectureを採用
+- JSON 形式でレスポンスを返します。
+- 環境変数はレポジトリ直下の.env を読み込みます。
+  ビルド時に指定の.env.(環境名)のファイルを.env としてコピー作成されます。
+  ex) cp -rp .env.local -> .env
+- Port8080 で受付いたします。
+- OnionArchitecture を採用しています。
 
-## 処理フロー
-![sequence](https://user-images.githubusercontent.com/4841735/79293900-c2f08100-7f0f-11ea-9ddd-cfa521302759.png)
+## Quick Start
 
-## クラス構成(のようなもの)
-![class](https://user-images.githubusercontent.com/4841735/79293889-bb30dc80-7f0f-11ea-89d7-36a980dc11ef.png)
+```bash
+# 環境変数編集(.env.local)
+vim .env
+# ビルド(ローカル)
+make build_local
+# ビルド済バイナリ実行
+make run
+```
 
 ## ディレクトリ構成
 
-- Makefile
-  - タスクランナー
-- main.go
-  - エントリポイント
-- go.mod, go.sum
-  - Golang パッケージ管理
-- db/
-  - DB 接続
-- interactor/
-  - 簡易 DI
-- domain/
-  - model/
-    - Domain Model 層
-  - repository/
-    - Domain Service 層
-- usecase/
-  - Application 層
-- presenter/
-  - UI 層
-- infrastructure/
-  - Infrastructure 層
-- docs/
-  - UML 等
-- .env.xxx
-  - 環境変数
-  - .env が利用される、利用時は.env.xxx を.env として別名コピーが必要
-- Dockerfile
-  - 実行環境作成用
-  - Multi-Stage Build でビルドコンテナ、起動用コンテナを分けている
-- .circleci
-  - CI 関連
+```
+├── domain/
+│   └── model/          # Domain Model Layer
+│   └── repository/     # Domain Service Layer
+├── usecase/            # Application Layer
+├── presenter/          # UI Layer
+├── interactror/        # DI
+├── db/                 # DB Connetion
+└── Makefile            # Task Runner
+└── main.go             # Entry Point
+└── go.mod              # Go Package management
+└── go.sum              # Go Package management
+└── .env                # Config Environment
+└── Dockerfile          # Docker Container
+```
 
-## 操作方法
+## 処理フロー
 
-- リンター実行
-  - make lint
-- ビルド
-  - make build_local
-- exec binary
-  - make run
+![sequence](https://user-images.githubusercontent.com/4841735/79293900-c2f08100-7f0f-11ea-9ddd-cfa521302759.png)
+
+## クラス構成(のようなもの)
+
+![class](https://user-images.githubusercontent.com/4841735/79293889-bb30dc80-7f0f-11ea-89d7-36a980dc11ef.png)
