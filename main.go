@@ -19,14 +19,18 @@ func main() {
 		log.Fatalf("error loading .env file: %s", err.Error())
 	}
 
+	// DBConnection作成
 	conn := db.NewDBConn()
-	i := interactor.NewInteractor(conn)
-	h := i.NewAppHandler()
-	e := gin.Default()
-	middleware.NewMiddleware(e)
-	router.NewRouter(e, h)
+	defer conn.Close()
 
-	if err := e.Run(":" + os.Getenv("API_SERVER_PORT")); err != nil {
+	// Routing
+	i := interactor.NewInteractor(conn)
+	handler := i.NewAppHandler()
+	engine := gin.Default()
+	middleware.NewMiddleware(engine)
+	router.NewRouter(engine, handler)
+
+	if err := engine.Run(":" + os.Getenv("API_SERVER_PORT")); err != nil {
 		log.Fatalln(err)
 	}
 }
