@@ -37,6 +37,7 @@ func (ph *postHandler) GetPosts(ctx *gin.Context) {
 
 		return
 	}
+
 	ctx.JSON(OK, posts)
 }
 
@@ -94,6 +95,7 @@ func (ph *postHandler) GetPostsByUserID(ctx *gin.Context) {
 
 		return
 	}
+
 	ctx.JSON(OK, posts)
 }
 
@@ -105,6 +107,7 @@ func (ph *postHandler) AddPost(ctx *gin.Context) {
 
 		return
 	}
+
 	title := ctx.Query("title")
 	url := ctx.Query("url")
 	message := ctx.Query("message")
@@ -116,12 +119,14 @@ func (ph *postHandler) AddPost(ctx *gin.Context) {
 
 		return
 	}
+
 	ctx.JSON(OK, post)
 }
 
 func (ph *postHandler) DeletePostByID(ctx *gin.Context) {
 	id := ctx.Param("post_id")
 	postID, err := strconv.Atoi(id)
+
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(BadRequest)
@@ -135,5 +140,6 @@ func (ph *postHandler) DeletePostByID(ctx *gin.Context) {
 
 		return
 	}
+
 	ctx.JSON(NoContent, gin.H{"id #" + id: "deleted"})
 }

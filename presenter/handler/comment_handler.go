@@ -40,14 +40,18 @@ func (ch *commentHandler) GetComments(ctx *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(BadRequest)
+
 		return
 	}
+
 	comments, err := ch.usecase.GetComments(postID)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(NotFound)
+
 		return
 	}
+
 	ctx.JSON(OK, comments)
 }
 
@@ -56,22 +60,28 @@ func (ch *commentHandler) AddComment(ctx *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(BadRequest)
+
 		return
 	}
+
 	userID, err := strconv.Atoi(ctx.Query("user_id"))
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(BadRequest)
+
 		return
 	}
-	commentText := ctx.Query("comment")
 
+	commentText := ctx.Query("comment")
 	comment, err := ch.usecase.AddComment(postID, userID, commentText)
+
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(BadRequest)
+
 		return
 	}
+
 	ctx.JSON(Created, comment)
 }
 
@@ -80,13 +90,17 @@ func (ch *commentHandler) GetCommentByID(ctx *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(BadRequest)
+
 		return
 	}
+
 	comment, err := ch.usecase.GetCommentByID(commentID)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(NotFound)
+
 		return
 	}
+
 	ctx.JSON(OK, comment)
 }

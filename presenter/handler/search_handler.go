@@ -36,6 +36,7 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 
 			return
 		}
+
 		ctx.JSON(OK, posts)
 	case "user_name":
 		posts, err := sh.usecase.GetPostsByUserName(q)
@@ -45,6 +46,7 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 
 			return
 		}
+
 		ctx.JSON(OK, posts)
 	case "tag_name":
 		posts, err := sh.usecase.GetPostsByTagName(q)
@@ -54,6 +56,7 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 
 			return
 		}
+
 		ctx.JSON(OK, posts)
 	}
 }

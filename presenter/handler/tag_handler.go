@@ -36,6 +36,7 @@ func (th *tagHandler) GetTags(ctx *gin.Context) {
 
 		return
 	}
+
 	ctx.JSON(OK, tags)
 }
 
@@ -82,6 +83,7 @@ func (th *tagHandler) GetTagsByPostID(ctx *gin.Context) {
 func (th *tagHandler) AddTag(ctx *gin.Context) {
 	tagName := ctx.Query("name")
 	tag, err := th.usecase.AddTag(tagName)
+
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(BadRequest)

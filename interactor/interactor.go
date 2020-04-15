@@ -61,6 +61,7 @@ func (i *interactor) NewAppHandler() handler.IAppHandler {
 	appHandler.IPostHandler = i.NewPostHandler()
 	appHandler.ITagHandler = i.NewTagHandler()
 	appHandler.ISearchHandler = i.NewSearchHandler()
+
 	return appHandler
 }
 

@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const CORSMaxAgeHour = 24
+
 func NewMiddleware(e *gin.Engine) {
 	e.Use(cors.New(cors.Config{
 		// 許可したいHTTPメソッドの一覧
@@ -32,6 +34,6 @@ func NewMiddleware(e *gin.Engine) {
 		AllowOrigins: []string{
 			"*",
 		},
-		MaxAge: 24 * time.Hour,
+		MaxAge: CORSMaxAgeHour * time.Hour,
 	}))
 }

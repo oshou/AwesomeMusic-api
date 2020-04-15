@@ -123,6 +123,7 @@ func (pr *postRepository) Add(userID int, title, url, message string) (*model.Po
 		URL:     url,
 		Message: message,
 	}
+
 	i64, _ := result.LastInsertId()
 	p.ID = int(i64)
 
@@ -138,5 +139,6 @@ func (pr *postRepository) DeleteByID(postID int) error {
 	if _, err := pr.db.Exec(query, postID); err != nil {
 		return err
 	}
+
 	return nil
 }

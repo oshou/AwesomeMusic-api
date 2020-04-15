@@ -25,6 +25,7 @@ func main() {
 	e := gin.Default()
 	middleware.NewMiddleware(e)
 	router.NewRouter(e, h)
+
 	if err := e.Run(":" + os.Getenv("API_SERVER_PORT")); err != nil {
 		log.Fatalln(err)
 	}
