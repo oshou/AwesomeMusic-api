@@ -120,7 +120,7 @@ func (ph *postHandler) AddPost(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(OK, post)
+	ctx.JSON(Created, post)
 }
 
 func (ph *postHandler) DeletePostByID(ctx *gin.Context) {
