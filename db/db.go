@@ -8,16 +8,12 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type Conn struct {
-	conn *sqlx.DB
-}
-
 // DBコネクション作成
 func NewDBConn() *sqlx.DB {
 	connStr := fmt.Sprintf(
-    // - for MySQL
+		// - for MySQL
 		//"%s:%s@tcp(%s:%s)/%s?%s",
-    // - for Postgres
+		// - for Postgres
 		"postgres://%s:%s@%s:%s/%s?%s",
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
@@ -34,9 +30,4 @@ func NewDBConn() *sqlx.DB {
 	}
 
 	return conn
-}
-
-// DBコネクション切断
-func (c *Conn) Close() {
-	c.conn.Close()
 }

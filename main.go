@@ -20,7 +20,12 @@ func main() {
 
 	// DBConnection作成
 	conn := db.NewDBConn()
-	defer conn.Close()
+	defer func() {
+		err := conn.Close()
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}()
 
 	// Routing
 	i := injector.NewInjector(conn)
