@@ -5,10 +5,9 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"github.com/oshou/AwesomeMusic-api/db"
-	"github.com/oshou/AwesomeMusic-api/interactor"
+	"github.com/oshou/AwesomeMusic-api/injector"
 	"github.com/oshou/AwesomeMusic-api/presenter/middleware"
 	"github.com/oshou/AwesomeMusic-api/presenter/router"
 )
@@ -24,7 +23,7 @@ func main() {
 	defer conn.Close()
 
 	// Routing
-	i := interactor.NewInteractor(conn)
+	i := injector.NewInjector(conn)
 	handler := i.NewAppHandler()
 	engine := gin.Default()
 	middleware.NewMiddleware(engine)

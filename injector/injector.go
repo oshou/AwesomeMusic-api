@@ -1,14 +1,15 @@
-package interactor
+package injector
 
 import (
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
-	"github.com/oshou/AwesomeMusic-api/infrastructure/datastore"
+	"github.com/oshou/AwesomeMusic-api/infrastructure/datastore/postgres"
 	"github.com/oshou/AwesomeMusic-api/presenter/handler"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
-type IInteractor interface {
+type IInjector interface {
 	// App
 	NewAppHandler() handler.IAppHandler
 	// User
@@ -33,14 +34,14 @@ type IInteractor interface {
 	NewSearchHandler() handler.ISearchHandler
 }
 
-type interactor struct {
+type injector struct {
 	conn *sqlx.DB
 }
 
-var _ IInteractor = (*interactor)(nil)
+var _ IInjector = (*injector)(nil)
 
-func NewInteractor(conn *sqlx.DB) IInteractor {
-	return &interactor{
+func NewInjector(conn *sqlx.DB) IInjector {
+	return &injector{
 		conn: conn,
 	}
 }
@@ -54,7 +55,7 @@ type appHandler struct {
 }
 
 // Aggregate Handler
-func (i *interactor) NewAppHandler() handler.IAppHandler {
+func (i *injector) NewAppHandler() handler.IAppHandler {
 	appHandler := &appHandler{}
 	appHandler.IUserHandler = i.NewUserHandler()
 	appHandler.ICommentHandler = i.NewCommentHandler()
@@ -66,66 +67,66 @@ func (i *interactor) NewAppHandler() handler.IAppHandler {
 }
 
 // User
-func (i *interactor) NewUserRepository() repository.IUserRepository {
-	return datastore.NewUserRepository(i.conn)
+func (i *injector) NewUserRepository() repository.IUserRepository {
+	return postgres.NewUserRepository(i.conn)
 }
 
-func (i *interactor) NewUserUsecase() usecase.IUserUsecase {
+func (i *injector) NewUserUsecase() usecase.IUserUsecase {
 	return usecase.NewUserUsecase(i.NewUserRepository())
 }
 
-func (i *interactor) NewUserHandler() handler.IUserHandler {
+func (i *injector) NewUserHandler() handler.IUserHandler {
 	return handler.NewUserHandler(i.NewUserUsecase())
 }
 
 // Comment
-func (i *interactor) NewCommentRepository() repository.ICommentRepository {
-	return datastore.NewCommentRepository(i.conn)
+func (i *injector) NewCommentRepository() repository.ICommentRepository {
+	return postgres.NewCommentRepository(i.conn)
 }
 
-func (i *interactor) NewCommentUsecase() usecase.ICommentUsecase {
+func (i *injector) NewCommentUsecase() usecase.ICommentUsecase {
 	return usecase.NewCommentUsecase(i.NewCommentRepository())
 }
 
-func (i *interactor) NewCommentHandler() handler.ICommentHandler {
+func (i *injector) NewCommentHandler() handler.ICommentHandler {
 	return handler.NewCommentHandler(i.NewCommentUsecase())
 }
 
 // Post
-func (i *interactor) NewPostRepository() repository.IPostRepository {
-	return datastore.NewPostRepository(i.conn)
+func (i *injector) NewPostRepository() repository.IPostRepository {
+	return postgres.NewPostRepository(i.conn)
 }
 
-func (i *interactor) NewPostUsecase() usecase.IPostUsecase {
+func (i *injector) NewPostUsecase() usecase.IPostUsecase {
 	return usecase.NewPostUsecase(i.NewPostRepository())
 }
 
-func (i *interactor) NewPostHandler() handler.IPostHandler {
+func (i *injector) NewPostHandler() handler.IPostHandler {
 	return handler.NewPostHandler(i.NewPostUsecase())
 }
 
 // Tag
-func (i *interactor) NewTagRepository() repository.ITagRepository {
-	return datastore.NewTagRepository(i.conn)
+func (i *injector) NewTagRepository() repository.ITagRepository {
+	return postgres.NewTagRepository(i.conn)
 }
 
-func (i *interactor) NewTagUsecase() usecase.ITagUsecase {
+func (i *injector) NewTagUsecase() usecase.ITagUsecase {
 	return usecase.NewTagUsecase(i.NewTagRepository())
 }
 
-func (i *interactor) NewTagHandler() handler.ITagHandler {
+func (i *injector) NewTagHandler() handler.ITagHandler {
 	return handler.NewTagHandler(i.NewTagUsecase())
 }
 
 // Search
-func (i *interactor) NewSearchRepository() repository.ISearchRepository {
-	return datastore.NewSearchRepository(i.conn)
+func (i *injector) NewSearchRepository() repository.ISearchRepository {
+	return postgres.NewSearchRepository(i.conn)
 }
 
-func (i *interactor) NewSearchUsecase() usecase.ISearchUsecase {
+func (i *injector) NewSearchUsecase() usecase.ISearchUsecase {
 	return usecase.NewSearchUsecase(i.NewSearchRepository())
 }
 
-func (i *interactor) NewSearchHandler() handler.ISearchHandler {
+func (i *injector) NewSearchHandler() handler.ISearchHandler {
 	return handler.NewSearchHandler(i.NewSearchUsecase())
 }
