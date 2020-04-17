@@ -1,4 +1,4 @@
-package datastore
+package postgres
 
 import (
 	"github.com/jmoiron/sqlx"
