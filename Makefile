@@ -1,6 +1,6 @@
 # Prerequisite
 # - Install golangci-lint
-#   - brew install "golangci/tap/golangci-lint"
+#   https://github.com/golangci/golangci-lint#install
 
 export GO111MODULE=on
 
@@ -12,7 +12,7 @@ BINARY_NAME=main
 lint:
 	$(GOCMD) fmt ./...
 	$(GOCMD) vet ./...
-	golangci-lint run --enable-all
+	golangci-lint run
 
 build_local:
 	make lint
