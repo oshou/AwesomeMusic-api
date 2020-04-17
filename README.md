@@ -27,18 +27,18 @@ make run
 
 ```
 ├── domain/
-│   └── model/          # Domain Model Layer
-│   └── repository/     # Domain Service Layer
-├── usecase/            # Application Layer
-├── presenter/          # UI Layer
-├── interactror/        # DI
-├── db/                 # DB Connetion
-└── Makefile            # Task Runner
-└── main.go             # Entry Point
-└── go.mod              # Go Package management
-└── go.sum              # Go Package management
-└── .env                # Config Environment
-└── Dockerfile          # Docker Container
+│   └── model/        # Domain Model Layer
+│   └── repository/   # Domain Service Layer
+├── usecase/          # Application Layer
+├── presenter/        # UI Layer
+├── injector/         # DI
+├── db/               # DB Connetion
+└── Makefile          # Task Runner
+└── main.go           # Entry Point
+└── go.mod            # Go Package management
+└── go.sum            # Go Package management
+└── .env              # Config Environment
+└── Dockerfile        # Docker Container
 ```
 
 ## 処理フロー
