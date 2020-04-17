@@ -1,5 +1,7 @@
+// Package model is domain-model
 package model
 
+// Comment is Comment to Post
 type Comment struct {
 	ID      int    `json:"id,omitempty" db:"id"`
 	UserID  int    `json:"user_id,omitempty" db:"user_id"`

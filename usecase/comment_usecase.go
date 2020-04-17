@@ -5,6 +5,7 @@ import (
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
+// ICommentUsecase is usecase layer Interface for Comment
 type ICommentUsecase interface {
 	GetComments(postID int) ([]*model.Comment, error)
 	GetCommentByID(commentID int) (*model.Comment, error)
@@ -17,6 +18,7 @@ type commentUsecase struct {
 
 var _ ICommentUsecase = (*commentUsecase)(nil)
 
+// NewCommentUsecase is ICommentUsecase constructor
 func NewCommentUsecase(repo repository.ICommentRepository) ICommentUsecase {
 	return &commentUsecase{
 		repo: repo,

@@ -5,6 +5,7 @@ import (
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
+// ITagUsecase is usecase layer Interface for Tag
 type ITagUsecase interface {
 	GetTags() ([]*model.Tag, error)
 	GetTagByID(tagID int) (*model.Tag, error)
@@ -19,6 +20,7 @@ type tagUsecase struct {
 
 var _ ITagUsecase = (*tagUsecase)(nil)
 
+// NewTagUsecase is ITagUsecase constructor
 func NewTagUsecase(repo repository.ITagRepository) ITagUsecase {
 	return &tagUsecase{
 		repo: repo,

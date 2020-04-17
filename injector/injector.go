@@ -2,7 +2,6 @@ package injector
 
 import (
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 	"github.com/oshou/AwesomeMusic-api/infrastructure/datastore/postgres"
 	"github.com/oshou/AwesomeMusic-api/presenter/handler"

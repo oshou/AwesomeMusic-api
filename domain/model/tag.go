@@ -1,3 +1,4 @@
+// Package model is domain-model
 package model
 
 type Tag struct {

@@ -5,6 +5,7 @@ import (
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
+// ISearchUsecase is usecase layer Interface
 type ISearchUsecase interface {
 	GetPostsByTitle(q string) ([]*model.Post, error)
 	GetPostsByUserName(q string) ([]*model.Post, error)
@@ -17,6 +18,7 @@ type searchUsecase struct {
 
 var _ ISearchUsecase = (*searchUsecase)(nil)
 
+// NewSearchUsecase is ISearchUsecase constructor
 func NewSearchUsecase(repo repository.ISearchRepository) ISearchUsecase {
 	return &searchUsecase{
 		repo: repo,

@@ -1,3 +1,4 @@
+// Package repository is domain-service
 package repository
 
 import "github.com/oshou/AwesomeMusic-api/domain/model"

@@ -5,6 +5,7 @@ import (
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
+// IPostUsecase is usecase layer Interface for Post
 type IPostUsecase interface {
 	GetPosts() ([]*model.Post, error)
 	GetPostByID(postID int) (*model.Post, error)
@@ -20,6 +21,7 @@ type postUsecase struct {
 
 var _ IPostUsecase = (*postUsecase)(nil)
 
+// NewPostUsecase is IPostUsecase constructor
 func NewPostUsecase(repo repository.IPostRepository) IPostUsecase {
 	return &postUsecase{
 		repo: repo,

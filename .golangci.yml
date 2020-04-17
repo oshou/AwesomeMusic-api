@@ -1,6 +1,5 @@
-# linters-settings:
-#   golint:
-#     min-confidence: 0
+issues:
+  exclude-use-default: false
 linters:
   disable-all: true
   enable:
@@ -39,5 +38,3 @@ linters:
     - unused
     - varcheck
     - whitespace
-issues:
-  exclude-use-default: false
