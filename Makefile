@@ -11,7 +11,6 @@ BINARY_NAME=main
 ## 各環境別ビルドコマンド
 lint:
 	$(GOCMD) fmt ./...
-	$(GOCMD) vet ./...
 	golangci-lint run
 
 build_local:

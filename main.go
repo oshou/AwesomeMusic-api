@@ -21,6 +21,7 @@ func main() {
 
 	// DBConnection作成
 	conn := db.NewDBConn()
+
 	defer func() {
 		err := conn.Close()
 		if err != nil {

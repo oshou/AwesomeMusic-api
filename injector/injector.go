@@ -1,3 +1,4 @@
+// Package injector is DI Container
 package injector
 
 import (
@@ -8,6 +9,7 @@ import (
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
+// IInjector is DI Container interface
 type IInjector interface {
 	// App
 	NewAppHandler() handler.IAppHandler
