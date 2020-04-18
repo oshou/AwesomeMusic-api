@@ -7,6 +7,5 @@ main
 # Go module lock
 go.sum
 
-*.png
 *.log
 .DS_Store
