@@ -1,3 +1,4 @@
+// Package mysql is repository implementation package
 package mysql
 
 import (
@@ -12,6 +13,7 @@ type userRepository struct {
 
 var _ repository.IUserRepository = (*userRepository)(nil)
 
+// NewUserRepository is constructor for userRepository
 func NewUserRepository(db *sqlx.DB) repository.IUserRepository {
 	return &userRepository{
 		db: db,

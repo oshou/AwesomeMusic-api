@@ -4,39 +4,36 @@ import (
 	"log"
 	"os"
 
-	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/oshou/AwesomeMusic-api/db"
 	"github.com/oshou/AwesomeMusic-api/injector"
-	"github.com/oshou/AwesomeMusic-api/ui/http/middleware"
-	"github.com/oshou/AwesomeMusic-api/ui/http/router"
 )
 
 func main() {
-	// 環境変数(.env)読み込み
+	// Load Environment
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("error loading .env file: %s", err.Error())
 	}
 
-	// DBConnection作成
-	conn := db.NewDBConn()
+	// set DBConnection
+	db, err := db.NewDB()
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	defer func() {
-		err := conn.Close()
+		err := db.Close()
 		if err != nil {
 			log.Fatalln(err)
 		}
 	}()
 
 	// Routing
-	i := injector.NewInjector(conn)
-	handler := i.NewAppHandler()
-	engine := gin.Default()
-	middleware.NewMiddleware(engine)
-	router.NewRouter(engine, handler)
+	i := injector.NewInjector(db)
+	r := i.NewRouter()
 
-	if err := engine.Run(":" + os.Getenv("API_SERVER_PORT")); err != nil {
+	if err := r.Run(":" + os.Getenv("API_SERVER_PORT")); err != nil {
 		log.Fatalln(err)
 	}
 }

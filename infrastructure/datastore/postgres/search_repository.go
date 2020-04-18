@@ -1,3 +1,4 @@
+// Package postgres is repository implementation package
 package postgres
 
 import (
@@ -12,6 +13,7 @@ type searchRepository struct {
 
 var _ repository.ISearchRepository = (*searchRepository)(nil)
 
+// NewSearchRepository is constructor for searchRepository
 func NewSearchRepository(db *sqlx.DB) repository.ISearchRepository {
 	return &searchRepository{
 		db: db,

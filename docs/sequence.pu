@@ -2,7 +2,7 @@
 @startuml
 participant main
 box "UI" #LightBlue
-  participant middleware
+  participant router
   participant handler
 end box
 box "Application" #Yellow
@@ -20,12 +20,14 @@ main -> main: Set Environment
 main -> main: Set DBConnection
 main -> main: DI
 datastore -> repository: DI
-main -> middleware: Start Server
-activate middleware
-middleware -> middleware: Set CORS Policy
-middleware -> middleware: Set Router
-[-> middleware : Request
-middleware -> handler: Routing
+main -> router: Start Server
+activate router
+router -> router: Set Middleware(Authentication)
+router -> router: Set Middleware(CSRF Protection)
+router -> router: Set Middleware(CORS Policy)
+router -> router: Set Middleware(Rate Limit)
+[-> router : Request
+router -> handler: Routing
 activate handler
 handler -> handler: Parse Request
 handler -> usecase: Call usecase
@@ -53,8 +55,8 @@ usecase -> usecase: PostTask(Transaction..etc)
 deactivate usecase
 handler <-- usecase:
 handler -> handler: Create Response
-middleware <- handler: Response
+router <- handler: Response
 deactivate handler
-[<- middleware: Response
+[<- router: Response
 @enduml
 ```

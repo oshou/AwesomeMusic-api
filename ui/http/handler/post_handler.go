@@ -1,3 +1,4 @@
+// Package handler is ui layer http-handler package
 package handler
 
 import (
@@ -9,6 +10,7 @@ import (
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
+// IPostHandler is ui layer http-handler interface
 type IPostHandler interface {
 	GetPosts(ctx *gin.Context)
 	GetPostByID(ctx *gin.Context)
@@ -24,6 +26,7 @@ type postHandler struct {
 
 var _ IPostHandler = (*postHandler)(nil)
 
+// NewPostHandler is constructor for postHandler
 func NewPostHandler(u usecase.IPostUsecase) IPostHandler {
 	return &postHandler{
 		usecase: u,

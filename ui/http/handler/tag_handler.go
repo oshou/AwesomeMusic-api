@@ -1,3 +1,4 @@
+// Package handler is ui layer http-handler package
 package handler
 
 import (
@@ -9,6 +10,7 @@ import (
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
+// ITagHandler is ui layer http-handler interface
 type ITagHandler interface {
 	GetTags(ctx *gin.Context)
 	GetTagByID(ctx *gin.Context)
@@ -23,6 +25,7 @@ type tagHandler struct {
 
 var _ ITagHandler = (*tagHandler)(nil)
 
+// NewTagHandler is constructor for tagHandler
 func NewTagHandler(u usecase.ITagUsecase) ITagHandler {
 	return &tagHandler{
 		usecase: u,

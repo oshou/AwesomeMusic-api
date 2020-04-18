@@ -2,15 +2,19 @@
 package injector
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 	"github.com/oshou/AwesomeMusic-api/infrastructure/datastore/postgres"
 	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
+	"github.com/oshou/AwesomeMusic-api/ui/http/router"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
 // IInjector is DI Container interface
 type IInjector interface {
+	// Router
+	NewRouter() router.IRouter
 	// App
 	NewAppHandler() handler.IAppHandler
 	// User
@@ -35,18 +39,27 @@ type IInjector interface {
 	NewSearchHandler() handler.ISearchHandler
 }
 
+// injector
 type injector struct {
 	conn *sqlx.DB
 }
 
 var _ IInjector = (*injector)(nil)
 
+// NewInjector is constructor for injector
 func NewInjector(conn *sqlx.DB) IInjector {
 	return &injector{
 		conn: conn,
 	}
 }
 
+// Router
+func (i *injector) NewRouter() router.IRouter {
+	engine := gin.Default()
+	return router.NewRouter(engine, i.NewAppHandler())
+}
+
+// App Aggregate Handler
 type appHandler struct {
 	handler.IUserHandler
 	handler.ICommentHandler
@@ -55,7 +68,6 @@ type appHandler struct {
 	handler.ISearchHandler
 }
 
-// Aggregate Handler
 func (i *injector) NewAppHandler() handler.IAppHandler {
 	appHandler := &appHandler{}
 	appHandler.IUserHandler = i.NewUserHandler()

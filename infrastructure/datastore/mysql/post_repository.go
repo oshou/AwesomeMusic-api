@@ -1,3 +1,4 @@
+// Package mysql is repository implementation package
 package mysql
 
 import (
@@ -12,6 +13,7 @@ type postRepository struct {
 
 var _ repository.IPostRepository = (*postRepository)(nil)
 
+// NewPostRepository is constructor for postRepository
 func NewPostRepository(db *sqlx.DB) repository.IPostRepository {
 	return &postRepository{
 		db: db,

@@ -1,3 +1,4 @@
+// Package usecase is application layer package
 package usecase
 
 import (
@@ -5,6 +6,7 @@ import (
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
+// IUserUsecase is usecase layer Interface for User
 type IUserUsecase interface {
 	GetUsers() ([]*model.User, error)
 	GetUserByID(userID int) (*model.User, error)
@@ -17,6 +19,7 @@ type userUsecase struct {
 
 var _ IUserUsecase = (*userUsecase)(nil)
 
+// NewUserUsecase is IUserUsecase constructor
 func NewUserUsecase(repo repository.IUserRepository) IUserUsecase {
 	return &userUsecase{
 		repo: repo,

@@ -1,3 +1,4 @@
+// Package mysql is repository implementation package
 package mysql
 
 import (
@@ -12,6 +13,7 @@ type commentRepository struct {
 
 var _ repository.ICommentRepository = (*commentRepository)(nil)
 
+// NewCommentRepository is constructor for commentRepository
 func NewCommentRepository(db *sqlx.DB) repository.ICommentRepository {
 	return &commentRepository{
 		db: db,

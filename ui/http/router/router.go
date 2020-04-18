@@ -1,12 +1,27 @@
+// Package router is http-router package
 package router
 
 import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
+	"github.com/oshou/AwesomeMusic-api/ui/http/middleware"
 )
 
-func NewRouter(e *gin.Engine, h handler.IAppHandler) {
+// IRouter is http-router interface
+type IRouter interface {
+	Run(addr string) error
+}
+
+type router struct {
+	engine *gin.Engine
+}
+
+var _ IRouter = (*router)(nil)
+
+// NewRouter is constructor for router
+func NewRouter(e *gin.Engine, h handler.IAppHandler) IRouter {
+	e.Use(middleware.SetCors(e))
 	g := e.Group("/v1/")
 	{
 		// ユーザー一覧
@@ -52,4 +67,11 @@ func NewRouter(e *gin.Engine, h handler.IAppHandler) {
 		// 検索結果
 		g.GET("/search", h.SearchByType)
 	}
+
+	return &router{e}
+}
+
+func (r *router) Run(addr string) error {
+	err := r.engine.Run(addr)
+	return err
 }

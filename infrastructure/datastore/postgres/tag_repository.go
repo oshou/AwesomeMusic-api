@@ -1,3 +1,4 @@
+// Package postgres is repository implementation package
 package postgres
 
 import (
@@ -12,6 +13,7 @@ type tagRepository struct {
 
 var _ repository.ITagRepository = (*tagRepository)(nil)
 
+// NewTagRepository is constructor for tagRepository
 func NewTagRepository(db *sqlx.DB) repository.ITagRepository {
 	return &tagRepository{
 		db: db,

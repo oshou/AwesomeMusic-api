@@ -1,3 +1,4 @@
+// Package handler is ui layer http-handler package
 package handler
 
 import (
@@ -9,6 +10,7 @@ import (
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
+// ICommentHandler is ui layer http-handler interface
 type ICommentHandler interface {
 	GetComments(ctx *gin.Context)
 	GetCommentByID(ctx *gin.Context)
@@ -21,13 +23,13 @@ type commentHandler struct {
 
 var _ ICommentHandler = (*commentHandler)(nil)
 
+// NewCommentHandler is constructor for commentHandler
 func NewCommentHandler(u usecase.ICommentUsecase) ICommentHandler {
 	return &commentHandler{
 		usecase: u,
 	}
 }
 
-// Index: GET /v1/posts/:post_id/comments
 func (ch *commentHandler) GetComments(ctx *gin.Context) {
 	postID, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {

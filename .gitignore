@@ -8,4 +8,5 @@ main
 go.sum
 
 *.png
+*.log
 .DS_Store

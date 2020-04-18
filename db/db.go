@@ -1,16 +1,20 @@
+// Package db is data access package
 package db
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/jmoiron/sqlx"
 )
 
-// DBコネクション作成
-func NewDBConn() *sqlx.DB {
-	connStr := fmt.Sprintf(
+type db struct {
+	conn *sqlx.DB
+}
+
+// NewDB is constructor for db
+func NewDB() (*sqlx.DB, error) {
+	dsn := fmt.Sprintf(
 		// - for MySQL
 		//"%s:%s@tcp(%s:%s)/%s?%s",
 		// - for Postgres
@@ -22,12 +26,16 @@ func NewDBConn() *sqlx.DB {
 		os.Getenv("DB_NAME"),
 		os.Getenv("DB_OPTION"),
 	)
-	fmt.Println(connStr)
-	conn, err := sqlx.Open(os.Getenv("DB_DRIVER"), connStr)
+	db, err := sqlx.Open(os.Getenv("DB_DRIVER"), dsn)
 
 	if err != nil {
-		log.Fatalf("error connecting database: %s", err.Error())
+		return nil, err
 	}
 
-	return conn
+	return db, nil
+}
+
+func (db *db) Close() error {
+	err := db.conn.Close()
+	return err
 }

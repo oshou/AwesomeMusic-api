@@ -1,3 +1,4 @@
+// Package handler is ui layer http-handler package
 package handler
 
 import (
@@ -8,6 +9,7 @@ import (
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
+// ISearchHandler is ui layer http-handler interface
 type ISearchHandler interface {
 	SearchByType(ctx *gin.Context)
 }
@@ -18,6 +20,7 @@ type searchHandler struct {
 
 var _ ISearchHandler = (*searchHandler)(nil)
 
+// NewSearchHandler is constructor for searchHandler
 func NewSearchHandler(u usecase.ISearchUsecase) ISearchHandler {
 	return &searchHandler{
 		usecase: u,

@@ -3,6 +3,7 @@ package repository
 
 import "github.com/oshou/AwesomeMusic-api/domain/model"
 
+// ITagRepository is Domain-access interface for Tag & PostTag
 type ITagRepository interface {
 	GetAll() ([]*model.Tag, error)
 	GetByID(tagID int) (*model.Tag, error)

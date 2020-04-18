@@ -1,3 +1,4 @@
+// Package usecase is application layer package
 package usecase
 
 import (

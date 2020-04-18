@@ -1,3 +1,4 @@
+// Package middleware is http-middleware package
 package middleware
 
 import (
@@ -7,10 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// CORSMaxAgeHour is CORS Lifetime(hour)
 const CORSMaxAgeHour = 24
 
-func NewMiddleware(e *gin.Engine) {
-	e.Use(cors.New(cors.Config{
+// SetCors is setting for HTTP CORS Policy
+func SetCors(e *gin.Engine) gin.HandlerFunc {
+	return cors.New(cors.Config{
 		// 許可したいHTTPメソッドの一覧
 		AllowMethods: []string{
 			"GET",
@@ -35,5 +38,5 @@ func NewMiddleware(e *gin.Engine) {
 			"*",
 		},
 		MaxAge: CORSMaxAgeHour * time.Hour,
-	}))
+	})
 }
