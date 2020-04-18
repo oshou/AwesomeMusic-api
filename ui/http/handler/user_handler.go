@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/oshou/AwesomeMusic-api/usecase"
+	"github.com/oshou/AwesomeMusic-api/service"
 )
 
 // IUserHandler is ui layer http-handler interface
@@ -18,20 +18,20 @@ type IUserHandler interface {
 }
 
 type userHandler struct {
-	usecase usecase.IUserUsecase
+	service service.IUserService
 }
 
 var _ IUserHandler = (*userHandler)(nil)
 
 // NewUserHandler is constructor for userHandler
-func NewUserHandler(u usecase.IUserUsecase) IUserHandler {
+func NewUserHandler(s service.IUserService) IUserHandler {
 	return &userHandler{
-		usecase: u,
+		service: s,
 	}
 }
 
 func (uh *userHandler) GetUsers(ctx *gin.Context) {
-	users, err := uh.usecase.GetUsers()
+	users, err := uh.service.GetUsers()
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -46,7 +46,7 @@ func (uh *userHandler) GetUsers(ctx *gin.Context) {
 func (uh *userHandler) AddUser(ctx *gin.Context) {
 	name := ctx.Query("name")
 
-	user, err := uh.usecase.AddUser(name)
+	user, err := uh.service.AddUser(name)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
@@ -67,7 +67,7 @@ func (uh *userHandler) GetUserByID(ctx *gin.Context) {
 		return
 	}
 
-	user, err := uh.usecase.GetUserByID(userID)
+	user, err := uh.service.GetUserByID(userID)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusNotFound)

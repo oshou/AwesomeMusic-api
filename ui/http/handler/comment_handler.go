@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/oshou/AwesomeMusic-api/usecase"
+	"github.com/oshou/AwesomeMusic-api/service"
 )
 
 // ICommentHandler is ui layer http-handler interface
@@ -18,15 +18,15 @@ type ICommentHandler interface {
 }
 
 type commentHandler struct {
-	usecase usecase.ICommentUsecase
+	service service.ICommentService
 }
 
 var _ ICommentHandler = (*commentHandler)(nil)
 
 // NewCommentHandler is constructor for commentHandler
-func NewCommentHandler(u usecase.ICommentUsecase) ICommentHandler {
+func NewCommentHandler(s service.ICommentService) ICommentHandler {
 	return &commentHandler{
-		usecase: u,
+		service: s,
 	}
 }
 
@@ -39,7 +39,7 @@ func (ch *commentHandler) GetComments(ctx *gin.Context) {
 		return
 	}
 
-	comments, err := ch.usecase.GetComments(postID)
+	comments, err := ch.service.GetComments(postID)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -68,7 +68,7 @@ func (ch *commentHandler) AddComment(ctx *gin.Context) {
 	}
 
 	commentText := ctx.Query("comment")
-	comment, err := ch.usecase.AddComment(postID, userID, commentText)
+	comment, err := ch.service.AddComment(postID, userID, commentText)
 
 	if err != nil {
 		log.Println(err)
@@ -89,7 +89,7 @@ func (ch *commentHandler) GetCommentByID(ctx *gin.Context) {
 		return
 	}
 
-	comment, err := ch.usecase.GetCommentByID(commentID)
+	comment, err := ch.service.GetCommentByID(commentID)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusNotFound)

@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/oshou/AwesomeMusic-api/usecase"
+	"github.com/oshou/AwesomeMusic-api/service"
 )
 
 // ITagHandler is ui layer http-handler interface
@@ -20,20 +20,20 @@ type ITagHandler interface {
 }
 
 type tagHandler struct {
-	usecase usecase.ITagUsecase
+	service service.ITagService
 }
 
 var _ ITagHandler = (*tagHandler)(nil)
 
 // NewTagHandler is constructor for tagHandler
-func NewTagHandler(u usecase.ITagUsecase) ITagHandler {
+func NewTagHandler(s service.ITagService) ITagHandler {
 	return &tagHandler{
-		usecase: u,
+		service: s,
 	}
 }
 
 func (th *tagHandler) GetTags(ctx *gin.Context) {
-	tags, err := th.usecase.GetTags()
+	tags, err := th.service.GetTags()
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
@@ -53,7 +53,7 @@ func (th *tagHandler) GetTagByID(ctx *gin.Context) {
 		return
 	}
 
-	tag, err := th.usecase.GetTagByID(tagID)
+	tag, err := th.service.GetTagByID(tagID)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
@@ -73,7 +73,7 @@ func (th *tagHandler) GetTagsByPostID(ctx *gin.Context) {
 		return
 	}
 
-	tags, err := th.usecase.GetTagsByPostID(postID)
+	tags, err := th.service.GetTagsByPostID(postID)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
@@ -86,7 +86,7 @@ func (th *tagHandler) GetTagsByPostID(ctx *gin.Context) {
 
 func (th *tagHandler) AddTag(ctx *gin.Context) {
 	tagName := ctx.Query("name")
-	tag, err := th.usecase.AddTag(tagName)
+	tag, err := th.service.AddTag(tagName)
 
 	if err != nil {
 		log.Println(err)
@@ -115,7 +115,7 @@ func (th *tagHandler) AttachTag(ctx *gin.Context) {
 		return
 	}
 
-	postTag, err := th.usecase.AttachTag(postID, tagID)
+	postTag, err := th.service.AttachTag(postID, tagID)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusBadRequest)

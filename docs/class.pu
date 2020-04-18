@@ -7,15 +7,16 @@ package DomainService {
   interface IRepository
 }
 
-package Usecase {
-  class Usecase
-  interface IUsecase
+package Application {
+  class Service
+  interface IService
 }
 
 package Infrastructure {
   class Datastore
 }
 package UI {
+  interface IRouter
   class Router
   class Middleware
   interface IHandler
@@ -24,12 +25,13 @@ package UI {
 class main
 
 Model <-up- IRepository
-IUsecase -up-> IRepository
-Usecase -right-> IUsecase: DI
-IHandler -up-> IUsecase
+IService -up-> IRepository
+Datastore -up-> IRepository: DI
+Service -right-> IService: DI
+IHandler -up-> IService
 Handler -right-> IHandler: DI
 Router -up-> IHandler
-Datastore -up-> IRepository: DI
-main -up-> Router
-main -up-> Middleware
+Router -up-> Middleware
+IRouter -up-> Router
+main -up-> IRouter
 @enduml

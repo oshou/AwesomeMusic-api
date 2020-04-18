@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/oshou/AwesomeMusic-api/usecase"
+	"github.com/oshou/AwesomeMusic-api/service"
 )
 
 // ISearchHandler is ui layer http-handler interface
@@ -15,15 +15,15 @@ type ISearchHandler interface {
 }
 
 type searchHandler struct {
-	usecase usecase.ISearchUsecase
+	service service.ISearchService
 }
 
 var _ ISearchHandler = (*searchHandler)(nil)
 
 // NewSearchHandler is constructor for searchHandler
-func NewSearchHandler(u usecase.ISearchUsecase) ISearchHandler {
+func NewSearchHandler(s service.ISearchService) ISearchHandler {
 	return &searchHandler{
-		usecase: u,
+		service: s,
 	}
 }
 
@@ -33,7 +33,7 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 
 	switch searchType {
 	case "post_title":
-		posts, err := sh.usecase.GetPostsByTitle(q)
+		posts, err := sh.service.GetPostsByTitle(q)
 		if err != nil {
 			log.Println(err)
 			ctx.AbortWithStatus(http.StatusBadRequest)
@@ -43,7 +43,7 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 
 		ctx.JSON(http.StatusOK, posts)
 	case "user_name":
-		posts, err := sh.usecase.GetPostsByUserName(q)
+		posts, err := sh.service.GetPostsByUserName(q)
 		if err != nil {
 			log.Println(err)
 			ctx.AbortWithStatus(http.StatusBadRequest)
@@ -53,7 +53,7 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 
 		ctx.JSON(http.StatusOK, posts)
 	case "tag_name":
-		posts, err := sh.usecase.GetPostsByTagName(q)
+		posts, err := sh.service.GetPostsByTagName(q)
 		if err != nil {
 			log.Println(err)
 			ctx.AbortWithStatus(http.StatusBadRequest)

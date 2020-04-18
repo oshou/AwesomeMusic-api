@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/oshou/AwesomeMusic-api/usecase"
+	"github.com/oshou/AwesomeMusic-api/service"
 )
 
 // IPostHandler is ui layer http-handler interface
@@ -21,20 +21,20 @@ type IPostHandler interface {
 }
 
 type postHandler struct {
-	usecase usecase.IPostUsecase
+	service service.IPostService
 }
 
 var _ IPostHandler = (*postHandler)(nil)
 
 // NewPostHandler is constructor for postHandler
-func NewPostHandler(u usecase.IPostUsecase) IPostHandler {
+func NewPostHandler(s service.IPostService) IPostHandler {
 	return &postHandler{
-		usecase: u,
+		service: s,
 	}
 }
 
 func (ph *postHandler) GetPosts(ctx *gin.Context) {
-	posts, err := ph.usecase.GetPosts()
+	posts, err := ph.service.GetPosts()
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -54,7 +54,7 @@ func (ph *postHandler) GetPostByID(ctx *gin.Context) {
 		return
 	}
 
-	post, err := ph.usecase.GetPostByID(postID)
+	post, err := ph.service.GetPostByID(postID)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -72,7 +72,7 @@ func (ph *postHandler) GetPostsByTagID(ctx *gin.Context) {
 		return
 	}
 
-	posts, err := ph.usecase.GetPostsByTagID(tagID)
+	posts, err := ph.service.GetPostsByTagID(tagID)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
@@ -92,7 +92,7 @@ func (ph *postHandler) GetPostsByUserID(ctx *gin.Context) {
 		return
 	}
 
-	posts, err := ph.usecase.GetPostsByUserID(userID)
+	posts, err := ph.service.GetPostsByUserID(userID)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -116,7 +116,7 @@ func (ph *postHandler) AddPost(ctx *gin.Context) {
 	url := ctx.Query("url")
 	message := ctx.Query("message")
 
-	post, err := ph.usecase.AddPost(userID, title, url, message)
+	post, err := ph.service.AddPost(userID, title, url, message)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
@@ -138,7 +138,7 @@ func (ph *postHandler) DeletePostByID(ctx *gin.Context) {
 		return
 	}
 
-	if err := ph.usecase.DeletePostByID(postID); err != nil {
+	if err := ph.service.DeletePostByID(postID); err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 

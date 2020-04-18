@@ -28,10 +28,10 @@ make run
 ```
 └── main.go                  # Entry Point
 ├── injector/                # DI
-├── domain/
+├── domain/                  # Domain Layer
 │   └── model/               # Domain Model Layer
 │   └── repository/          # Domain Service Layer
-├── usecase/                 # Application Layer
+├── service/                 # Application Layer
 ├── ui/                      # UI Layer
 │   └── http/                # http
 │         └── router/        # http router

@@ -6,7 +6,7 @@ box "UI" #LightBlue
   participant handler
 end box
 box "Application" #Yellow
-  participant usecase
+  participant service
 end box
 box "Domain" #Orange
   participant repository
@@ -30,30 +30,30 @@ router -> router: Set Middleware(Rate Limit)
 router -> handler: Routing
 activate handler
 handler -> handler: Parse Request
-handler -> usecase: Call usecase
-activate usecase
-usecase -> usecase: PreTask(Transaction..etc)
-usecase -> repository: Call Domain-Logic
+handler -> service: Call service
+activate service
+service -> service: PreTask(Transaction..etc)
+service -> repository: Call Domain-Logic
 activate repository
 repository -> model: CRUD
 repository <-- model:
 deactivate repository
-usecase <-- repository:
-usecase -> repository: Call Domain-Logic
+service <-- repository:
+service -> repository: Call Domain-Logic
 activate repository
 repository -> model: CRUD
 repository <-- model:
 deactivate repository
-usecase <-- repository:
-usecase -> repository: Call Domain-Logic
+service <-- repository:
+service -> repository: Call Domain-Logic
 activate repository
 repository -> model: CRUD
 repository <-- model:
 deactivate repository
-usecase <-- repository:
-usecase -> usecase: PostTask(Transaction..etc)
-deactivate usecase
-handler <-- usecase:
+service <-- repository:
+service -> service: PostTask(Transaction..etc)
+deactivate service
+handler <-- service:
 handler -> handler: Create Response
 router <- handler: Response
 deactivate handler

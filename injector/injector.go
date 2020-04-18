@@ -6,9 +6,9 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 	"github.com/oshou/AwesomeMusic-api/infrastructure/datastore/postgres"
+	"github.com/oshou/AwesomeMusic-api/service"
 	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
 	"github.com/oshou/AwesomeMusic-api/ui/http/router"
-	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
 // IInjector is DI Container interface
@@ -19,23 +19,23 @@ type IInjector interface {
 	NewAppHandler() handler.IAppHandler
 	// User
 	NewUserRepository() repository.IUserRepository
-	NewUserUsecase() usecase.IUserUsecase
+	NewUserService() service.IUserService
 	NewUserHandler() handler.IUserHandler
 	// Comment
 	NewCommentRepository() repository.ICommentRepository
-	NewCommentUsecase() usecase.ICommentUsecase
+	NewCommentService() service.ICommentService
 	NewCommentHandler() handler.ICommentHandler
 	// Post
 	NewPostRepository() repository.IPostRepository
-	NewPostUsecase() usecase.IPostUsecase
+	NewPostService() service.IPostService
 	NewPostHandler() handler.IPostHandler
 	// Tag
 	NewTagRepository() repository.ITagRepository
-	NewTagUsecase() usecase.ITagUsecase
+	NewTagService() service.ITagService
 	NewTagHandler() handler.ITagHandler
 	// Search
 	NewSearchRepository() repository.ISearchRepository
-	NewSearchUsecase() usecase.ISearchUsecase
+	NewSearchService() service.ISearchService
 	NewSearchHandler() handler.ISearchHandler
 }
 
@@ -84,12 +84,12 @@ func (i *injector) NewUserRepository() repository.IUserRepository {
 	return postgres.NewUserRepository(i.conn)
 }
 
-func (i *injector) NewUserUsecase() usecase.IUserUsecase {
-	return usecase.NewUserUsecase(i.NewUserRepository())
+func (i *injector) NewUserService() service.IUserService {
+	return service.NewUserService(i.NewUserRepository())
 }
 
 func (i *injector) NewUserHandler() handler.IUserHandler {
-	return handler.NewUserHandler(i.NewUserUsecase())
+	return handler.NewUserHandler(i.NewUserService())
 }
 
 // Comment
@@ -97,12 +97,12 @@ func (i *injector) NewCommentRepository() repository.ICommentRepository {
 	return postgres.NewCommentRepository(i.conn)
 }
 
-func (i *injector) NewCommentUsecase() usecase.ICommentUsecase {
-	return usecase.NewCommentUsecase(i.NewCommentRepository())
+func (i *injector) NewCommentService() service.ICommentService {
+	return service.NewCommentService(i.NewCommentRepository())
 }
 
 func (i *injector) NewCommentHandler() handler.ICommentHandler {
-	return handler.NewCommentHandler(i.NewCommentUsecase())
+	return handler.NewCommentHandler(i.NewCommentService())
 }
 
 // Post
@@ -110,12 +110,12 @@ func (i *injector) NewPostRepository() repository.IPostRepository {
 	return postgres.NewPostRepository(i.conn)
 }
 
-func (i *injector) NewPostUsecase() usecase.IPostUsecase {
-	return usecase.NewPostUsecase(i.NewPostRepository())
+func (i *injector) NewPostService() service.IPostService {
+	return service.NewPostService(i.NewPostRepository())
 }
 
 func (i *injector) NewPostHandler() handler.IPostHandler {
-	return handler.NewPostHandler(i.NewPostUsecase())
+	return handler.NewPostHandler(i.NewPostService())
 }
 
 // Tag
@@ -123,12 +123,12 @@ func (i *injector) NewTagRepository() repository.ITagRepository {
 	return postgres.NewTagRepository(i.conn)
 }
 
-func (i *injector) NewTagUsecase() usecase.ITagUsecase {
-	return usecase.NewTagUsecase(i.NewTagRepository())
+func (i *injector) NewTagService() service.ITagService {
+	return service.NewTagService(i.NewTagRepository())
 }
 
 func (i *injector) NewTagHandler() handler.ITagHandler {
-	return handler.NewTagHandler(i.NewTagUsecase())
+	return handler.NewTagHandler(i.NewTagService())
 }
 
 // Search
@@ -136,10 +136,10 @@ func (i *injector) NewSearchRepository() repository.ISearchRepository {
 	return postgres.NewSearchRepository(i.conn)
 }
 
-func (i *injector) NewSearchUsecase() usecase.ISearchUsecase {
-	return usecase.NewSearchUsecase(i.NewSearchRepository())
+func (i *injector) NewSearchService() service.ISearchService {
+	return service.NewSearchService(i.NewSearchRepository())
 }
 
 func (i *injector) NewSearchHandler() handler.ISearchHandler {
-	return handler.NewSearchHandler(i.NewSearchUsecase())
+	return handler.NewSearchHandler(i.NewSearchService())
 }
