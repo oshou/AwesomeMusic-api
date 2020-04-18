@@ -9,8 +9,8 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/oshou/AwesomeMusic-api/db"
 	"github.com/oshou/AwesomeMusic-api/injector"
-	"github.com/oshou/AwesomeMusic-api/presenter/middleware"
-	"github.com/oshou/AwesomeMusic-api/presenter/router"
+	"github.com/oshou/AwesomeMusic-api/ui/http/middleware"
+	"github.com/oshou/AwesomeMusic-api/ui/http/router"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/oshou/AwesomeMusic-api/presenter/handler"
+	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
 )
 
 func NewRouter(e *gin.Engine, h handler.IAppHandler) {

@@ -26,19 +26,25 @@ make run
 ## ディレクトリ構成
 
 ```
+└── main.go                  # Entry Point
+├── injector/                # DI
 ├── domain/
-│   └── model/        # Domain Model Layer
-│   └── repository/   # Domain Service Layer
-├── usecase/          # Application Layer
-├── presenter/        # UI Layer
-├── injector/         # DI
-├── db/               # DB Connetion
-└── Makefile          # Task Runner
-└── main.go           # Entry Point
-└── go.mod            # Go Package management
-└── go.sum            # Go Package management
-└── .env              # Config Environment
-└── Dockerfile        # Docker Container
+│   └── model/               # Domain Model Layer
+│   └── repository/          # Domain Service Layer
+├── usecase/                 # Application Layer
+├── ui/                      # UI Layer
+│   └── http/                # http
+│         └── router/        # http router
+│         └── middleware/    # http middleware
+│         └── handler/       # http handler
+├── infrastructure/          # Infrastructure Layer
+│   └── datastore/           # Datastore
+├── db/                      # DB Connetion
+└── Makefile                 # Task Runner
+└── go.mod                   # Go Package management
+└── go.sum                   # Go Package management
+└── .env                     # Config Environment
+└── Dockerfile               # Docker Container
 ```
 
 ## 処理フロー

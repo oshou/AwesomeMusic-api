@@ -5,7 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 	"github.com/oshou/AwesomeMusic-api/infrastructure/datastore/postgres"
-	"github.com/oshou/AwesomeMusic-api/presenter/handler"
+	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
