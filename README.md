@@ -43,8 +43,8 @@ make run
 
 ## 処理フロー
 
-![sequence](https://user-images.githubusercontent.com/4841735/79293900-c2f08100-7f0f-11ea-9ddd-cfa521302759.png)
+![sequence](https://github.com/oshou/AwesomeMusic-api/blob/img/out/docs/sequence/sequence.png)
 
 ## クラス構成(のようなもの)
 
-![class](https://user-images.githubusercontent.com/4841735/79293889-bb30dc80-7f0f-11ea-89d7-36a980dc11ef.png)
+![class](https://github.com/oshou/AwesomeMusic-api/blob/img/out/docs/class/class.png)
