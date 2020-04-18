@@ -2,56 +2,59 @@
 @startuml
 participant main
 box "UI" #LightBlue
+  participant middleware
   participant handler
 end box
 box "Application" #Yellow
   participant usecase
 end box
-box "Domain Service" #Orange
+box "Domain" #Orange
   participant repository
+  participant model
 end box
-box "Domain Model" #Pink
-  participant domain
+box "Infrastructure" #Gray
+  participant datastore
+end box
 
-activate main
-main -> main: Load Env
-main -> main: Create DB Connection
+main -> main: Set Environment
+main -> main: Set DBConnection
 main -> main: DI
-main -> main: Create Server
-main -> main: Set CORS Policy
-main -> main: Create Router
-[-> main : Request
-main -> handler: Routing
+datastore -> repository: DI
+main -> middleware: Start Server
+activate middleware
+middleware -> middleware: Set CORS Policy
+middleware -> middleware: Set Router
+[-> middleware : Request
+middleware -> handler: Routing
+activate handler
 handler -> handler: Parse Request
 handler -> usecase: Call usecase
+activate usecase
+usecase -> usecase: PreTask(Transaction..etc)
 usecase -> repository: Call Domain-Logic
-repository -> domain: CRUD
-repository <-- domain:
+activate repository
+repository -> model: CRUD
+repository <-- model:
+deactivate repository
 usecase <-- repository:
+usecase -> repository: Call Domain-Logic
+activate repository
+repository -> model: CRUD
+repository <-- model:
+deactivate repository
+usecase <-- repository:
+usecase -> repository: Call Domain-Logic
+activate repository
+repository -> model: CRUD
+repository <-- model:
+deactivate repository
+usecase <-- repository:
+usecase -> usecase: PostTask(Transaction..etc)
+deactivate usecase
 handler <-- usecase:
 handler -> handler: Create Response
-[<- handler: Response
-@enduml
-```
-
-```plantuml
-@startuml
-activate main
-main -> main: APIサーバ起動
-main -> main: 環境変数読み込み
-main -> main: DBコネクション生成
-main -> main: CQRSポリシー設定
-[-> main :request
-main -> handler: routing
-handler -> handler: requestパラメータ解釈
-handler -> service: serviceを実行
-service -> service: ビジネスロジック前処理
-service -> DB: modelメソッドを実行
-DB -> service: 処理結果返却
-service -> service: ビジネスロジック後処理
-service -> handler: 処理結果返却
-handler-> handler: responseデータ生成
-handler-> main: response
-main ->[: response
+middleware <- handler: Response
+deactivate handler
+[<- middleware: Response
 @enduml
 ```
