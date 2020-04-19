@@ -48,7 +48,7 @@ func (ur *userRepository) GetByID(userID int) (*model.User, error) {
 							id = ?`
 
 	if err := ur.db.Get(u, query, userID); err != nil {
-		return u, err
+		return nil, err
 	}
 
 	return u, nil
@@ -66,7 +66,7 @@ func (ur *userRepository) GetByName(name string) ([]*model.User, error) {
 							name LIKE ?`
 
 	if err := ur.db.Select(&uu, query, "%"+name+"%"); err != nil {
-		return uu, err
+		return nil, err
 	}
 
 	return uu, nil
@@ -84,7 +84,7 @@ func (ur *userRepository) Add(name string) (*model.User, error) {
 	result, err := ur.db.Exec(query, name)
 
 	if err != nil {
-		return u, err
+		return nil, err
 	}
 
 	i64, _ := result.LastInsertId()

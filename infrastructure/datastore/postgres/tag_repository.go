@@ -48,7 +48,7 @@ func (tr *tagRepository) GetByID(tagID int) (*model.Tag, error) {
 							id = ?`
 
 	if err := tr.db.Get(t, query, tagID); err != nil {
-		return t, err
+		return nil, err
 	}
 
 	return t, nil
@@ -86,7 +86,7 @@ func (tr *tagRepository) GetByPostID(postID int) ([]*model.Tag, error) {
 							pt.post_id = ?`
 
 	if err := tr.db.Select(&tt, query, postID); err != nil {
-		return tt, err
+		return nil, err
 	}
 
 	return tt, nil
@@ -103,7 +103,7 @@ func (tr *tagRepository) Add(tagName string) (*model.Tag, error) {
 
 	result, err := tr.db.Exec(query, tagName)
 	if err != nil {
-		return t, err
+		return nil, err
 	}
 
 	i64, _ := result.LastInsertId()

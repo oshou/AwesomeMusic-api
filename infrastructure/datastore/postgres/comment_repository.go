@@ -54,7 +54,7 @@ func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
 							id = ?`
 
 	if err := cr.db.Get(c, query, commentID); err != nil {
-		return c, err
+		return nil, err
 	}
 
 	return c, nil
