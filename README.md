@@ -1,22 +1,32 @@
 # AwesomeMusic-api Server
 
-音楽サービス AwesomeMusic の API サーバ
+[![CircleCI](https://circleci.com/gh/oshou/AwesomeMusic-api/tree/master.svg?style=shield)](https://circleci.com/gh/oshou/AwesomeMusic-api/tree/master)
+
+音楽サービス AwesomeMusic の API サーバ<br>
 https://github.com/oshou/Portfolio
 
 ## 概要
 
 - JSON 形式でレスポンスを返します。
 - 環境変数はレポジトリ直下の.env を読み込みます。
-  ビルド時に指定の.env.(環境名)のファイルを.env としてコピー作成されます。
+  ビルド時に指定の.env.(環境名)のファイルを.env としてコピー作成いたします。
   ex) cp -rp .env.local -> .env
-- Port8080 で受付いたします。
-- OnionArchitecture を採用しています。
+- デフォルトで Port 8080 で受付いたします。
+- Onion Architecture を参考にしています。
 
 ## Quick Start
 
 ```bash
-# 環境変数編集(.env.local)
-vim .env
+# 環境変数指定(.env.local)
+# - DB_DRIVER
+# - DB_HOST
+# - DB_PORT
+# - DB_USER
+# - DB_PASSWORD
+# - DB_NAME
+# - DB_OPTION
+# - API_SERVER_PORT
+vim .env.local
 # ビルド(ローカル)
 make build_local
 # ビルド済バイナリ実行
