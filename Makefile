@@ -32,4 +32,8 @@ run:
 	./$(BINARY_NAME)
 
 clean:
+	$(GOCMD) mod tidy
 	$(GOCMD) clean
+
+test:
+	$(GOCMD) test -v ./...
