@@ -2,7 +2,7 @@
 package handler
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -33,7 +33,7 @@ func NewUserHandler(s service.IUserService) IUserHandler {
 func (uh *userHandler) GetUsers(ctx *gin.Context) {
 	users, err := uh.service.GetUsers()
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)
 
 		return
@@ -48,7 +48,7 @@ func (uh *userHandler) AddUser(ctx *gin.Context) {
 
 	user, err := uh.service.AddUser(name)
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -61,7 +61,7 @@ func (uh *userHandler) AddUser(ctx *gin.Context) {
 func (uh *userHandler) GetUserByID(ctx *gin.Context) {
 	userID, err := strconv.Atoi(ctx.Param("user_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -69,7 +69,7 @@ func (uh *userHandler) GetUserByID(ctx *gin.Context) {
 
 	user, err := uh.service.GetUserByID(userID)
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)
 
 		return

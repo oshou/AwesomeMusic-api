@@ -2,7 +2,7 @@
 package handler
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -35,7 +35,7 @@ func NewTagHandler(s service.ITagService) ITagHandler {
 func (th *tagHandler) GetTags(ctx *gin.Context) {
 	tags, err := th.service.GetTags()
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -47,7 +47,7 @@ func (th *tagHandler) GetTags(ctx *gin.Context) {
 func (th *tagHandler) GetTagByID(ctx *gin.Context) {
 	tagID, err := strconv.Atoi(ctx.Param("tag_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -55,7 +55,7 @@ func (th *tagHandler) GetTagByID(ctx *gin.Context) {
 
 	tag, err := th.service.GetTagByID(tagID)
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -67,7 +67,7 @@ func (th *tagHandler) GetTagByID(ctx *gin.Context) {
 func (th *tagHandler) GetTagsByPostID(ctx *gin.Context) {
 	postID, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -75,7 +75,7 @@ func (th *tagHandler) GetTagsByPostID(ctx *gin.Context) {
 
 	tags, err := th.service.GetTagsByPostID(postID)
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -89,7 +89,7 @@ func (th *tagHandler) AddTag(ctx *gin.Context) {
 	tag, err := th.service.AddTag(tagName)
 
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -101,7 +101,7 @@ func (th *tagHandler) AddTag(ctx *gin.Context) {
 func (th *tagHandler) AttachTag(ctx *gin.Context) {
 	postID, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -109,7 +109,7 @@ func (th *tagHandler) AttachTag(ctx *gin.Context) {
 
 	tagID, err := strconv.Atoi(ctx.Param("tag_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -117,7 +117,7 @@ func (th *tagHandler) AttachTag(ctx *gin.Context) {
 
 	postTag, err := th.service.AttachTag(postID, tagID)
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 	}
 

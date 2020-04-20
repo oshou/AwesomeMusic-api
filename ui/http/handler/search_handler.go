@@ -2,7 +2,7 @@
 package handler
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -35,7 +35,7 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 	case "post_title":
 		posts, err := sh.service.GetPostsByTitle(q)
 		if err != nil {
-			log.Println(err)
+			fmt.Printf("%+v\n", err)
 			ctx.AbortWithStatus(http.StatusBadRequest)
 
 			return
@@ -45,7 +45,7 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 	case "user_name":
 		posts, err := sh.service.GetPostsByUserName(q)
 		if err != nil {
-			log.Println(err)
+			fmt.Printf("%+v\n", err)
 			ctx.AbortWithStatus(http.StatusBadRequest)
 
 			return
@@ -55,7 +55,7 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 	case "tag_name":
 		posts, err := sh.service.GetPostsByTagName(q)
 		if err != nil {
-			log.Println(err)
+			fmt.Printf("%+v\n", err)
 			ctx.AbortWithStatus(http.StatusBadRequest)
 
 			return

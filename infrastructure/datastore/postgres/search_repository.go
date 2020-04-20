@@ -5,6 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
+	"github.com/pkg/errors"
 )
 
 type searchRepository struct {
@@ -32,10 +33,10 @@ func (sr *searchRepository) GetByTitle(q string) ([]*model.Post, error) {
 						FROM
 							post
 						WHERE
-							title LIKE ?`
+							title LIKE $1`
 
 	if err := sr.db.Select(&pp, query, "%"+q+"%"); err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	return pp, nil
@@ -55,10 +56,10 @@ func (sr *searchRepository) GetByUserName(q string) ([]*model.Post, error) {
 						INNER JOIN user AS u
 						  ON u.id = p.user_id
 						WHERE
-							u.name LIKE ?`
+							u.name LIKE $1`
 
 	if err := sr.db.Select(&pp, query, "%"+q+"%"); err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	return pp, nil
@@ -80,10 +81,10 @@ func (sr *searchRepository) GetByTagName(q string) ([]*model.Post, error) {
 						INNER JOIN tag AS t
 							ON pt.tag_id = t.id
 						WHERE
-							t.name LIKE ?`
+							t.name LIKE $1`
 
 	if err := sr.db.Select(&pp, query, "%"+q+"%"); err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	return pp, nil

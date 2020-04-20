@@ -2,7 +2,7 @@
 package handler
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -36,7 +36,7 @@ func NewPostHandler(s service.IPostService) IPostHandler {
 func (ph *postHandler) GetPosts(ctx *gin.Context) {
 	posts, err := ph.service.GetPosts()
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)
 
 		return
@@ -48,7 +48,7 @@ func (ph *postHandler) GetPosts(ctx *gin.Context) {
 func (ph *postHandler) GetPostByID(ctx *gin.Context) {
 	postID, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -56,7 +56,7 @@ func (ph *postHandler) GetPostByID(ctx *gin.Context) {
 
 	post, err := ph.service.GetPostByID(postID)
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)
 	}
 
@@ -66,7 +66,7 @@ func (ph *postHandler) GetPostByID(ctx *gin.Context) {
 func (ph *postHandler) GetPostsByTagID(ctx *gin.Context) {
 	tagID, err := strconv.Atoi(ctx.Param("tag_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -74,7 +74,7 @@ func (ph *postHandler) GetPostsByTagID(ctx *gin.Context) {
 
 	posts, err := ph.service.GetPostsByTagID(tagID)
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -86,7 +86,7 @@ func (ph *postHandler) GetPostsByTagID(ctx *gin.Context) {
 func (ph *postHandler) GetPostsByUserID(ctx *gin.Context) {
 	userID, err := strconv.Atoi(ctx.Param("user_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -94,7 +94,7 @@ func (ph *postHandler) GetPostsByUserID(ctx *gin.Context) {
 
 	posts, err := ph.service.GetPostsByUserID(userID)
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)
 
 		return
@@ -106,7 +106,7 @@ func (ph *postHandler) GetPostsByUserID(ctx *gin.Context) {
 func (ph *postHandler) AddPost(ctx *gin.Context) {
 	userID, err := strconv.Atoi(ctx.Query("user_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -118,7 +118,7 @@ func (ph *postHandler) AddPost(ctx *gin.Context) {
 
 	post, err := ph.service.AddPost(userID, title, url, message)
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -132,14 +132,14 @@ func (ph *postHandler) DeletePostByID(ctx *gin.Context) {
 	postID, err := strconv.Atoi(id)
 
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
 	}
 
 	if err := ph.service.DeletePostByID(postID); err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return

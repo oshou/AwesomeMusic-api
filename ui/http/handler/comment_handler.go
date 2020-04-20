@@ -2,7 +2,7 @@
 package handler
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -33,7 +33,7 @@ func NewCommentHandler(s service.ICommentService) ICommentHandler {
 func (ch *commentHandler) GetComments(ctx *gin.Context) {
 	postID, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -41,7 +41,7 @@ func (ch *commentHandler) GetComments(ctx *gin.Context) {
 
 	comments, err := ch.service.GetComments(postID)
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)
 
 		return
@@ -53,7 +53,7 @@ func (ch *commentHandler) GetComments(ctx *gin.Context) {
 func (ch *commentHandler) AddComment(ctx *gin.Context) {
 	postID, err := strconv.Atoi(ctx.Param("post_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -61,7 +61,7 @@ func (ch *commentHandler) AddComment(ctx *gin.Context) {
 
 	userID, err := strconv.Atoi(ctx.Query("user_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -71,7 +71,7 @@ func (ch *commentHandler) AddComment(ctx *gin.Context) {
 	comment, err := ch.service.AddComment(postID, userID, commentText)
 
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -83,7 +83,7 @@ func (ch *commentHandler) AddComment(ctx *gin.Context) {
 func (ch *commentHandler) GetCommentByID(ctx *gin.Context) {
 	commentID, err := strconv.Atoi(ctx.Param("comment_id"))
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 
 		return
@@ -91,7 +91,7 @@ func (ch *commentHandler) GetCommentByID(ctx *gin.Context) {
 
 	comment, err := ch.service.GetCommentByID(commentID)
 	if err != nil {
-		log.Println(err)
+		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)
 
 		return

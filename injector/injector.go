@@ -5,7 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
-	"github.com/oshou/AwesomeMusic-api/infrastructure/datastore/postgres"
+	datastore "github.com/oshou/AwesomeMusic-api/infrastructure/datastore/postgres"
+
+	//datastore "github.com/oshou/AwesomeMusic-api/infrastructure/datastore/mysql"
 	"github.com/oshou/AwesomeMusic-api/service"
 	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
 	"github.com/oshou/AwesomeMusic-api/ui/http/router"
@@ -81,7 +83,7 @@ func (i *injector) NewAppHandler() handler.IAppHandler {
 
 // User
 func (i *injector) NewUserRepository() repository.IUserRepository {
-	return postgres.NewUserRepository(i.conn)
+	return datastore.NewUserRepository(i.conn)
 }
 
 func (i *injector) NewUserService() service.IUserService {
@@ -94,7 +96,7 @@ func (i *injector) NewUserHandler() handler.IUserHandler {
 
 // Comment
 func (i *injector) NewCommentRepository() repository.ICommentRepository {
-	return postgres.NewCommentRepository(i.conn)
+	return datastore.NewCommentRepository(i.conn)
 }
 
 func (i *injector) NewCommentService() service.ICommentService {
@@ -107,7 +109,7 @@ func (i *injector) NewCommentHandler() handler.ICommentHandler {
 
 // Post
 func (i *injector) NewPostRepository() repository.IPostRepository {
-	return postgres.NewPostRepository(i.conn)
+	return datastore.NewPostRepository(i.conn)
 }
 
 func (i *injector) NewPostService() service.IPostService {
@@ -120,7 +122,7 @@ func (i *injector) NewPostHandler() handler.IPostHandler {
 
 // Tag
 func (i *injector) NewTagRepository() repository.ITagRepository {
-	return postgres.NewTagRepository(i.conn)
+	return datastore.NewTagRepository(i.conn)
 }
 
 func (i *injector) NewTagService() service.ITagService {
@@ -133,7 +135,7 @@ func (i *injector) NewTagHandler() handler.ITagHandler {
 
 // Search
 func (i *injector) NewSearchRepository() repository.ISearchRepository {
-	return postgres.NewSearchRepository(i.conn)
+	return datastore.NewSearchRepository(i.conn)
 }
 
 func (i *injector) NewSearchService() service.ISearchService {

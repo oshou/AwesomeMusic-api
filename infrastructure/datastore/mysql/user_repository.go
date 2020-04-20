@@ -1,10 +1,11 @@
-// Package mysql is repository implementation package
+// Package mysql implements repository package
 package mysql
 
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
+	"github.com/pkg/errors"
 )
 
 type userRepository struct {
@@ -30,14 +31,14 @@ func (ur *userRepository) GetAll() ([]*model.User, error) {
 							user`
 
 	if err := ur.db.Select(&uu, query); err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	return uu, nil
 }
 
 func (ur *userRepository) GetByID(userID int) (*model.User, error) {
-	u := &model.User{}
+	var u model.User
 
 	query := `SELECT
 							id,
@@ -45,13 +46,13 @@ func (ur *userRepository) GetByID(userID int) (*model.User, error) {
 						FROM
 							user
 						WHERE
-							id = ?`
+							id = $1`
 
-	if err := ur.db.Get(u, query, userID); err != nil {
-		return u, err
+	if err := ur.db.Get(&u, query, userID); err != nil {
+		return nil, errors.WithStack(err)
 	}
 
-	return u, nil
+	return &u, nil
 }
 
 func (ur *userRepository) GetByName(name string) ([]*model.User, error) {
@@ -63,32 +64,32 @@ func (ur *userRepository) GetByName(name string) ([]*model.User, error) {
 						FROM
 							user
 						WHERE
-							name LIKE ?`
+							name LIKE $1`
 
 	if err := ur.db.Select(&uu, query, "%"+name+"%"); err != nil {
-		return uu, err
+		return nil, errors.WithStack(err)
 	}
 
 	return uu, nil
 }
 
 func (ur *userRepository) Add(name string) (*model.User, error) {
-	u := &model.User{
+	u := model.User{
 		Name: name,
 	}
 	query := `INSERT INTO
 							user(name)
 						VALUES
-							(?)`
+							($1)`
 
 	result, err := ur.db.Exec(query, name)
 
 	if err != nil {
-		return u, err
+		return nil, errors.WithStack(err)
 	}
 
 	i64, _ := result.LastInsertId()
 	u.ID = int(i64)
 
-	return u, nil
+	return &u, nil
 }

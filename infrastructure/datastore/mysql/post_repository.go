@@ -1,10 +1,11 @@
-// Package mysql is repository implementation package
+// Package mysql implements repository package
 package mysql
 
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
+	"github.com/pkg/errors"
 )
 
 type postRepository struct {
@@ -32,15 +33,16 @@ func (pr *postRepository) GetAll() ([]*model.Post, error) {
 						FROM
 							post`
 
-	if err := pr.db.Select(&pp, query); err != nil {
-		return nil, err
+	err := pr.db.Select(&pp, query)
+	if err != nil {
+		return nil, errors.WithStack(err)
 	}
 
 	return pp, nil
 }
 
 func (pr *postRepository) GetByID(postID int) (*model.Post, error) {
-	p := &model.Post{}
+	var p model.Post
 
 	query := `SELECT
 							id,
@@ -51,13 +53,13 @@ func (pr *postRepository) GetByID(postID int) (*model.Post, error) {
 						FROM
 							post
 						WHERE
-							id = ?`
+							id = $1`
 
-	if err := pr.db.Get(p, query, postID); err != nil {
-		return nil, err
+	if err := pr.db.Get(&p, query, postID); err != nil {
+		return nil, errors.WithStack(err)
 	}
 
-	return p, nil
+	return &p, nil
 }
 
 func (pr *postRepository) GetByTagID(tagID int) ([]*model.Post, error) {
@@ -76,10 +78,10 @@ func (pr *postRepository) GetByTagID(tagID int) ([]*model.Post, error) {
 						INNER JOIN tag AS t
 							ON pt.tag_id = t.id
 						WHERE
-							t.id = ?`
+							t.id = $1`
 
 	if err := pr.db.Select(&pp, query, tagID); err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	return pp, nil
@@ -99,10 +101,10 @@ func (pr *postRepository) GetByUserID(userID int) ([]*model.Post, error) {
 						INNER JOIN user AS u
 							ON u.id = p.user_id
 						WHERE
-							u.id = ?`
+							u.id = $1`
 
 	if err := pr.db.Select(&pp, query, userID); err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	return pp, nil
@@ -112,14 +114,14 @@ func (pr *postRepository) Add(userID int, title, url, message string) (*model.Po
 	query := `INSERT INTO
 							post(user_id, title, url, message)
 						VALUES
-							(?, ?, ?, ?)`
+							($1, $2, $3, $4)`
 
 	result, err := pr.db.Exec(query, userID, title, url, message)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
-	var p = &model.Post{
+	p := model.Post{
 		UserID:  userID,
 		Title:   title,
 		URL:     url,
@@ -129,17 +131,17 @@ func (pr *postRepository) Add(userID int, title, url, message string) (*model.Po
 	i64, _ := result.LastInsertId()
 	p.ID = int(i64)
 
-	return p, nil
+	return &p, nil
 }
 
 func (pr *postRepository) DeleteByID(postID int) error {
 	query := `DELETE FROM
 							post
 						WHERE
-							id = ?`
+							id = $1`
 
 	if _, err := pr.db.Exec(query, postID); err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	return nil
