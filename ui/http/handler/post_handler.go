@@ -21,20 +21,20 @@ type IPostHandler interface {
 }
 
 type postHandler struct {
-	service service.IPostService
+	svc service.IPostService
 }
 
 var _ IPostHandler = (*postHandler)(nil)
 
 // NewPostHandler is constructor for postHandler
-func NewPostHandler(s service.IPostService) IPostHandler {
+func NewPostHandler(svc service.IPostService) IPostHandler {
 	return &postHandler{
-		service: s,
+		svc: svc,
 	}
 }
 
 func (ph *postHandler) GetPosts(ctx *gin.Context) {
-	posts, err := ph.service.GetPosts()
+	posts, err := ph.svc.GetPosts()
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -54,7 +54,7 @@ func (ph *postHandler) GetPostByID(ctx *gin.Context) {
 		return
 	}
 
-	post, err := ph.service.GetPostByID(postID)
+	post, err := ph.svc.GetPostByID(postID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -72,7 +72,7 @@ func (ph *postHandler) GetPostsByTagID(ctx *gin.Context) {
 		return
 	}
 
-	posts, err := ph.service.GetPostsByTagID(tagID)
+	posts, err := ph.svc.GetPostsByTagID(tagID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
@@ -92,7 +92,7 @@ func (ph *postHandler) GetPostsByUserID(ctx *gin.Context) {
 		return
 	}
 
-	posts, err := ph.service.GetPostsByUserID(userID)
+	posts, err := ph.svc.GetPostsByUserID(userID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -116,7 +116,7 @@ func (ph *postHandler) AddPost(ctx *gin.Context) {
 	url := ctx.Query("url")
 	message := ctx.Query("message")
 
-	post, err := ph.service.AddPost(userID, title, url, message)
+	post, err := ph.svc.AddPost(userID, title, url, message)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
@@ -138,7 +138,7 @@ func (ph *postHandler) DeletePostByID(ctx *gin.Context) {
 		return
 	}
 
-	if err := ph.service.DeletePostByID(postID); err != nil {
+	if err := ph.svc.DeletePostByID(postID); err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 

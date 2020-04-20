@@ -18,15 +18,15 @@ type ICommentHandler interface {
 }
 
 type commentHandler struct {
-	service service.ICommentService
+	svc service.ICommentService
 }
 
 var _ ICommentHandler = (*commentHandler)(nil)
 
 // NewCommentHandler is constructor for commentHandler
-func NewCommentHandler(s service.ICommentService) ICommentHandler {
+func NewCommentHandler(svc service.ICommentService) ICommentHandler {
 	return &commentHandler{
-		service: s,
+		svc: svc,
 	}
 }
 
@@ -39,7 +39,7 @@ func (ch *commentHandler) GetComments(ctx *gin.Context) {
 		return
 	}
 
-	comments, err := ch.service.GetComments(postID)
+	comments, err := ch.svc.GetComments(postID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -68,7 +68,7 @@ func (ch *commentHandler) AddComment(ctx *gin.Context) {
 	}
 
 	commentText := ctx.Query("comment")
-	comment, err := ch.service.AddComment(postID, userID, commentText)
+	comment, err := ch.svc.AddComment(postID, userID, commentText)
 
 	if err != nil {
 		fmt.Printf("%+v\n", err)
@@ -89,7 +89,7 @@ func (ch *commentHandler) GetCommentByID(ctx *gin.Context) {
 		return
 	}
 
-	comment, err := ch.service.GetCommentByID(commentID)
+	comment, err := ch.svc.GetCommentByID(commentID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)

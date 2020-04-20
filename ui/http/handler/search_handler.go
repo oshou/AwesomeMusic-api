@@ -15,15 +15,15 @@ type ISearchHandler interface {
 }
 
 type searchHandler struct {
-	service service.ISearchService
+	svc service.ISearchService
 }
 
 var _ ISearchHandler = (*searchHandler)(nil)
 
 // NewSearchHandler is constructor for searchHandler
-func NewSearchHandler(s service.ISearchService) ISearchHandler {
+func NewSearchHandler(svc service.ISearchService) ISearchHandler {
 	return &searchHandler{
-		service: s,
+		svc: svc,
 	}
 }
 
@@ -33,7 +33,7 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 
 	switch searchType {
 	case "post_title":
-		posts, err := sh.service.GetPostsByTitle(q)
+		posts, err := sh.svc.GetPostsByTitle(q)
 		if err != nil {
 			fmt.Printf("%+v\n", err)
 			ctx.AbortWithStatus(http.StatusBadRequest)
@@ -43,7 +43,7 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 
 		ctx.JSON(http.StatusOK, posts)
 	case "user_name":
-		posts, err := sh.service.GetPostsByUserName(q)
+		posts, err := sh.svc.GetPostsByUserName(q)
 		if err != nil {
 			fmt.Printf("%+v\n", err)
 			ctx.AbortWithStatus(http.StatusBadRequest)
@@ -53,7 +53,7 @@ func (sh *searchHandler) SearchByType(ctx *gin.Context) {
 
 		ctx.JSON(http.StatusOK, posts)
 	case "tag_name":
-		posts, err := sh.service.GetPostsByTagName(q)
+		posts, err := sh.svc.GetPostsByTagName(q)
 		if err != nil {
 			fmt.Printf("%+v\n", err)
 			ctx.AbortWithStatus(http.StatusBadRequest)

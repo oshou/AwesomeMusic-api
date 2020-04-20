@@ -18,20 +18,20 @@ type IUserHandler interface {
 }
 
 type userHandler struct {
-	service service.IUserService
+	svc service.IUserService
 }
 
 var _ IUserHandler = (*userHandler)(nil)
 
 // NewUserHandler is constructor for userHandler
-func NewUserHandler(s service.IUserService) IUserHandler {
+func NewUserHandler(svc service.IUserService) IUserHandler {
 	return &userHandler{
-		service: s,
+		svc: svc,
 	}
 }
 
 func (uh *userHandler) GetUsers(ctx *gin.Context) {
-	users, err := uh.service.GetUsers()
+	users, err := uh.svc.GetUsers()
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)
@@ -46,7 +46,7 @@ func (uh *userHandler) GetUsers(ctx *gin.Context) {
 func (uh *userHandler) AddUser(ctx *gin.Context) {
 	name := ctx.Query("name")
 
-	user, err := uh.service.AddUser(name)
+	user, err := uh.svc.AddUser(name)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
@@ -67,7 +67,7 @@ func (uh *userHandler) GetUserByID(ctx *gin.Context) {
 		return
 	}
 
-	user, err := uh.service.GetUserByID(userID)
+	user, err := uh.svc.GetUserByID(userID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusNotFound)

@@ -20,20 +20,20 @@ type ITagHandler interface {
 }
 
 type tagHandler struct {
-	service service.ITagService
+	svc service.ITagService
 }
 
 var _ ITagHandler = (*tagHandler)(nil)
 
 // NewTagHandler is constructor for tagHandler
-func NewTagHandler(s service.ITagService) ITagHandler {
+func NewTagHandler(svc service.ITagService) ITagHandler {
 	return &tagHandler{
-		service: s,
+		svc: svc,
 	}
 }
 
 func (th *tagHandler) GetTags(ctx *gin.Context) {
-	tags, err := th.service.GetTags()
+	tags, err := th.svc.GetTags()
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
@@ -53,7 +53,7 @@ func (th *tagHandler) GetTagByID(ctx *gin.Context) {
 		return
 	}
 
-	tag, err := th.service.GetTagByID(tagID)
+	tag, err := th.svc.GetTagByID(tagID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
@@ -73,7 +73,7 @@ func (th *tagHandler) GetTagsByPostID(ctx *gin.Context) {
 		return
 	}
 
-	tags, err := th.service.GetTagsByPostID(postID)
+	tags, err := th.svc.GetTagsByPostID(postID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
@@ -86,7 +86,7 @@ func (th *tagHandler) GetTagsByPostID(ctx *gin.Context) {
 
 func (th *tagHandler) AddTag(ctx *gin.Context) {
 	tagName := ctx.Query("name")
-	tag, err := th.service.AddTag(tagName)
+	tag, err := th.svc.AddTag(tagName)
 
 	if err != nil {
 		fmt.Printf("%+v\n", err)
@@ -115,7 +115,7 @@ func (th *tagHandler) AttachTag(ctx *gin.Context) {
 		return
 	}
 
-	postTag, err := th.service.AttachTag(postID, tagID)
+	postTag, err := th.svc.AttachTag(postID, tagID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
