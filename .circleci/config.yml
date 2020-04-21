@@ -35,7 +35,8 @@ commands:
     steps:
       - restore_cache:
           name: Save Go modules
-          key: go-modules-{{ checksum "go.sum" }}
+          keys:
+            - go-modules-{{ checksum "go.sum" }}
   deploy_hub:
     steps:
       - run:
