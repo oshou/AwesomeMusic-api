@@ -20,10 +20,10 @@ commands:
     steps:
       - run:
           name: Update apt
-          command: apt-get update
+          command: sudo apt-get update
       - run:
           name: Install make
-          command: apt-get install make
+          command: sudo apt-get install make
   lint:
     steps:
       - run:
