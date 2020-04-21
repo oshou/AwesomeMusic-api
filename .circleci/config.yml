@@ -16,6 +16,14 @@ commands:
       - run:
           name: Reload
           command: source $BASH_ENV
+  install_make:
+    steps:
+      - run:
+          name: Update apt
+          command: apt-get update
+      - run:
+          name: Install make
+          command: apt-get install make
   lint:
     steps:
       - run:
@@ -52,6 +60,7 @@ jobs:
     steps:
       - checkout
       - go_mod_download
+      - install_make
       - install_golangci_lint
       - setup_remote_docker
       - deploy_hub
@@ -60,9 +69,10 @@ jobs:
     steps:
       - checkout
       - go_mod_download
+      - install_make
+      - install_golangci_lint
       - lint
       - test
-      - install_golangci_lint
 
 workflows:
   version: 2
