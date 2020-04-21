@@ -16,26 +16,38 @@ commands:
       - run:
           name: Reload
           command: source $BASH_ENV
-  test:
+  install_make:
+    steps:
+      - run:
+          name: Update apt
+          command: sudo apt-get update
+      - run:
+          name: Install make
+          command: sudo apt-get install make
+  lint:
     steps:
       - run:
           name: lint
           command: make lint
+  test:
+    steps:
       - run:
           name: test
           command: make test
-  save_cache:
-    steps:
-      - save_cache:
-          name: Save Go modules
-          paths:
-            - "/go/pkg/mod"
-          key: go-modules-{{ checksum "go.sum" }}
-  restore_cache:
+  go_mod_download:
     steps:
       - restore_cache:
-          name: Save Go modules
+          name: Restore go modules cache
+          keys:
+            - go-modules-{{ checksum "go.sum" }}
+      - run:
+          name: Download Go Module
+          command: go mod download
+      - save_cache:
+          name: Save go modules cache
           key: go-modules-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
   deploy_hub:
     steps:
       - run:
@@ -47,17 +59,20 @@ jobs:
     executor: default
     steps:
       - checkout
-      - restore_cache
+      - go_mod_download
+      - install_make
       - install_golangci_lint
       - setup_remote_docker
-      - save_cache
       - deploy_hub
-  test:
+  lint_test:
     executor: default
     steps:
       - checkout
+      - go_mod_download
+      - install_make
       - install_golangci_lint
-      - save_cache
+      - lint
+      - test
 
 workflows:
   version: 2
@@ -67,11 +82,11 @@ workflows:
           filters:
             branches:
               only: master
-      - test:
+      - lint_test:
           filters:
             branches:
               only: develop
-      - test:
+      - lint_test:
           filters:
             branches:
               only: feature/ci_test

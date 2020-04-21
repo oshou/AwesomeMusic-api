@@ -13,6 +13,9 @@ lint:
 	$(GOCMD) fmt ./...
 	golangci-lint run
 
+test:
+	$(GOCMD) test -v ./...
+
 build_local:
 	make lint
 	cp -rp .env.local .env
@@ -34,6 +37,3 @@ run:
 clean:
 	$(GOCMD) mod tidy
 	$(GOCMD) clean
-
-test:
-	$(GOCMD) test -v ./...
