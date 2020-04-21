@@ -27,14 +27,12 @@ commands:
   save_cache:
     steps:
       - save_cache:
-          name: Save Go modules
+          key: go-modules-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
-          key: go-modules-{{ checksum "go.sum" }}
   restore_cache:
     steps:
       - restore_cache:
-          name: Save Go modules
           keys:
             - go-modules-{{ checksum "go.sum" }}
   deploy_hub:
