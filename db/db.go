@@ -8,10 +8,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-type db struct {
-	conn *sqlx.DB
-}
-
 // NewDB is constructor for db
 func NewDB() (*sqlx.DB, error) {
 	db, err := sqlx.Open(os.Getenv("DB_DRIVER"), os.Getenv("DB_DSN"))
@@ -20,9 +16,4 @@ func NewDB() (*sqlx.DB, error) {
 	}
 
 	return db, nil
-}
-
-func (db *db) Close() error {
-	err := db.conn.Close()
-	return errors.WithStack(err)
 }
