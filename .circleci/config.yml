@@ -5,11 +5,6 @@ executors:
     docker:
       - image: circleci/golang:latest
 commands:
-  deploy_hub:
-    steps:
-      - run:
-          name: Deploy Docker Registry
-          command: make deploy_hub
   install_golangci_lint:
     steps:
       - run:
@@ -21,28 +16,48 @@ commands:
       - run:
           name: Reload
           command: source $BASH_ENV
+  test:
+    steps:
+      - run:
+          name: lint
+          command: make lint
+      - run:
+          name: test
+          command: make test
+  save_cache:
+    steps:
+      - save_cache:
+          name: Save Go modules
+          paths:
+            - "/go/pkg/mod"
+          key: go-modules-{{ checksum "go.sum" }}
+  restore_cache:
+    steps:
+      - restore_cache:
+          name: Save Go modules
+          key: go-modules-{{ checksum "go.sum" }}
+  deploy_hub:
+    steps:
+      - run:
+          name: Deploy Docker Registry
+          command: make deploy_hub
+
 jobs:
   deploy_prd:
     executor: default
     steps:
       - checkout
+      - restore_cache
       - install_golangci_lint
       - setup_remote_docker
+      - save_cache
       - deploy_hub
-  deploy_dev:
+  test:
     executor: default
     steps:
       - checkout
       - install_golangci_lint
-      - setup_remote_docker
-      - deploy_hub
-  deploy_test:
-    executor: default
-    steps:
-      - checkout
-      - install_golangci_lint
-      - setup_remote_docker
-      - deploy_hub
+      - save_cache
 
 workflows:
   version: 2
@@ -52,11 +67,11 @@ workflows:
           filters:
             branches:
               only: master
-      - deploy_dev:
+      - test:
           filters:
             branches:
               only: develop
-      - deploy_test:
+      - test:
           filters:
             branches:
-              only: feature/modify_ci_logic
+              only: feature/ci_test
