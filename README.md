@@ -1,6 +1,6 @@
 # AwesomeMusic-api Server
 
-[![GithubAction](https://github.com/oshou/AwesomeMusic-api/workflows/develop/badge.svg)]
+![GithubAction](https://github.com/oshou/AwesomeMusic-api/workflows/develop/badge.svg)
 
 音楽サービス AwesomeMusic の API サーバ<br>
 https://github.com/oshou/Portfolio
