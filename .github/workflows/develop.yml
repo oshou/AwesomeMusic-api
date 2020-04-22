@@ -3,8 +3,8 @@ name: develop
 on:
   push:
     branches:
-      - feaure/develop
-      - feaure/ci_test
+      - develop
+      - feature/ci_test
 
 jobs:
   build:
