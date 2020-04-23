@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - production
+      - feature/ci_test
 
 jobs:
   build:
@@ -24,14 +25,14 @@ jobs:
         run: sudo make lint
       - name: Test
         run: sudo make test
-      - name: Build Production
+      - name: Build Go Production
         run: sudo make build_prd
-      - name: build_deploy
-        uses: raccoondev/push-docker-gcr
-        with:
-          gcr_host: eu.gcr.io
-          image_name: AwesomeMusic-api
-          image_tag: latest
-          env:
-            GCLOUD_SERVICE_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-            GOOGLE_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Build Docker Image
+        run: sudo docker build -t ${{ secrets.GCP_GCR_HOST }}/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GCR_IMAGE_NAME }} .
+      - name: GCloud auth
+        run: |
+          echo ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }} | base64 --decode --ignore-garbage > /tmp/key.json
+          gcloud auth activate-service-account --quiet --key-file /tmp/key.json
+          gcloud auth configure-docker --quiet
+      - name: Push Docker Image
+        run: sudo docker push ${{ secrets.GCP_GCR_HOST }}/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GCR_IMAGE_NAME }}
