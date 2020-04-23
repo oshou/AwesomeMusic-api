@@ -30,4 +30,4 @@ jobs:
       - name: Build Docker Image
         run: sudo docker build -t ${{ secrets.GCP_GCR_HOST }}/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GCR_IMAGE_NAME }} .
       - name: Push Docker Image
-        run: sudo docker push ${{ secrets.GCP_GCR_HOST }}/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GCR_IMAGE_NAME }}/latest
+        run: sudo docker push ${{ secrets.GCP_GCR_HOST }}/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_GCR_IMAGE_NAME }}
