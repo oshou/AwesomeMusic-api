@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - production
+      - feature/ci_test
 
 jobs:
   build:
