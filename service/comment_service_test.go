@@ -13,10 +13,10 @@ func TestCommentService_GetComments(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	cases := []struct {
-		postID   int
-		comments []*model.Comment
-		err      error
+	tests := []struct {
+		postID  int
+		want    []*model.Comment
+		wantErr error
 	}{
 		{1, nil, nil},
 		{1, []*model.Comment{}, nil},
@@ -28,18 +28,18 @@ func TestCommentService_GetComments(t *testing.T) {
 		}, nil},
 	}
 
-	for _, tc := range cases {
+	for _, tt := range tests {
 		mockRepo := mock_repository.NewMockICommentRepository(ctrl)
-		mockRepo.EXPECT().GetAll(tc.postID).Return(tc.comments, tc.err)
-		commentService := NewCommentService(mockRepo)
-		comments, err := commentService.GetComments(tc.postID)
+		mockRepo.EXPECT().GetAll(tt.postID).Return(tt.want, tt.err)
+		cs := NewCommentService(mockRepo)
+		comments, err := cs.GetComments(tt.postID)
 
 		if err != nil {
 			t.Errorf("[Failed] %v", err)
 		}
 
-		if !reflect.DeepEqual(comments, tc.comments) {
-			t.Errorf("[Failed] expected:%v, actual:%v", tc.comments, comments)
+		if !reflect.DeepEqual(tt.comments, comments) {
+			t.Errorf("[Failed] want:%v, got:%v", tt.comments, comments)
 		}
 	}
 }
@@ -48,7 +48,7 @@ func TestCommentService_GetCommentByID(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	cases := []struct {
+	tests := []struct {
 		commentID int
 		comments  *model.Comment
 		err       error
@@ -58,19 +58,19 @@ func TestCommentService_GetCommentByID(t *testing.T) {
 		{1, &model.Comment{ID: 1, UserID: 1, PostID: 1, Comment: "comment1"}, nil},
 	}
 
-	for _, tc := range cases {
+	for _, tt := range tests {
 		// Actual
 		mockRepo := mock_repository.NewMockICommentRepository(ctrl)
-		mockRepo.EXPECT().GetByID(tc.commentID).Return(tc.comments, tc.err)
-		commentService := NewCommentService(mockRepo)
-		comments, err := commentService.GetCommentByID(tc.commentID)
+		mockRepo.EXPECT().GetByID(tt.commentID).Return(tt.comments, tt.err)
+		cs := NewCommentService(mockRepo)
+		comment, err := cs.GetCommentByID(tt.commentID)
 
 		if err != nil {
 			t.Errorf("[Failed] %v", err)
 		}
 
-		if !reflect.DeepEqual(comments, tc.comments) {
-			t.Errorf("[Failed] expected:%v, actual:%v", tc.comments, comments)
+		if !reflect.DeepEqual(tt.comments, comment) {
+			t.Errorf("[Failed] want:%v, got:%v", tt.comments, comment)
 		}
 	}
 }
@@ -79,7 +79,7 @@ func TestCommentService_AddComment(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	cases := []struct {
+	tests := []struct {
 		postID      int
 		userID      int
 		commentText string
@@ -91,19 +91,19 @@ func TestCommentService_AddComment(t *testing.T) {
 		{1, 1, "aaa", &model.Comment{ID: 1, UserID: 1, PostID: 1, Comment: "comment1"}, nil},
 	}
 
-	for _, tc := range cases {
+	for _, tt := range tests {
 		// Actual
 		mockRepo := mock_repository.NewMockICommentRepository(ctrl)
-		mockRepo.EXPECT().Add(tc.postID, tc.userID, tc.commentText).Return(tc.comment, tc.err)
-		commentService := NewCommentService(mockRepo)
-		comments, err := commentService.AddComment(tc.postID, tc.userID, tc.commentText)
+		mockRepo.EXPECT().Add(tt.postID, tt.userID, tt.commentText).Return(tt.comment, tt.err)
+		cs := NewCommentService(mockRepo)
+		comment, err := cs.AddComment(tt.postID, tt.userID, tt.commentText)
 
 		if err != nil {
 			t.Errorf("[Failed] %v", err)
 		}
 
-		if !reflect.DeepEqual(comments, tc.comment) {
-			t.Errorf("[Failed] expected:%v, actual:%v", tc.comment, comments)
+		if !reflect.DeepEqual(tt.comment, comment) {
+			t.Errorf("[Failed] want:%v, got:%v", tt.comment, comment)
 		}
 	}
 }
