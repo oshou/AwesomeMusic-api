@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - name: Github checkout
         uses: actions/checkout@v2
       - name: setup Go
         uses: actions/setup-go@v1
