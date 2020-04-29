@@ -9,8 +9,8 @@ https://github.com/oshou/Portfolio
 ## 概要
 
 - JSON 形式でレスポンスを返します。
-- 環境変数はレポジトリ直下の.env を読み込みます。
-  ビルド時に指定の.env.(環境名)のファイルを.env としてコピー作成いたします。
+- 環境変数はレポジトリ直下の.env を読み込みます。<br>
+  ビルド時に指定の「.env.(環境名)」を「.env」としてコピー作成いたします。<br>
   ex) cp -rp .env.local -> .env
 - デフォルトで Port 8080 で受付いたします。
 - Onion Architecture を参考にしています。
@@ -18,6 +18,7 @@ https://github.com/oshou/Portfolio
 ## Quick Start
 
 ```bash
+go get github.com/AwesomeMusic-api
 # 環境変数指定(.env.local)
 # - DB_DRIVER
 # - DB_HOST
