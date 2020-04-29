@@ -11,3 +11,4 @@ go.sum
 .DS_Store
 credentials.json
 cred64.txt
+vendor/*
