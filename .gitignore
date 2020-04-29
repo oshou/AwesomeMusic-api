@@ -12,3 +12,4 @@ go.sum
 credentials.json
 cred64.txt
 vendor/*
+.vscode
