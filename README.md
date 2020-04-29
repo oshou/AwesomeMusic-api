@@ -18,7 +18,7 @@ https://github.com/oshou/Portfolio
 ## Quick Start
 
 ```bash
-go get github.com/AwesomeMusic-api
+go get -u github.com/oshou/AwesomeMusic-api
 # 環境変数指定(.env.local)
 # - DB_DRIVER
 # - DB_HOST
