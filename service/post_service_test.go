@@ -5,139 +5,181 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/oshou/AwesomeMusic-api/domain/model"
-	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
+	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
-func TestPostService_GetPosts(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
+func TestNewPostService(t *testing.T) {
+	type args struct {
+		repo repository.IPostRepository
+	}
 	tests := []struct {
-		posts []*model.Post
-		err   error
-	}{}
-
+		name string
+		args args
+		want IPostService
+	}{
+		// TODO: Add test cases.
+	}
 	for _, tt := range tests {
-		mockRepo := mock_repository.NewMockIPostRepository(ctrl)
-		mockRepo.EXPECT().GetAll().Return(tt.posts, tt.err)
-		ps := NewPostService(mockRepo)
-		posts, err := ps.GetPosts()
-
-		if err != nil {
-			t.Errorf("[Failed] %v", err)
-		}
-
-		if !reflect.DeepEqual(tt.posts, posts) {
-			t.Errorf("[Failed] want:%v, got:%v", tt.posts, posts)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewPostService(tt.args.repo); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewPostService() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
 
-func TestPostService_GetPostByID(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
+func Test_postService_GetPosts(t *testing.T) {
 	tests := []struct {
+		name    string
+		pu      *postService
+		want    []*model.Post
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.pu.GetPosts()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("postService.GetPosts() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("postService.GetPosts() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_postService_GetPostByID(t *testing.T) {
+	type args struct {
 		postID int
-		post   *model.Post
-		err    error
-	}{}
-
+	}
+	tests := []struct {
+		name    string
+		pu      *postService
+		args    args
+		want    *model.Post
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
 	for _, tt := range tests {
-		mockRepo := mock_repository.NewMockIPostRepository(ctrl)
-		mockRepo.EXPECT().GetByID(tt.postID).Return(tt.post, tt.err)
-		ps := NewPostService(mockRepo)
-		post, err := ps.GetPostByID(tt.postID)
-
-		if err != nil {
-			t.Errorf("[Failed] %v", err)
-		}
-
-		if !reflect.DeepEqual(tt.post, post) {
-			t.Errorf("[Failed] want:%v, got:%v", tt.post, post)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.pu.GetPostByID(tt.args.postID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("postService.GetPostByID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("postService.GetPostByID() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
 
-func TestPostService_GetPostsByTagID(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	tests := []struct {
+func Test_postService_GetPostsByTagID(t *testing.T) {
+	type args struct {
 		tagID int
-		posts []*model.Post
-		err   error
-	}{}
-
+	}
+	tests := []struct {
+		name    string
+		pu      *postService
+		args    args
+		want    []*model.Post
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
 	for _, tt := range tests {
-		mockRepo := mock_repository.NewMockIPostRepository(ctrl)
-		mockRepo.EXPECT().GetByTagID(tt.tagID).Return(tt.posts, tt.err)
-		ps := NewPostService(mockRepo)
-		posts, err := ps.GetPostsByTagID(tt.tagID)
-
-		if err != nil {
-			t.Errorf("[Failed] %v", err)
-		}
-
-		if !reflect.DeepEqual(tt.posts, posts) {
-			t.Errorf("[Failed] want:%v, got:%v", tt.posts, posts)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.pu.GetPostsByTagID(tt.args.tagID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("postService.GetPostsByTagID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("postService.GetPostsByTagID() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
 
-func TestPostService_GetPostsByUserID(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	tests := []struct {
+func Test_postService_GetPostsByUserID(t *testing.T) {
+	type args struct {
 		userID int
-		posts  []*model.Post
-		err    error
-	}{}
-
+	}
+	tests := []struct {
+		name    string
+		pu      *postService
+		args    args
+		want    []*model.Post
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
 	for _, tt := range tests {
-		mockRepo := mock_repository.NewMockIPostRepository(ctrl)
-		mockRepo.EXPECT().GetByUserID(tt.userID).Return(tt.posts, tt.err)
-		ps := NewPostService(mockRepo)
-		posts, err := ps.GetPostsByUserID(tt.userID)
-
-		if err != nil {
-			t.Errorf("[Failed] %v", err)
-		}
-
-		if !reflect.DeepEqual(tt.posts, posts) {
-			t.Errorf("[Failed] want:%v, got:%v", tt.posts, posts)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.pu.GetPostsByUserID(tt.args.userID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("postService.GetPostsByUserID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("postService.GetPostsByUserID() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
 
-func TestPostService_AddPost(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	tests := []struct {
+func Test_postService_AddPost(t *testing.T) {
+	type args struct {
 		userID  int
 		title   string
 		url     string
 		message string
-		post    *model.Post
-		err     error
-	}{}
+	}
+	tests := []struct {
+		name    string
+		pu      *postService
+		args    args
+		want    *model.Post
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.pu.AddPost(tt.args.userID, tt.args.title, tt.args.url, tt.args.message)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("postService.AddPost() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("postService.AddPost() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
 
-	for _, tc := range tests {
-		mockRepo := mock_repository.NewMockIPostRepository(ctrl)
-		mockRepo.EXPECT().Add(tc.userID, tc.title, tc.url, tc.message).Return(tc.post, tc.err)
-		ps := NewPostService(mockRepo)
-		post, err := ps.AddPost(tc.userID, tc.title, tc.url, tc.message)
-
-		if err != nil {
-			t.Errorf("[Failed] %v", err)
-		}
-
-		if !reflect.DeepEqual(tc.post, post) {
-			t.Errorf("[Failed] want:%v, got:%v", tc.post, post)
-		}
+func Test_postService_DeletePostByID(t *testing.T) {
+	type args struct {
+		postID int
+	}
+	tests := []struct {
+		name    string
+		pu      *postService
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := tt.pu.DeletePostByID(tt.args.postID); (err != nil) != tt.wantErr {
+				t.Errorf("postService.DeletePostByID() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
 	}
 }

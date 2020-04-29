@@ -10,3 +10,4 @@ go.sum
 *.log
 .DS_Store
 credentials.json
+cred64.txt
