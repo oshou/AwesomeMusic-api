@@ -4,41 +4,44 @@
 
 export GO111MODULE=on
 
-GO_CMD=$(shell which go)
-GOTESTS_CMD=gotests
-GOLANGCILINT_CMD=golangci-lint
-DEPLOY_REPO="oshou/awesome-music-api"
-BINARY_NAME=main
+GO ?= $(shell which go)
+GOTESTS ?= gotests
+GOLANGCILINT ?= golangci-lint
+DEPLOY_REPO = "oshou/awesome-music-api"
+BINARY_NAME = main
 
-## 各環境別ビルドコマンド
+.PHONY: lint
 lint:
-	$(GO_CMD) fmt ./...
-	$(GOLANGCILINT_CMD) run
+	$(GO) fmt ./...
+	$(GOLANGCILINT) run
 
+.PHONY: test
 test:
-	$(GO_CMD) test -v ./...
+	$(GO) test -v ./...
 
-coverage:
-	$(GO_CMD) test ./... -cover
+.PHONY: cov
+cov:
+	$(GO) test ./... -cover
 
+.PHONY: gen_test
 gen_test:
-	$(GOTESTS_CMD) -all -w ./*
+	$(GOTESTS) -all -w ./*
 
+.PHONY: build_local
 build_local:
 	cp -rp .env.local .env
-	$(GO_CMD) build -o $(BINARY_NAME)
+	$(GO) build -o $(BINARY_NAME)
 
+.PHONY: build_prd
 build_prd:
 	cp -rp .env.local .env
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO_CMD) build -a -installsuffix cgo -ldflags="-s -w" -o $(BINARY_NAME)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build -a -installsuffix cgo -ldflags="-s -w" -o $(BINARY_NAME)
 
-deploy_hub:
-	docker build -t $(DEPLOY_REPO) .
-	docker push $(DEPLOY_REPO):latest
-
+.PHONY: run
 run:
 	./$(BINARY_NAME)
 
+.PHONY: clean
 clean:
-	$(GO_CMD) mod tidy
-	$(GO_CMD) clean
+	$(GO) mod tidy
+	$(GO) clean
