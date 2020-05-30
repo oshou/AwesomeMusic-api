@@ -13,6 +13,7 @@ func TestNewPostService(t *testing.T) {
 	type args struct {
 		repo repository.IPostRepository
 	}
+
 	tests := []struct {
 		name string
 		args args

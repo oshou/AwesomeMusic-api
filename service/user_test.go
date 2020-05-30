@@ -19,6 +19,7 @@ func TestNewUserService(t *testing.T) {
 	type args struct {
 		repo repository.IUserRepository
 	}
+
 	tests := []struct {
 		name string
 		args args
