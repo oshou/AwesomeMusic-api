@@ -50,7 +50,7 @@ make run
 │         └── middleware/    # http middleware
 │         └── handler/       # http handler
 ├── infrastructure/          # Infrastructure Layer
-│   └── datastore/           # Datastore
+│   └── persistence/         # Persistence
 ├── db/                      # DB Connetion
 └── Makefile                 # Task Runner
 └── go.mod                   # Go Package management

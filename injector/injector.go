@@ -5,9 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
-	datastore "github.com/oshou/AwesomeMusic-api/infrastructure/datastore/postgres"
+	persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/postgres"
 
-	//datastore "github.com/oshou/AwesomeMusic-api/infrastructure/datastore/mysql"
+	//persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/mysql"
 	"github.com/oshou/AwesomeMusic-api/service"
 	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
 	"github.com/oshou/AwesomeMusic-api/ui/http/router"
@@ -83,7 +83,7 @@ func (i *injector) NewAppHandler() handler.IAppHandler {
 
 // User
 func (i *injector) NewUserRepository() repository.IUserRepository {
-	return datastore.NewUserRepository(i.conn)
+	return persistence.NewUserRepository(i.conn)
 }
 
 func (i *injector) NewUserService() service.IUserService {
@@ -96,7 +96,7 @@ func (i *injector) NewUserHandler() handler.IUserHandler {
 
 // Comment
 func (i *injector) NewCommentRepository() repository.ICommentRepository {
-	return datastore.NewCommentRepository(i.conn)
+	return persistence.NewCommentRepository(i.conn)
 }
 
 func (i *injector) NewCommentService() service.ICommentService {
@@ -109,7 +109,7 @@ func (i *injector) NewCommentHandler() handler.ICommentHandler {
 
 // Post
 func (i *injector) NewPostRepository() repository.IPostRepository {
-	return datastore.NewPostRepository(i.conn)
+	return persistence.NewPostRepository(i.conn)
 }
 
 func (i *injector) NewPostService() service.IPostService {
@@ -122,7 +122,7 @@ func (i *injector) NewPostHandler() handler.IPostHandler {
 
 // Tag
 func (i *injector) NewTagRepository() repository.ITagRepository {
-	return datastore.NewTagRepository(i.conn)
+	return persistence.NewTagRepository(i.conn)
 }
 
 func (i *injector) NewTagService() service.ITagService {
@@ -135,7 +135,7 @@ func (i *injector) NewTagHandler() handler.ITagHandler {
 
 // Search
 func (i *injector) NewSearchRepository() repository.ISearchRepository {
-	return datastore.NewSearchRepository(i.conn)
+	return persistence.NewSearchRepository(i.conn)
 }
 
 func (i *injector) NewSearchService() service.ISearchService {

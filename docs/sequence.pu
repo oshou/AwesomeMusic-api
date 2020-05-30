@@ -13,13 +13,13 @@ box "Domain" #Orange
   participant model
 end box
 box "Infrastructure" #Gray
-  participant datastore
+  participant persistence
 end box
 
 main -> main: Set Environment
 main -> main: Set DBConnection
 main -> main: DI
-datastore -> repository: DI
+persistence -> repository: DI
 main -> router: Start Server
 activate router
 router -> router: Set Middleware(Authentication)
