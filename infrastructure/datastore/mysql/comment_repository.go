@@ -12,7 +12,7 @@ type commentRepository struct {
 	db *sqlx.DB
 }
 
-var _ repository.ICommentRepository = (*commentRepository)(nil)
+var _ repository.ICommentRepository = &commentRepository{}
 
 // NewCommentRepository is constructor for commentRepository
 func NewCommentRepository(db *sqlx.DB) repository.ICommentRepository {

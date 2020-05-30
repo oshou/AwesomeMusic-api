@@ -12,7 +12,7 @@ type postRepository struct {
 	db *sqlx.DB
 }
 
-var _ repository.IPostRepository = (*postRepository)(nil)
+var _ repository.IPostRepository = &postRepository{}
 
 // NewPostRepository is constructor for postRepository
 func NewPostRepository(db *sqlx.DB) repository.IPostRepository {

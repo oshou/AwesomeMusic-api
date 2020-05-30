@@ -12,7 +12,7 @@ type userRepository struct {
 	db *sqlx.DB
 }
 
-var _ repository.IUserRepository = (*userRepository)(nil)
+var _ repository.IUserRepository = &userRepository{}
 
 // NewUserRepository is constructor for userRepository
 func NewUserRepository(db *sqlx.DB) repository.IUserRepository {

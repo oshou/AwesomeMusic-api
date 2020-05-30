@@ -17,7 +17,7 @@ type router struct {
 	engine *gin.Engine
 }
 
-var _ IRouter = (*router)(nil)
+var _ IRouter = &router{}
 
 // NewRouter is constructor for router
 func NewRouter(e *gin.Engine, h handler.IAppHandler) IRouter {

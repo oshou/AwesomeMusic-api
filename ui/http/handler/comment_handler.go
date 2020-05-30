@@ -21,7 +21,7 @@ type commentHandler struct {
 	svc service.ICommentService
 }
 
-var _ ICommentHandler = (*commentHandler)(nil)
+var _ ICommentHandler = &commentHandler{}
 
 // NewCommentHandler is constructor for commentHandler
 func NewCommentHandler(svc service.ICommentService) ICommentHandler {

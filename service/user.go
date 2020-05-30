@@ -17,7 +17,7 @@ type userService struct {
 	repo repository.IUserRepository
 }
 
-var _ IUserService = (*userService)(nil)
+var _ IUserService = &userService{}
 
 // NewUserService is IUserService constructor
 func NewUserService(repo repository.IUserRepository) IUserService {

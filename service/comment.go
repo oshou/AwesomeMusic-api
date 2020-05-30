@@ -17,7 +17,7 @@ type commentService struct {
 	repo repository.ICommentRepository
 }
 
-var _ ICommentService = (*commentService)(nil)
+var _ ICommentService = &commentService{}
 
 // NewCommentService is ICommentService constructor
 func NewCommentService(repo repository.ICommentRepository) ICommentService {

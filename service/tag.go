@@ -19,7 +19,7 @@ type tagService struct {
 	repo repository.ITagRepository
 }
 
-var _ ITagService = (*tagService)(nil)
+var _ ITagService = &tagService{}
 
 // NewTagService is ITagService constructor
 func NewTagService(repo repository.ITagRepository) ITagService {

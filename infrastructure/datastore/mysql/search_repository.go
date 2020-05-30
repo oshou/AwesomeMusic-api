@@ -12,7 +12,7 @@ type searchRepository struct {
 	db *sqlx.DB
 }
 
-var _ repository.ISearchRepository = (*searchRepository)(nil)
+var _ repository.ISearchRepository = &searchRepository{}
 
 // NewSearchRepository is constructor for searchRepository
 func NewSearchRepository(db *sqlx.DB) repository.ISearchRepository {

@@ -12,7 +12,7 @@ type tagRepository struct {
 	db *sqlx.DB
 }
 
-var _ repository.ITagRepository = (*tagRepository)(nil)
+var _ repository.ITagRepository = &tagRepository{}
 
 // NewTagRepository is constructor for tagRepository
 func NewTagRepository(db *sqlx.DB) repository.ITagRepository {

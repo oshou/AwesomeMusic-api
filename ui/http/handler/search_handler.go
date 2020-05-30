@@ -18,7 +18,7 @@ type searchHandler struct {
 	svc service.ISearchService
 }
 
-var _ ISearchHandler = (*searchHandler)(nil)
+var _ ISearchHandler = &searchHandler{}
 
 // NewSearchHandler is constructor for searchHandler
 func NewSearchHandler(svc service.ISearchService) ISearchHandler {

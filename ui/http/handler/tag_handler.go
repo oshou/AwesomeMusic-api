@@ -23,7 +23,7 @@ type tagHandler struct {
 	svc service.ITagService
 }
 
-var _ ITagHandler = (*tagHandler)(nil)
+var _ ITagHandler = &tagHandler{}
 
 // NewTagHandler is constructor for tagHandler
 func NewTagHandler(svc service.ITagService) ITagHandler {

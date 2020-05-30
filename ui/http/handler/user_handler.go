@@ -21,7 +21,7 @@ type userHandler struct {
 	svc service.IUserService
 }
 
-var _ IUserHandler = (*userHandler)(nil)
+var _ IUserHandler = &userHandler{}
 
 // NewUserHandler is constructor for userHandler
 func NewUserHandler(svc service.IUserService) IUserHandler {

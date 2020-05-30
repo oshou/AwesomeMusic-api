@@ -17,7 +17,7 @@ type searchService struct {
 	repo repository.ISearchRepository
 }
 
-var _ ISearchService = (*searchService)(nil)
+var _ ISearchService = &searchService{}
 
 // NewSearchService is ISearchService constructor
 func NewSearchService(repo repository.ISearchRepository) ISearchService {

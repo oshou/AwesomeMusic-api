@@ -20,7 +20,7 @@ type postService struct {
 	repo repository.IPostRepository
 }
 
-var _ IPostService = (*postService)(nil)
+var _ IPostService = &postService{}
 
 // NewPostService is IPostService constructor
 func NewPostService(repo repository.IPostRepository) IPostService {

@@ -24,7 +24,7 @@ type postHandler struct {
 	svc service.IPostService
 }
 
-var _ IPostHandler = (*postHandler)(nil)
+var _ IPostHandler = &postHandler{}
 
 // NewPostHandler is constructor for postHandler
 func NewPostHandler(svc service.IPostService) IPostHandler {

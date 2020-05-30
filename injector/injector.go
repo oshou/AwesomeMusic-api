@@ -46,7 +46,7 @@ type injector struct {
 	conn *sqlx.DB
 }
 
-var _ IInjector = (*injector)(nil)
+var _ IInjector = &injector{}
 
 // NewInjector is constructor for injector
 func NewInjector(conn *sqlx.DB) IInjector {
