@@ -2,12 +2,12 @@
 package injector
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
-	persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/postgres"
 
+	persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/postgres"
 	//persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/mysql"
+
 	"github.com/oshou/AwesomeMusic-api/service"
 	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
 	"github.com/oshou/AwesomeMusic-api/ui/http/router"
@@ -56,9 +56,8 @@ func NewInjector(conn *sqlx.DB) IInjector {
 }
 
 // Router
-func (i *injector) NewRouter() router.IRouter {
-	engine := gin.Default()
-	return router.NewRouter(engine, i.NewAppHandler())
+func (i *injector) NewRouter(h i.NewAppHandler) router.IRouter {
+	return router.NewRouter(h)
 }
 
 // App Aggregate Handler

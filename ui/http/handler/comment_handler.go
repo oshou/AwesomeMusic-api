@@ -2,19 +2,20 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi"
 	"github.com/oshou/AwesomeMusic-api/service"
 )
 
 // ICommentHandler is ui layer http-handler interface
 type ICommentHandler interface {
-	GetComments(ctx *gin.Context)
-	GetCommentByID(ctx *gin.Context)
-	AddComment(ctx *gin.Context)
+	GetComments(w http.ResponseWriter, r *http.Request)
+	GetCommentByID(w http.ResponseWriter, r *http.Request)
+	AddComment(w http.ResponseWriter, r *http.Request)
 }
 
 type commentHandler struct {
@@ -30,11 +31,12 @@ func NewCommentHandler(svc service.ICommentService) ICommentHandler {
 	}
 }
 
-func (ch *commentHandler) GetComments(ctx *gin.Context) {
-	postID, err := strconv.Atoi(ctx.Param("post_id"))
+func (ch *commentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
+	postIDString := chi.URLParam(r, "post_id")
+	postID, err := strconv.Atoi(postIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
@@ -42,49 +44,63 @@ func (ch *commentHandler) GetComments(ctx *gin.Context) {
 	comments, err := ch.svc.GetComments(postID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusNotFound)
+		w.WriteHeader(http.StatusNotFound)
 
 		return
 	}
 
-	ctx.JSON(http.StatusOK, comments)
+	if err := json.NewEncoder(w).Encode(comments); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
-func (ch *commentHandler) AddComment(ctx *gin.Context) {
-	postID, err := strconv.Atoi(ctx.Param("post_id"))
+func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
+	postIDString := chi.URLParam(r, "post_id")
+	postID, err := strconv.Atoi(postIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	userID, err := strconv.Atoi(ctx.Query("user_id"))
+	userIDString := r.URL.Query().Get("user_id")
+	userID, err := strconv.Atoi(userIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	commentText := ctx.Query("comment")
-	comment, err := ch.svc.AddComment(postID, userID, commentText)
+	commentString := r.URL.Query().Get("comment")
+	comment, err := ch.svc.AddComment(postID, userID, commentString)
 
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, comment)
+	if err := json.NewEncoder(w).Encode(comment); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
-func (ch *commentHandler) GetCommentByID(ctx *gin.Context) {
-	commentID, err := strconv.Atoi(ctx.Param("comment_id"))
+func (ch *commentHandler) GetCommentByID(w http.ResponseWriter, r *http.Request) {
+	commentIDString := chi.URLParam(r, "comment_id")
+	commentID, err := strconv.Atoi(commentIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
@@ -92,10 +108,16 @@ func (ch *commentHandler) GetCommentByID(ctx *gin.Context) {
 	comment, err := ch.svc.GetCommentByID(commentID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusNotFound)
+		w.WriteHeader(http.StatusNotFound)
 
 		return
 	}
 
-	ctx.JSON(http.StatusOK, comment)
+	if err := json.NewEncoder(w).Encode(comment); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

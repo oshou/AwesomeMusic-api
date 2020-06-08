@@ -2,19 +2,20 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi"
 	"github.com/oshou/AwesomeMusic-api/service"
 )
 
 // IUserHandler is ui layer http-handler interface
 type IUserHandler interface {
-	GetUsers(ctx *gin.Context)
-	GetUserByID(ctx *gin.Context)
-	AddUser(ctx *gin.Context)
+	GetUsers(w http.ResponseWriter, r *http.Request)
+	GetUserByID(w http.ResponseWriter, r *http.Request)
+	AddUser(w http.ResponseWriter, r *http.Request)
 }
 
 type userHandler struct {
@@ -30,39 +31,52 @@ func NewUserHandler(svc service.IUserService) IUserHandler {
 	}
 }
 
-func (uh *userHandler) GetUsers(ctx *gin.Context) {
+func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := uh.svc.GetUsers()
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusNotFound)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	ctx.JSON(http.StatusOK, users)
+	if err := json.NewEncoder(w).Encode(users); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 // Create: POST /v1/users
-func (uh *userHandler) AddUser(ctx *gin.Context) {
-	name := ctx.Query("name")
+func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
+	name := r.URL.Query().Get("name")
 
 	user, err := uh.svc.AddUser(name)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, user)
+	if err := json.NewEncoder(w).Encode(user); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 // Detail: GET /v1/users/:user_id
-func (uh *userHandler) GetUserByID(ctx *gin.Context) {
-	userID, err := strconv.Atoi(ctx.Param("user_id"))
+func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
+	userIDString := chi.URLParam(r, "user_id")
+	userID, err := strconv.Atoi(userIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
@@ -70,10 +84,16 @@ func (uh *userHandler) GetUserByID(ctx *gin.Context) {
 	user, err := uh.svc.GetUserByID(userID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusNotFound)
+		w.WriteHeader(http.StatusNotFound)
 
 		return
 	}
 
-	ctx.JSON(http.StatusOK, user)
+	if err := json.NewEncoder(w).Encode(user); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

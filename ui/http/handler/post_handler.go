@@ -2,22 +2,23 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi"
 	"github.com/oshou/AwesomeMusic-api/service"
 )
 
 // IPostHandler is ui layer http-handler interface
 type IPostHandler interface {
-	GetPosts(ctx *gin.Context)
-	GetPostByID(ctx *gin.Context)
-	GetPostsByTagID(ctx *gin.Context)
-	GetPostsByUserID(ctx *gin.Context)
-	AddPost(ctx *gin.Context)
-	DeletePostByID(ctx *gin.Context)
+	GetPosts(w http.ResponseWriter, r *http.Request)
+	GetPostByID(w http.ResponseWriter, r *http.Request)
+	GetPostsByTagID(w http.ResponseWriter, r *http.Request)
+	GetPostsByUserID(w http.ResponseWriter, r *http.Request)
+	AddPost(w http.ResponseWriter, r *http.Request)
+	DeletePostByID(w http.ResponseWriter, r *http.Request)
 }
 
 type postHandler struct {
@@ -33,23 +34,28 @@ func NewPostHandler(svc service.IPostService) IPostHandler {
 	}
 }
 
-func (ph *postHandler) GetPosts(ctx *gin.Context) {
+func (ph *postHandler) GetPosts(w http.ResponseWriter, r *http.Request) {
 	posts, err := ph.svc.GetPosts()
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusNotFound)
+		w.WriteHeader(http.StatusNotFound)
 
 		return
 	}
 
-	ctx.JSON(http.StatusOK, posts)
+	if err := json.NewEncoder(w).Encode(posts); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	//ctx.JSON(http.StatusOK, posts)
 }
 
-func (ph *postHandler) GetPostByID(ctx *gin.Context) {
-	postID, err := strconv.Atoi(ctx.Param("post_id"))
+func (ph *postHandler) GetPostByID(w http.ResponseWriter, r *http.Request) {
+	postIDString := chi.URLParam(r, "post_id")
+	postID, err := strconv.Atoi(postIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
@@ -57,17 +63,22 @@ func (ph *postHandler) GetPostByID(ctx *gin.Context) {
 	post, err := ph.svc.GetPostByID(postID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusNotFound)
+		w.WriteHeader(http.StatusNotFound)
 	}
 
-	ctx.JSON(http.StatusOK, post)
+	if err := json.NewEncoder(w).Encode(post); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	//ctx.JSON(http.StatusOK, post)
 }
 
-func (ph *postHandler) GetPostsByTagID(ctx *gin.Context) {
-	tagID, err := strconv.Atoi(ctx.Param("tag_id"))
+func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
+	tagIDString := chi.URLParam(r, "tag_id")
+	tagID, err := strconv.Atoi(tagIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
@@ -75,19 +86,24 @@ func (ph *postHandler) GetPostsByTagID(ctx *gin.Context) {
 	posts, err := ph.svc.GetPostsByTagID(tagID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	ctx.JSON(http.StatusOK, posts)
+	if err := json.NewEncoder(w).Encode(posts); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	//ctx.JSON(http.StatusOK, posts)
 }
 
-func (ph *postHandler) GetPostsByUserID(ctx *gin.Context) {
-	userID, err := strconv.Atoi(ctx.Param("user_id"))
+func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) {
+	userIDString := chi.URLParam(r, "user_Id")
+	userID, err := strconv.Atoi(userIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
@@ -95,55 +111,68 @@ func (ph *postHandler) GetPostsByUserID(ctx *gin.Context) {
 	posts, err := ph.svc.GetPostsByUserID(userID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusNotFound)
+		w.WriteHeader(http.StatusNotFound)
 
 		return
 	}
 
-	ctx.JSON(http.StatusOK, posts)
+	if err := json.NewEncoder(w).Encode(posts); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
-func (ph *postHandler) AddPost(ctx *gin.Context) {
-	userID, err := strconv.Atoi(ctx.Query("user_id"))
+func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
+	userIDString := r.URL.Query().Get("user_id")
+	userID, err := strconv.Atoi(userIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	title := ctx.Query("title")
-	url := ctx.Query("url")
-	message := ctx.Query("message")
+	title := r.URL.Query().Get("title")
+	url := r.URL.Query().Get("url")
+	message := r.URL.Query().Get("message")
 
 	post, err := ph.svc.AddPost(userID, title, url, message)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, post)
+	if err := json.NewEncoder(w).Encode(post); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
 }
 
-func (ph *postHandler) DeletePostByID(ctx *gin.Context) {
-	id := ctx.Param("post_id")
-	postID, err := strconv.Atoi(id)
+func (ph *postHandler) DeletePostByID(w http.ResponseWriter, r *http.Request) {
+	postIDString := chi.URLParam(r, "post_id")
+	postID, err := strconv.Atoi(postIDString)
 
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
 	if err := ph.svc.DeletePostByID(postID); err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, gin.H{"id #" + id: "deleted"})
+	w.WriteHeader(http.StatusNoContent)
 }

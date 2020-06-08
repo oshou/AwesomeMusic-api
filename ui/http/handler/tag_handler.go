@@ -2,21 +2,22 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi"
 	"github.com/oshou/AwesomeMusic-api/service"
 )
 
 // ITagHandler is ui layer http-handler interface
 type ITagHandler interface {
-	GetTags(ctx *gin.Context)
-	GetTagByID(ctx *gin.Context)
-	GetTagsByPostID(ctx *gin.Context)
-	AddTag(ctx *gin.Context)
-	AttachTag(ctx *gin.Context)
+	GetTags(w http.ResponseWriter, r *http.Request)
+	GetTagByID(w http.ResponseWriter, r *http.Request)
+	GetTagsByPostID(w http.ResponseWriter, r *http.Request)
+	AddTag(w http.ResponseWriter, r *http.Request)
+	AttachTag(w http.ResponseWriter, r *http.Request)
 }
 
 type tagHandler struct {
@@ -32,23 +33,30 @@ func NewTagHandler(svc service.ITagService) ITagHandler {
 	}
 }
 
-func (th *tagHandler) GetTags(ctx *gin.Context) {
+func (th *tagHandler) GetTags(w http.ResponseWriter, r *http.Request) {
 	tags, err := th.svc.GetTags()
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	ctx.JSON(http.StatusOK, tags)
+	if err := json.NewEncoder(w).Encode(tags); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
-func (th *tagHandler) GetTagByID(ctx *gin.Context) {
-	tagID, err := strconv.Atoi(ctx.Param("tag_id"))
+func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
+	tagIDString := chi.URLParam(r, "tag_id")
+	tagID, err := strconv.Atoi(tagIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
@@ -56,19 +64,26 @@ func (th *tagHandler) GetTagByID(ctx *gin.Context) {
 	tag, err := th.svc.GetTagByID(tagID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	ctx.JSON(http.StatusOK, tag)
+	if err := json.NewEncoder(w).Encode(tag); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
-func (th *tagHandler) GetTagsByPostID(ctx *gin.Context) {
-	postID, err := strconv.Atoi(ctx.Param("post_id"))
+func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
+	postIDString := chi.URLParam(r, "post_id")
+	postID, err := strconv.Atoi(postIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
@@ -76,41 +91,55 @@ func (th *tagHandler) GetTagsByPostID(ctx *gin.Context) {
 	tags, err := th.svc.GetTagsByPostID(postID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	ctx.JSON(http.StatusOK, tags)
+	if err := json.NewEncoder(w).Encode(tags); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
-func (th *tagHandler) AddTag(ctx *gin.Context) {
-	tagName := ctx.Query("name")
+func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
+	tagName := r.URL.Query().Get("name")
 	tag, err := th.svc.AddTag(tagName)
 
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, tag)
+	if err := json.NewEncoder(w).Encode(tag); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
 }
 
-func (th *tagHandler) AttachTag(ctx *gin.Context) {
-	postID, err := strconv.Atoi(ctx.Param("post_id"))
+func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
+	postIDString := chi.URLParam(r, "post_id")
+	postID, err := strconv.Atoi(postIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	tagID, err := strconv.Atoi(ctx.Param("tag_id"))
+	tagIDString := chi.URLParam(r, "tag_id")
+	tagID, err := strconv.Atoi(tagIDString)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
@@ -118,8 +147,16 @@ func (th *tagHandler) AttachTag(ctx *gin.Context) {
 	postTag, err := th.svc.AttachTag(postID, tagID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+
+		return
 	}
 
-	ctx.JSON(http.StatusCreated, postTag)
+	if err := json.NewEncoder(w).Encode(postTag); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

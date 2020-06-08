@@ -2,16 +2,16 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/oshou/AwesomeMusic-api/service"
 )
 
 // ISearchHandler is ui layer http-handler interface
 type ISearchHandler interface {
-	SearchByType(ctx *gin.Context)
+	SearchByType(w http.ResponseWriter, r *http.Request)
 }
 
 type searchHandler struct {
@@ -27,40 +27,57 @@ func NewSearchHandler(svc service.ISearchService) ISearchHandler {
 	}
 }
 
-func (sh *searchHandler) SearchByType(ctx *gin.Context) {
-	searchType := ctx.Query("type")
-	q := ctx.Query("q")
+func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
+	searchType := r.URL.Query().Get("type")
+	q := r.URL.Query().Get("q")
 
 	switch searchType {
 	case "post_title":
 		posts, err := sh.svc.GetPostsByTitle(q)
 		if err != nil {
 			fmt.Printf("%+v\n", err)
-			ctx.AbortWithStatus(http.StatusBadRequest)
+			w.WriteHeader(http.StatusBadRequest)
 
 			return
 		}
 
-		ctx.JSON(http.StatusOK, posts)
+		if err := json.NewEncoder(w).Encode(posts); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	case "user_name":
 		posts, err := sh.svc.GetPostsByUserName(q)
 		if err != nil {
 			fmt.Printf("%+v\n", err)
-			ctx.AbortWithStatus(http.StatusBadRequest)
+			w.WriteHeader(http.StatusBadRequest)
 
 			return
 		}
 
-		ctx.JSON(http.StatusOK, posts)
+		if err := json.NewEncoder(w).Encode(posts); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
 	case "tag_name":
 		posts, err := sh.svc.GetPostsByTagName(q)
 		if err != nil {
 			fmt.Printf("%+v\n", err)
-			ctx.AbortWithStatus(http.StatusBadRequest)
+			w.WriteHeader(http.StatusBadRequest)
 
 			return
 		}
 
-		ctx.JSON(http.StatusOK, posts)
+		if err := json.NewEncoder(w).Encode(posts); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
 	}
 }

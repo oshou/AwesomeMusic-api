@@ -1,0 +1,15 @@
+apiVersion: skaffold/v1beta16
+kind: Config
+build:
+  tagPolicy:
+    envTemplate:
+      template: "{{.IMAGE_NAME}}:{{.IMAGE_TAG}}"
+  artifacts:
+    - image: asia.gcr.io/dev-oshou02/awesome-music-api
+      context: ./
+      docker:
+        dockerfile: ./deployments/Dockerfile
+  local:
+    push: false
+    useBuildkit: true
+
