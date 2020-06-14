@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -21,6 +22,13 @@ import (
 	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
 )
 
+var port string
+
+func init() {
+	flag.StringVar(&port, "port", ":8080", "tcp host:port to connect")
+	flag.Parse()
+}
+
 func main() {
 	// Load Environment
 	if err := godotenv.Load(); err != nil {
@@ -28,7 +36,7 @@ func main() {
 		log.Fatalln()
 	}
 
-	// set DBConnection
+	// Set DBConnection
 	db, err := db.NewDB()
 	if err != nil {
 		fmt.Printf("%+v\n", err)
@@ -99,15 +107,14 @@ func main() {
 		})
 	})
 
-	server := &http.Server{
-		Addr:    os.Getenv("API_SERVER_PORT"),
+	srv := &http.Server{
+		Addr:    port,
 		Handler: r,
 	}
 
 	go func() {
-		if err := server.ListenAndServe(); err != nil {
-			//log.Logger.Error("Listen and serve failed.", zap.Error(err))
-			log.Print("err1 port:", os.Getenv("API_SERFVER_PORT"))
+		if err := srv.ListenAndServe(); err != nil {
+			log.Print("err1 port:", os.Getenv("API_SERVER_PORT"), " ", err)
 			os.Exit(1)
 		}
 	}()
@@ -117,7 +124,7 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := server.Shutdown(ctx); err != nil {
+	if err := srv.Shutdown(ctx); err != nil {
 		log.Println("err2")
 	}
 }
