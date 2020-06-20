@@ -6,6 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
 )

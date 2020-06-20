@@ -2,11 +2,11 @@
 package usecase
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
 )
@@ -31,7 +31,7 @@ func Test_postUsecase_GetPosts(t *testing.T) {
 			mock := mock_repository.NewMockIPostRepository(ctrl)
 			mock.EXPECT().GetAll().Return(tt.mock, tt.mockErr)
 			pu := &postUsecase{repo: mock}
-			got, err := tt.pu.GetPosts()
+			got, err := pu.GetPosts()
 
 			if err != tt.wantErr {
 				t.Errorf("postUsecase.GetPosts() error (wantErr %v, gotErr %v)", tt.wantErr, err)
@@ -54,7 +54,7 @@ func Test_postUsecase_GetPostByID(t *testing.T) {
 		mock    *model.Post
 		mockErr error
 		want    *model.Post
-		wantErr bool
+		wantErr error
 	}{
 		// TODO: Add test cases.
 	}
@@ -63,119 +63,147 @@ func Test_postUsecase_GetPostByID(t *testing.T) {
 			t.Parallel()
 
 			mock := mock_repository.NewMockIPostRepository(ctrl)
-			mock.EXPECT().GetByID(tt.postID)
-			got, err := tt.pu.GetPostByID(tt.args.postID)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("postUsecase.GetPostByID() error = %v, wantErr %v", err, tt.wantErr)
-				return
+			mock.EXPECT().GetByID(tt.postID).Return(tt.mock, tt.mockErr)
+			pu := &postUsecase{repo: mock}
+			got, err := pu.GetPostByID(tt.postID)
+
+			if err != tt.wantErr {
+				t.Errorf("postUsecase.GetPostByID() error (wantErr %v, gotErr %v)", tt.wantErr, err)
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("postUsecase.GetPostByID() = %v, want %v", got, tt.want)
+
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("postUsecase.GetPostByID() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
 }
 
 func Test_postUsecase_GetPostsByTagID(t *testing.T) {
-	type args struct {
-		tagID int
-	}
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
 	tests := []struct {
 		name    string
-		pu      *postUsecase
-		args    args
+		tagID   int
+		mock    []*model.Post
+		mockErr error
 		want    []*model.Post
-		wantErr bool
+		wantErr error
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.pu.GetPostsByTagID(tt.args.tagID)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("postUsecase.GetPostsByTagID() error = %v, wantErr %v", err, tt.wantErr)
-				return
+			t.Parallel()
+
+			mock := mock_repository.NewMockIPostRepository(ctrl)
+			mock.EXPECT().GetByTagID(tt.tagID).Return(tt.mock, tt.mockErr)
+			pu := &postUsecase{repo: mock}
+			got, err := pu.GetPostsByTagID(tt.tagID)
+
+			if err != tt.wantErr {
+				t.Errorf("postUsecase.GetPostByTagID() error (wantErr %v, gotErr %v)", tt.wantErr, err)
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("postUsecase.GetPostsByTagID() = %v, want %v", got, tt.want)
+
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("postUsecase.GetPostByTagID() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
 }
 
 func Test_postUsecase_GetPostsByUserID(t *testing.T) {
-	type args struct {
-		userID int
-	}
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
 	tests := []struct {
 		name    string
-		pu      *postUsecase
-		args    args
+		userID  int
+		mock    []*model.Post
+		mockErr error
 		want    []*model.Post
-		wantErr bool
+		wantErr error
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.pu.GetPostsByUserID(tt.args.userID)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("postUsecase.GetPostsByUserID() error = %v, wantErr %v", err, tt.wantErr)
-				return
+			mock := mock_repository.NewMockIPostRepository(ctrl)
+			mock.EXPECT().GetByUserID(tt.userID).Return(tt.mock, tt.mockErr)
+			pu := &postUsecase{repo: mock}
+			got, err := pu.GetPostsByUserID(tt.userID)
+
+			if err != tt.wantErr {
+				t.Errorf("postUsecase.GetPostByUserID() error (wantErr %v, gotErr %v)", tt.wantErr, err)
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("postUsecase.GetPostsByUserID() = %v, want %v", got, tt.want)
+
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("postUsecase.GetPostByUserID() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
 }
 
 func Test_postUsecase_AddPost(t *testing.T) {
-	type args struct {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	tests := []struct {
+		name    string
 		userID  int
 		title   string
 		url     string
 		message string
-	}
-	tests := []struct {
-		name    string
-		pu      *postUsecase
-		args    args
+		mock    *model.Post
+		mockErr error
 		want    *model.Post
-		wantErr bool
+		wantErr error
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.pu.AddPost(tt.args.userID, tt.args.title, tt.args.url, tt.args.message)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("postUsecase.AddPost() error = %v, wantErr %v", err, tt.wantErr)
-				return
+			t.Parallel()
+
+			mock := mock_repository.NewMockIPostRepository(ctrl)
+			mock.EXPECT().Add(tt.userID, tt.title, tt.url, tt.message).Return(tt.mock, tt.mockErr)
+			pu := &postUsecase{repo: mock}
+			got, err := pu.AddPost(tt.userID, tt.title, tt.url, tt.message)
+
+			if err != tt.wantErr {
+				t.Errorf("postUsecase.AddPost() error (wantErr %v, gotErr %v)", tt.wantErr, err)
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("postUsecase.AddPost() = %v, want %v", got, tt.want)
+
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("postUsecase().AddPost() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
 }
 
 func Test_postUsecase_DeletePostByID(t *testing.T) {
-	type args struct {
-		postID int
-	}
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
 	tests := []struct {
 		name    string
-		pu      *postUsecase
-		args    args
-		wantErr bool
+		postID  int
+		mockErr error
+		wantErr error
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.pu.DeletePostByID(tt.args.postID); (err != nil) != tt.wantErr {
-				t.Errorf("postUsecase.DeletePostByID() error = %v, wantErr %v", err, tt.wantErr)
+			t.Parallel()
+
+			mock := mock_repository.NewMockIPostRepository(ctrl)
+			mock.EXPECT().DeleteByID(tt.postID).Return(tt.mockErr)
+			pu := &postUsecase{repo: mock}
+			err := pu.DeletePostByID(tt.postID)
+
+			if err != tt.wantErr {
+				t.Errorf("postUsecase.AddPost() error (wantErr %v, gotErr %v)", tt.wantErr, err)
 			}
 		})
 	}

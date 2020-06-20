@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -45,6 +46,14 @@ func Test_commentUsecase_GetComments(t *testing.T) {
 			mockErr: nil,
 			want:    []*model.Comment{},
 			wantErr: nil,
+		},
+		{
+			name:    "repository error",
+			postID:  1,
+			mock:    []*model.Comment{},
+			mockErr: errors.New("test"),
+			want:    []*model.Comment{},
+			wantErr: errors.New("test"),
 		},
 	}
 
