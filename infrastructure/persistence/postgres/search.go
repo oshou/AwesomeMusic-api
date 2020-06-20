@@ -3,9 +3,10 @@ package postgres
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
+
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
-	"github.com/pkg/errors"
 )
 
 type searchRepository struct {
@@ -31,7 +32,7 @@ func (sr *searchRepository) GetByTitle(q string) ([]*model.Post, error) {
 							url,
 							message
 						FROM
-							post
+							public.post
 						WHERE
 							title LIKE $1`
 
@@ -52,8 +53,8 @@ func (sr *searchRepository) GetByUserName(q string) ([]*model.Post, error) {
 							p.url,
 							p.message
 						FROM
-							post AS p
-						INNER JOIN user AS u
+							public.post AS p
+						INNER JOIN public.user AS u
 						  ON u.id = p.user_id
 						WHERE
 							u.name LIKE $1`
@@ -75,10 +76,10 @@ func (sr *searchRepository) GetByTagName(q string) ([]*model.Post, error) {
 							p.url,
 							p.message
 						FROM
-							post AS p
-						INNER JOIN post_tag AS pt
+							public.post AS p
+						INNER JOIN public.post_tag AS pt
 							ON pt.post_id = p.id
-						INNER JOIN tag AS t
+						INNER JOIN public.tag AS t
 							ON pt.tag_id = t.id
 						WHERE
 							t.name LIKE $1`

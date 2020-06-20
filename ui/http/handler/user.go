@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/oshou/AwesomeMusic-api/service"
+	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
 // IUserHandler is ui layer http-handler interface
@@ -19,13 +19,13 @@ type IUserHandler interface {
 }
 
 type userHandler struct {
-	svc service.IUserService
+	svc usecase.IUserUsecase
 }
 
 var _ IUserHandler = &userHandler{}
 
 // NewUserHandler is constructor for userHandler
-func NewUserHandler(svc service.IUserService) IUserHandler {
+func NewUserHandler(svc usecase.IUserUsecase) IUserHandler {
 	return &userHandler{
 		svc: svc,
 	}

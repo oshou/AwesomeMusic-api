@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/oshou/AwesomeMusic-api/service"
+	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
 // ITagHandler is ui layer http-handler interface
@@ -21,13 +21,13 @@ type ITagHandler interface {
 }
 
 type tagHandler struct {
-	svc service.ITagService
+	svc usecase.ITagUsecase
 }
 
 var _ ITagHandler = &tagHandler{}
 
 // NewTagHandler is constructor for tagHandler
-func NewTagHandler(svc service.ITagService) ITagHandler {
+func NewTagHandler(svc usecase.ITagUsecase) ITagHandler {
 	return &tagHandler{
 		svc: svc,
 	}

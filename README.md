@@ -43,7 +43,7 @@ make run
 ├── domain/                  # Domain Layer
 │   └── model/               # Domain Model Layer
 │   └── repository/          # Domain Service Layer
-├── service/                 # Application Layer
+├── usecase/                 # Application Layer
 ├── ui/                      # UI Layer
 │   └── http/                # http
 │         └── router/        # http router

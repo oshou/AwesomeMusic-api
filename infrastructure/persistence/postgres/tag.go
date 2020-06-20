@@ -3,9 +3,10 @@ package postgres
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
+
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
-	"github.com/pkg/errors"
 )
 
 type tagRepository struct {
@@ -28,7 +29,7 @@ func (tr *tagRepository) GetAll() ([]*model.Tag, error) {
 							id,
 							name
 						FROM
-							tag`
+							public.tag`
 
 	if err := tr.db.Select(&tt, query); err != nil {
 		return nil, errors.WithStack(err)
@@ -44,7 +45,7 @@ func (tr *tagRepository) GetByID(tagID int) (*model.Tag, error) {
 							id,
 							name
 						FROM
-							tag
+							public.tag
 						WHERE
 							id = $1`
 
@@ -62,7 +63,7 @@ func (tr *tagRepository) GetByName(tagName string) ([]*model.Tag, error) {
 							id,
 							name
 						FROM
-							tag
+							public.tag
 						WHERE
 							name LIKE $1`
 
@@ -80,8 +81,8 @@ func (tr *tagRepository) GetByPostID(postID int) ([]*model.Tag, error) {
 							t.id,
 							t.name
 						FROM
-							tag AS t
-						INNER JOIN post_tag AS pt
+							public.tag AS t
+						INNER JOIN public.post_tag AS pt
 							ON t.id = pt.tag_id
 						WHERE
 							pt.post_id = $1`
@@ -98,7 +99,7 @@ func (tr *tagRepository) Add(tagName string) (*model.Tag, error) {
 		Name: tagName,
 	}
 	query := `INSERT INTO
-							tag(name)
+							public.tag(name)
 						VALUES
 							($1)`
 
@@ -115,7 +116,7 @@ func (tr *tagRepository) Add(tagName string) (*model.Tag, error) {
 
 func (tr *tagRepository) Attach(postID, tagID int) (*model.PostTag, error) {
 	query := `INSERT INTO
-							post_tag(post_id, tag_id)
+							public.post_tag(post_id, tag_id)
 						VALUES
 							($1, $2)`
 

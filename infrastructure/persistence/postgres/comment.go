@@ -3,9 +3,10 @@ package postgres
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
+
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
-	"github.com/pkg/errors"
 )
 
 type commentRepository struct {
@@ -30,7 +31,7 @@ func (cr *commentRepository) GetAll(postID int) ([]*model.Comment, error) {
 							post_id,
 							comment
 						FROM
-							comment
+							public.comment
 						WHERE
 							post_id = $1`
 
@@ -38,7 +39,8 @@ func (cr *commentRepository) GetAll(postID int) ([]*model.Comment, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	return cc, nil
+	//return cc, nil
+	return []*model.Comment{}, nil
 }
 
 func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
@@ -50,7 +52,7 @@ func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
 							post_id,
 							comment
 						FROM
-							comment
+							public.comment
 						WHERE
 							id = $1`
 
@@ -63,7 +65,7 @@ func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
 
 func (cr *commentRepository) Add(postID, userID int, comment string) (*model.Comment, error) {
 	query := `INSERT INTO
-							comment(post_id, user_id, comment)
+							public.comment(post_id, user_id, comment)
 						VALUES
 							($1, $2, $3)`
 

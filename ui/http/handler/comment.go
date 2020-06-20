@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/oshou/AwesomeMusic-api/service"
+	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
 // ICommentHandler is ui layer http-handler interface
@@ -19,13 +19,13 @@ type ICommentHandler interface {
 }
 
 type commentHandler struct {
-	svc service.ICommentService
+	svc usecase.ICommentUsecase
 }
 
 var _ ICommentHandler = &commentHandler{}
 
 // NewCommentHandler is constructor for commentHandler
-func NewCommentHandler(svc service.ICommentService) ICommentHandler {
+func NewCommentHandler(svc usecase.ICommentUsecase) ICommentHandler {
 	return &commentHandler{
 		svc: svc,
 	}

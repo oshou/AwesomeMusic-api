@@ -12,14 +12,16 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
+	//_ "github.com/jackc/pgx/stdlib"
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
 
+	_ "github.com/lib/pq"
 	//_ "github.com/go-sql-driver/mysql"
+
 	"github.com/oshou/AwesomeMusic-api/db"
 	persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/postgres"
-	"github.com/oshou/AwesomeMusic-api/service"
 	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
+	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
 var port string
@@ -41,7 +43,6 @@ func main() {
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 	}
-
 	defer func() {
 		err := db.Close()
 		if err != nil {
@@ -56,24 +57,26 @@ func main() {
 
 	r := chi.NewRouter()
 
+	// Injector
 	userRepository := persistence.NewUserRepository(db)
 	commentRepository := persistence.NewCommentRepository(db)
 	postRepository := persistence.NewPostRepository(db)
 	tagRepository := persistence.NewTagRepository(db)
 	searchRepository := persistence.NewSearchRepository(db)
 
-	userService := service.NewUserService(userRepository)
-	commentService := service.NewCommentService(commentRepository)
-	postService := service.NewPostService(postRepository)
-	tagService := service.NewTagService(tagRepository)
-	searchService := service.NewSearchService(searchRepository)
+	userUsecase := usecase.NewUserUsecase(userRepository)
+	commentUsecase := usecase.NewCommentUsecase(commentRepository)
+	postUsecase := usecase.NewPostUsecase(postRepository)
+	tagUsecase := usecase.NewTagUsecase(tagRepository)
+	searchUsecase := usecase.NewSearchUsecase(searchRepository)
 
-	userHandler := handler.NewUserHandler(userService)
-	commentHandler := handler.NewCommentHandler(commentService)
-	postHandler := handler.NewPostHandler(postService)
-	tagHandler := handler.NewTagHandler(tagService)
-	searchHandler := handler.NewSearchHandler(searchService)
+	userHandler := handler.NewUserHandler(userUsecase)
+	commentHandler := handler.NewCommentHandler(commentUsecase)
+	postHandler := handler.NewPostHandler(postUsecase)
+	tagHandler := handler.NewTagHandler(tagUsecase)
+	searchHandler := handler.NewSearchHandler(searchUsecase)
 
+	// Routing
 	r.Route("/v1", func(r chi.Router) {
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", userHandler.GetUsers)

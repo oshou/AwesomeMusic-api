@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/oshou/AwesomeMusic-api/service"
+	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
 // ISearchHandler is ui layer http-handler interface
@@ -15,13 +15,13 @@ type ISearchHandler interface {
 }
 
 type searchHandler struct {
-	svc service.ISearchService
+	svc usecase.ISearchUsecase
 }
 
 var _ ISearchHandler = &searchHandler{}
 
 // NewSearchHandler is constructor for searchHandler
-func NewSearchHandler(svc service.ISearchService) ISearchHandler {
+func NewSearchHandler(svc usecase.ISearchUsecase) ISearchHandler {
 	return &searchHandler{
 		svc: svc,
 	}

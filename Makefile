@@ -17,7 +17,7 @@ lint:
 
 .PHONY: test
 test:
-	$(GO) test -v ./...
+	$(GO) test ./...
 
 .PHONY: cov
 cov:

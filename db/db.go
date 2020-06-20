@@ -11,16 +11,18 @@ import (
 
 // NewDB is constructor for db
 func NewDB() (*sqlx.DB, error) {
-	db, err := sqlx.Open(
-		os.Getenv("DB_DRIVER"),
-		fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-			os.Getenv("DB_HOST"),
-			os.Getenv("DB_PORT"),
-			os.Getenv("DB_USER"),
-			os.Getenv("DB_PASSWORD"),
-			os.Getenv("DB_NAME"),
-		),
+	driver := os.Getenv("DB_DRIVER")
+	dsn := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
 	)
+	fmt.Println("dsn:", dsn)
+
+	db, err := sqlx.Open(driver, dsn)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

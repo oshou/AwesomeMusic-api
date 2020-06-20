@@ -3,9 +3,10 @@ package postgres
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
+
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
-	"github.com/pkg/errors"
 )
 
 type userRepository struct {
@@ -22,55 +23,58 @@ func NewUserRepository(db *sqlx.DB) repository.IUserRepository {
 }
 
 func (ur *userRepository) GetAll() ([]*model.User, error) {
-	var uu []*model.User
+	var users []*model.User
 
-	query := `SELECT
-							id,
-							name
-						FROM
-							user`
+	query := `
+		SELECT
+				id
+			,name
+		FROM
+			public.user`
 
-	if err := ur.db.Select(&uu, query); err != nil {
+	err := ur.db.Select(&users, query)
+
+	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	return uu, nil
+	return users, nil
 }
 
 func (ur *userRepository) GetByID(userID int) (*model.User, error) {
-	var u model.User
+	var user model.User
 
 	query := `SELECT
 							id,
 							name
 						FROM
-							user
+							public.user
 						WHERE
 							id = $1`
 
-	if err := ur.db.Get(&u, query, userID); err != nil {
+	if err := ur.db.Get(&user, query, userID); err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	return &u, nil
+	return &user, nil
 }
 
 func (ur *userRepository) GetByName(name string) ([]*model.User, error) {
-	var uu []*model.User
+	var users []*model.User
 
 	query := `SELECT
 							id,
 							name
 						FROM
-							user
+							public.user
 						WHERE
 							name LIKE $1`
 
-	if err := ur.db.Select(&uu, query, "%"+name+"%"); err != nil {
+	if err := ur.db.Select(&users, query, "%"+name+"%"); err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	return uu, nil
+	return users, nil
 }
 
 func (ur *userRepository) Add(name string) (*model.User, error) {
@@ -78,7 +82,7 @@ func (ur *userRepository) Add(name string) (*model.User, error) {
 		Name: name,
 	}
 	query := `INSERT INTO
-							user(name)
+							public.user(name)
 						VALUES
 							($1)`
 

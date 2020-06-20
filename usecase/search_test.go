@@ -1,5 +1,5 @@
-// Package service is application layer package
-package service
+// Package usecase is application layer package
+package usecase
 
 import (
 	"reflect"
@@ -9,33 +9,33 @@ import (
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
-func TestNewSearchService(t *testing.T) {
+func TestNewSearchUsecase(t *testing.T) {
 	type args struct {
 		repo repository.ISearchRepository
 	}
 	tests := []struct {
 		name string
 		args args
-		want ISearchService
+		want ISearchUsecase
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewSearchService(tt.args.repo); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewSearchService() = %v, want %v", got, tt.want)
+			if got := NewSearchUsecase(tt.args.repo); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewSearchUsecase() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_searchService_GetPostsByTitle(t *testing.T) {
+func Test_searchUsecase_GetPostsByTitle(t *testing.T) {
 	type args struct {
 		q string
 	}
 	tests := []struct {
 		name    string
-		su      *searchService
+		su      *searchUsecase
 		args    args
 		want    []*model.Post
 		wantErr bool
@@ -46,23 +46,23 @@ func Test_searchService_GetPostsByTitle(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := tt.su.GetPostsByTitle(tt.args.q)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("searchService.GetPostsByTitle() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("searchUsecase.GetPostsByTitle() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("searchService.GetPostsByTitle() = %v, want %v", got, tt.want)
+				t.Errorf("searchUsecase.GetPostsByTitle() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_searchService_GetPostsByUserName(t *testing.T) {
+func Test_searchUsecase_GetPostsByUserName(t *testing.T) {
 	type args struct {
 		q string
 	}
 	tests := []struct {
 		name    string
-		su      *searchService
+		su      *searchUsecase
 		args    args
 		want    []*model.Post
 		wantErr bool
@@ -73,23 +73,23 @@ func Test_searchService_GetPostsByUserName(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := tt.su.GetPostsByUserName(tt.args.q)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("searchService.GetPostsByUserName() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("searchUsecase.GetPostsByUserName() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("searchService.GetPostsByUserName() = %v, want %v", got, tt.want)
+				t.Errorf("searchUsecase.GetPostsByUserName() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_searchService_GetPostsByTagName(t *testing.T) {
+func Test_searchUsecase_GetPostsByTagName(t *testing.T) {
 	type args struct {
 		q string
 	}
 	tests := []struct {
 		name    string
-		su      *searchService
+		su      *searchUsecase
 		args    args
 		want    []*model.Post
 		wantErr bool
@@ -100,11 +100,11 @@ func Test_searchService_GetPostsByTagName(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := tt.su.GetPostsByTagName(tt.args.q)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("searchService.GetPostsByTagName() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("searchUsecase.GetPostsByTagName() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("searchService.GetPostsByTagName() = %v, want %v", got, tt.want)
+				t.Errorf("searchUsecase.GetPostsByTagName() = %v, want %v", got, tt.want)
 			}
 		})
 	}

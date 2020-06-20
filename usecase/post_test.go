@@ -1,66 +1,58 @@
-// Package service is application layer package
-package service
+// Package usecase is application layer package
+package usecase
 
 import (
 	"reflect"
 	"testing"
 
+	"github.com/golang/mock/gomock"
+	"github.com/google/go-cmp/cmp"
 	"github.com/oshou/AwesomeMusic-api/domain/model"
-	"github.com/oshou/AwesomeMusic-api/domain/repository"
+	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
 )
 
-func TestNewPostService(t *testing.T) {
-	type args struct {
-		repo repository.IPostRepository
-	}
+func Test_postUsecase_GetPosts(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	tests := []struct {
-		name string
-		args args
-		want IPostService
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewPostService(tt.args.repo); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewPostService() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_postService_GetPosts(t *testing.T) {
 	tests := []struct {
 		name    string
-		pu      *postService
+		mock    []*model.Post
+		mockErr error
 		want    []*model.Post
-		wantErr bool
+		wantErr error
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			mock := mock_repository.NewMockIPostRepository(ctrl)
+			mock.EXPECT().GetAll().Return(tt.mock, tt.mockErr)
+			pu := &postUsecase{repo: mock}
 			got, err := tt.pu.GetPosts()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("postService.GetPosts() error = %v, wantErr %v", err, tt.wantErr)
-				return
+
+			if err != tt.wantErr {
+				t.Errorf("postUsecase.GetPosts() error (wantErr %v, gotErr %v)", tt.wantErr, err)
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("postService.GetPosts() = %v, want %v", got, tt.want)
+
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("postUsecase.GetPosts() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
 }
 
-func Test_postService_GetPostByID(t *testing.T) {
-	type args struct {
-		postID int
-	}
+func Test_postUsecase_GetPostByID(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
 	tests := []struct {
 		name    string
-		pu      *postService
-		args    args
+		postID  int
+		mock    *model.Post
+		mockErr error
 		want    *model.Post
 		wantErr bool
 	}{
@@ -68,25 +60,29 @@ func Test_postService_GetPostByID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			mock := mock_repository.NewMockIPostRepository(ctrl)
+			mock.EXPECT().GetByID(tt.postID)
 			got, err := tt.pu.GetPostByID(tt.args.postID)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("postService.GetPostByID() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("postUsecase.GetPostByID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("postService.GetPostByID() = %v, want %v", got, tt.want)
+				t.Errorf("postUsecase.GetPostByID() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_postService_GetPostsByTagID(t *testing.T) {
+func Test_postUsecase_GetPostsByTagID(t *testing.T) {
 	type args struct {
 		tagID int
 	}
 	tests := []struct {
 		name    string
-		pu      *postService
+		pu      *postUsecase
 		args    args
 		want    []*model.Post
 		wantErr bool
@@ -97,23 +93,23 @@ func Test_postService_GetPostsByTagID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := tt.pu.GetPostsByTagID(tt.args.tagID)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("postService.GetPostsByTagID() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("postUsecase.GetPostsByTagID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("postService.GetPostsByTagID() = %v, want %v", got, tt.want)
+				t.Errorf("postUsecase.GetPostsByTagID() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_postService_GetPostsByUserID(t *testing.T) {
+func Test_postUsecase_GetPostsByUserID(t *testing.T) {
 	type args struct {
 		userID int
 	}
 	tests := []struct {
 		name    string
-		pu      *postService
+		pu      *postUsecase
 		args    args
 		want    []*model.Post
 		wantErr bool
@@ -124,17 +120,17 @@ func Test_postService_GetPostsByUserID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := tt.pu.GetPostsByUserID(tt.args.userID)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("postService.GetPostsByUserID() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("postUsecase.GetPostsByUserID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("postService.GetPostsByUserID() = %v, want %v", got, tt.want)
+				t.Errorf("postUsecase.GetPostsByUserID() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_postService_AddPost(t *testing.T) {
+func Test_postUsecase_AddPost(t *testing.T) {
 	type args struct {
 		userID  int
 		title   string
@@ -143,7 +139,7 @@ func Test_postService_AddPost(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		pu      *postService
+		pu      *postUsecase
 		args    args
 		want    *model.Post
 		wantErr bool
@@ -154,23 +150,23 @@ func Test_postService_AddPost(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := tt.pu.AddPost(tt.args.userID, tt.args.title, tt.args.url, tt.args.message)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("postService.AddPost() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("postUsecase.AddPost() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("postService.AddPost() = %v, want %v", got, tt.want)
+				t.Errorf("postUsecase.AddPost() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_postService_DeletePostByID(t *testing.T) {
+func Test_postUsecase_DeletePostByID(t *testing.T) {
 	type args struct {
 		postID int
 	}
 	tests := []struct {
 		name    string
-		pu      *postService
+		pu      *postUsecase
 		args    args
 		wantErr bool
 	}{
@@ -179,7 +175,7 @@ func Test_postService_DeletePostByID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := tt.pu.DeletePostByID(tt.args.postID); (err != nil) != tt.wantErr {
-				t.Errorf("postService.DeletePostByID() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("postUsecase.DeletePostByID() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

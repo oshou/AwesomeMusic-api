@@ -3,9 +3,10 @@ package postgres
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
+
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
-	"github.com/pkg/errors"
 )
 
 type postRepository struct {
@@ -31,7 +32,7 @@ func (pr *postRepository) GetAll() ([]*model.Post, error) {
 							url,
 							message
 						FROM
-							post`
+							public.post`
 
 	if err := pr.db.Select(&pp, query); err != nil {
 		return nil, errors.WithStack(err)
@@ -50,7 +51,7 @@ func (pr *postRepository) GetByID(postID int) (*model.Post, error) {
 							url,
 							message
 						FROM
-							post
+							public.post
 						WHERE
 							id = $1`
 
@@ -71,10 +72,10 @@ func (pr *postRepository) GetByTagID(tagID int) ([]*model.Post, error) {
 							p.url,
 							p.message
 						FROM
-							post AS p
-						INNER JOIN post_tag AS pt
+							public.post AS p
+						INNER JOIN public.post_tag AS pt
 							ON pt.post_id = p.id
-						INNER JOIN tag AS t
+						INNER JOIN public.tag AS t
 							ON pt.tag_id = t.id
 						WHERE
 							t.id = $1`
@@ -96,8 +97,8 @@ func (pr *postRepository) GetByUserID(userID int) ([]*model.Post, error) {
 							p.url,
 							p.message
 						FROM
-							post AS p
-						INNER JOIN user AS u
+							public.post AS p
+						INNER JOIN public.user AS u
 							ON u.id = p.user_id
 						WHERE
 							u.id = $1`
@@ -111,7 +112,7 @@ func (pr *postRepository) GetByUserID(userID int) ([]*model.Post, error) {
 
 func (pr *postRepository) Add(userID int, title, url, message string) (*model.Post, error) {
 	query := `INSERT INTO
-							post(user_id, title, url, message)
+							public.post(user_id, title, url, message)
 						VALUES
 							($1, $2, $3, $4)`
 
@@ -135,7 +136,7 @@ func (pr *postRepository) Add(userID int, title, url, message string) (*model.Po
 
 func (pr *postRepository) DeleteByID(postID int) error {
 	query := `DELETE FROM
-							post
+							public.post
 						WHERE
 							id = $1`
 

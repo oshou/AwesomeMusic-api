@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/oshou/AwesomeMusic-api/service"
+	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
 // IPostHandler is ui layer http-handler interface
@@ -22,13 +22,13 @@ type IPostHandler interface {
 }
 
 type postHandler struct {
-	svc service.IPostService
+	svc usecase.IPostUsecase
 }
 
 var _ IPostHandler = &postHandler{}
 
 // NewPostHandler is constructor for postHandler
-func NewPostHandler(svc service.IPostService) IPostHandler {
+func NewPostHandler(svc usecase.IPostUsecase) IPostHandler {
 	return &postHandler{
 		svc: svc,
 	}
