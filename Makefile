@@ -5,43 +5,35 @@
 export GO111MODULE=on
 
 GO ?= $(shell which go)
-GOTESTS ?= gotests
 GOLANGCILINT ?= golangci-lint
 DEPLOY_REPO = "oshou/awesome-music-api"
 BINARY_NAME = main
 
-.PHONY: lint
-lint:
+.PHONY: fmt lint test cov gen_test build_local build_prd run clean
+
+clean:
+	$(GO) mod tidy
+
+fmt: clean
 	$(GO) fmt ./...
+
+lint: fmt
 	$(GOLANGCILINT) run
 
-.PHONY: test
-test:
+test: lint
 	$(GO) test ./...
 
-.PHONY: cov
-cov:
+cov: lint
 	$(GO) test ./... -cover
 
-.PHONY: gen_test
-gen_test:
-	$(GOTESTS) -all -w ./*
-
-.PHONY: build_local
-build_local:
+build_local: clean fmt lint
 	cp -rp .env.local .env
 	$(GO) build -o $(BINARY_NAME)
 
-.PHONY: build_prd
 build_prd:
 	cp -rp .env.local .env
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build -a -installsuffix cgo -ldflags="-s -w" -o $(BINARY_NAME)
 
-.PHONY: run
 run:
 	./$(BINARY_NAME)
 
-.PHONY: clean
-clean:
-	$(GO) mod tidy
-	$(GO) clean
