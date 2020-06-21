@@ -19,20 +19,21 @@ type IUserHandler interface {
 }
 
 type userHandler struct {
-	svc usecase.IUserUsecase
+	usecase usecase.IUserUsecase
 }
 
 var _ IUserHandler = &userHandler{}
 
 // NewUserHandler is constructor for userHandler
-func NewUserHandler(svc usecase.IUserUsecase) IUserHandler {
+func NewUserHandler(usecase usecase.IUserUsecase) IUserHandler {
 	return &userHandler{
-		svc: svc,
+		usecase: usecase,
 	}
 }
 
 func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := uh.svc.GetUsers()
+	w.Header().Set("Content-Type", "application/json")
+	users, err := uh.usecase.GetUsers()
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -45,15 +46,13 @@ func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 // Create: POST /v1/users
 func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("name")
 
-	user, err := uh.svc.AddUser(name)
+	user, err := uh.usecase.AddUser(name)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -66,14 +65,13 @@ func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 // Detail: GET /v1/users/:user_id
 func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	userIDString := chi.URLParam(r, "user_id")
 	userID, err := strconv.Atoi(userIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -81,7 +79,7 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := uh.svc.GetUserByID(userID)
+	user, err := uh.usecase.GetUserByID(userID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusNotFound)
@@ -94,6 +92,4 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }

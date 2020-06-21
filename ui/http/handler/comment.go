@@ -19,21 +19,22 @@ type ICommentHandler interface {
 }
 
 type commentHandler struct {
-	svc usecase.ICommentUsecase
+	usecase usecase.ICommentUsecase
 }
 
 var _ ICommentHandler = &commentHandler{}
 
 // NewCommentHandler is constructor for commentHandler
-func NewCommentHandler(svc usecase.ICommentUsecase) ICommentHandler {
+func NewCommentHandler(usecase usecase.ICommentUsecase) ICommentHandler {
 	return &commentHandler{
-		svc: svc,
+		usecase: usecase,
 	}
 }
 
 func (ch *commentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
 	postIDString := chi.URLParam(r, "post_id")
 	postID, err := strconv.Atoi(postIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -41,7 +42,7 @@ func (ch *commentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comments, err := ch.svc.GetComments(postID)
+	comments, err := ch.usecase.GetComments(postID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusNotFound)
@@ -53,13 +54,12 @@ func (ch *commentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 	postIDString := chi.URLParam(r, "post_id")
 	postID, err := strconv.Atoi(postIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -69,6 +69,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 
 	userIDString := r.URL.Query().Get("user_id")
 	userID, err := strconv.Atoi(userIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -77,7 +78,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	commentString := r.URL.Query().Get("comment")
-	comment, err := ch.svc.AddComment(postID, userID, commentString)
+	comment, err := ch.usecase.AddComment(postID, userID, commentString)
 
 	if err != nil {
 		fmt.Printf("%+v\n", err)
@@ -91,13 +92,12 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func (ch *commentHandler) GetCommentByID(w http.ResponseWriter, r *http.Request) {
 	commentIDString := chi.URLParam(r, "comment_id")
 	commentID, err := strconv.Atoi(commentIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -105,7 +105,7 @@ func (ch *commentHandler) GetCommentByID(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	comment, err := ch.svc.GetCommentByID(commentID)
+	comment, err := ch.usecase.GetCommentByID(commentID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusNotFound)
@@ -118,6 +118,4 @@ func (ch *commentHandler) GetCommentByID(w http.ResponseWriter, r *http.Request)
 
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }

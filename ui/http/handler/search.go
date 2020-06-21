@@ -15,15 +15,15 @@ type ISearchHandler interface {
 }
 
 type searchHandler struct {
-	svc usecase.ISearchUsecase
+	usecase usecase.ISearchUsecase
 }
 
 var _ ISearchHandler = &searchHandler{}
 
 // NewSearchHandler is constructor for searchHandler
-func NewSearchHandler(svc usecase.ISearchUsecase) ISearchHandler {
+func NewSearchHandler(usecase usecase.ISearchUsecase) ISearchHandler {
 	return &searchHandler{
-		svc: svc,
+		usecase: usecase,
 	}
 }
 
@@ -33,7 +33,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 
 	switch searchType {
 	case "post_title":
-		posts, err := sh.svc.GetPostsByTitle(q)
+		posts, err := sh.usecase.GetPostsByTitle(q)
 		if err != nil {
 			fmt.Printf("%+v\n", err)
 			w.WriteHeader(http.StatusBadRequest)
@@ -46,9 +46,8 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 
 			return
 		}
-		w.WriteHeader(http.StatusOK)
 	case "user_name":
-		posts, err := sh.svc.GetPostsByUserName(q)
+		posts, err := sh.usecase.GetPostsByUserName(q)
 		if err != nil {
 			fmt.Printf("%+v\n", err)
 			w.WriteHeader(http.StatusBadRequest)
@@ -61,10 +60,8 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 
 			return
 		}
-
-		w.WriteHeader(http.StatusOK)
 	case "tag_name":
-		posts, err := sh.svc.GetPostsByTagName(q)
+		posts, err := sh.usecase.GetPostsByTagName(q)
 		if err != nil {
 			fmt.Printf("%+v\n", err)
 			w.WriteHeader(http.StatusBadRequest)
@@ -77,7 +74,5 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 
 			return
 		}
-
-		w.WriteHeader(http.StatusOK)
 	}
 }

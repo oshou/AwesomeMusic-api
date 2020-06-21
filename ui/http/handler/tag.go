@@ -21,20 +21,20 @@ type ITagHandler interface {
 }
 
 type tagHandler struct {
-	svc usecase.ITagUsecase
+	usecase usecase.ITagUsecase
 }
 
 var _ ITagHandler = &tagHandler{}
 
 // NewTagHandler is constructor for tagHandler
-func NewTagHandler(svc usecase.ITagUsecase) ITagHandler {
+func NewTagHandler(usecase usecase.ITagUsecase) ITagHandler {
 	return &tagHandler{
-		svc: svc,
+		usecase: usecase,
 	}
 }
 
 func (th *tagHandler) GetTags(w http.ResponseWriter, r *http.Request) {
-	tags, err := th.svc.GetTags()
+	tags, err := th.usecase.GetTags()
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -47,13 +47,12 @@ func (th *tagHandler) GetTags(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 	tagIDString := chi.URLParam(r, "tag_id")
 	tagID, err := strconv.Atoi(tagIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -61,7 +60,7 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tag, err := th.svc.GetTagByID(tagID)
+	tag, err := th.usecase.GetTagByID(tagID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -74,13 +73,12 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 	postIDString := chi.URLParam(r, "post_id")
 	postID, err := strconv.Atoi(postIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -88,7 +86,7 @@ func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tags, err := th.svc.GetTagsByPostID(postID)
+	tags, err := th.usecase.GetTagsByPostID(postID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -101,13 +99,11 @@ func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
 	tagName := r.URL.Query().Get("name")
-	tag, err := th.svc.AddTag(tagName)
+	tag, err := th.usecase.AddTag(tagName)
 
 	if err != nil {
 		fmt.Printf("%+v\n", err)
@@ -121,13 +117,12 @@ func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
-	w.WriteHeader(http.StatusCreated)
 }
 
 func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 	postIDString := chi.URLParam(r, "post_id")
 	postID, err := strconv.Atoi(postIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -137,6 +132,7 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 
 	tagIDString := chi.URLParam(r, "tag_id")
 	tagID, err := strconv.Atoi(tagIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -144,7 +140,7 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	postTag, err := th.svc.AttachTag(postID, tagID)
+	postTag, err := th.usecase.AttachTag(postID, tagID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -157,6 +153,4 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }

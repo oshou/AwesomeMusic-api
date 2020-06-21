@@ -22,20 +22,20 @@ type IPostHandler interface {
 }
 
 type postHandler struct {
-	svc usecase.IPostUsecase
+	usecase usecase.IPostUsecase
 }
 
 var _ IPostHandler = &postHandler{}
 
 // NewPostHandler is constructor for postHandler
-func NewPostHandler(svc usecase.IPostUsecase) IPostHandler {
+func NewPostHandler(usecase usecase.IPostUsecase) IPostHandler {
 	return &postHandler{
-		svc: svc,
+		usecase: usecase,
 	}
 }
 
 func (ph *postHandler) GetPosts(w http.ResponseWriter, r *http.Request) {
-	posts, err := ph.svc.GetPosts()
+	posts, err := ph.usecase.GetPosts()
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusNotFound)
@@ -46,13 +46,12 @@ func (ph *postHandler) GetPosts(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-
-	//ctx.JSON(http.StatusOK, posts)
 }
 
 func (ph *postHandler) GetPostByID(w http.ResponseWriter, r *http.Request) {
 	postIDString := chi.URLParam(r, "post_id")
 	postID, err := strconv.Atoi(postIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -60,7 +59,7 @@ func (ph *postHandler) GetPostByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post, err := ph.svc.GetPostByID(postID)
+	post, err := ph.usecase.GetPostByID(postID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusNotFound)
@@ -69,13 +68,12 @@ func (ph *postHandler) GetPostByID(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(post); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-
-	//ctx.JSON(http.StatusOK, post)
 }
 
 func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
 	tagIDString := chi.URLParam(r, "tag_id")
 	tagID, err := strconv.Atoi(tagIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -83,7 +81,7 @@ func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := ph.svc.GetPostsByTagID(tagID)
+	posts, err := ph.usecase.GetPostsByTagID(tagID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -94,13 +92,12 @@ func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-
-	//ctx.JSON(http.StatusOK, posts)
 }
 
 func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) {
 	userIDString := chi.URLParam(r, "user_Id")
 	userID, err := strconv.Atoi(userIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -108,7 +105,7 @@ func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	posts, err := ph.svc.GetPostsByUserID(userID)
+	posts, err := ph.usecase.GetPostsByUserID(userID)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusNotFound)
@@ -121,13 +118,12 @@ func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) 
 
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
 	userIDString := r.URL.Query().Get("user_id")
 	userID, err := strconv.Atoi(userIDString)
+
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -139,7 +135,7 @@ func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Query().Get("url")
 	message := r.URL.Query().Get("message")
 
-	post, err := ph.svc.AddPost(userID, title, url, message)
+	post, err := ph.usecase.AddPost(userID, title, url, message)
 	if err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -147,13 +143,13 @@ func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
+
 	if err := json.NewEncoder(w).Encode(post); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 
 		return
 	}
-
-	w.WriteHeader(http.StatusCreated)
 }
 
 func (ph *postHandler) DeletePostByID(w http.ResponseWriter, r *http.Request) {
@@ -167,12 +163,10 @@ func (ph *postHandler) DeletePostByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := ph.svc.DeletePostByID(postID); err != nil {
+	if err := ph.usecase.DeletePostByID(postID); err != nil {
 		fmt.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
-
-	w.WriteHeader(http.StatusNoContent)
 }
