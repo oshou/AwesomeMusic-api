@@ -3,11 +3,13 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi"
+	"go.uber.org/zap"
+
+	"github.com/oshou/AwesomeMusic-api/log"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
@@ -35,7 +37,7 @@ func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	users, err := uh.usecase.GetUsers()
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to get users", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -54,7 +56,7 @@ func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 
 	user, err := uh.usecase.AddUser(name)
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to add user", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -73,7 +75,7 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -81,7 +83,7 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 	user, err := uh.usecase.GetUserByID(userID)
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to get user by userID", zap.Error(err))
 		w.WriteHeader(http.StatusNotFound)
 
 		return

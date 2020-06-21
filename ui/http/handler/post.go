@@ -3,11 +3,13 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi"
+	"go.uber.org/zap"
+
+	"github.com/oshou/AwesomeMusic-api/log"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
@@ -37,7 +39,7 @@ func NewPostHandler(usecase usecase.IPostUsecase) IPostHandler {
 func (ph *postHandler) GetPosts(w http.ResponseWriter, r *http.Request) {
 	posts, err := ph.usecase.GetPosts()
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to get posts", zap.Error(err))
 		w.WriteHeader(http.StatusNotFound)
 
 		return
@@ -53,7 +55,7 @@ func (ph *postHandler) GetPostByID(w http.ResponseWriter, r *http.Request) {
 	postID, err := strconv.Atoi(postIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -61,7 +63,7 @@ func (ph *postHandler) GetPostByID(w http.ResponseWriter, r *http.Request) {
 
 	post, err := ph.usecase.GetPostByID(postID)
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to get posts by postID", zap.Error(err))
 		w.WriteHeader(http.StatusNotFound)
 	}
 
@@ -75,7 +77,7 @@ func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
 	tagID, err := strconv.Atoi(tagIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -83,7 +85,7 @@ func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
 
 	posts, err := ph.usecase.GetPostsByTagID(tagID)
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to get posts by tagID", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -99,7 +101,7 @@ func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) 
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -107,7 +109,7 @@ func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) 
 
 	posts, err := ph.usecase.GetPostsByUserID(userID)
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to get posts by userID", zap.Error(err))
 		w.WriteHeader(http.StatusNotFound)
 
 		return
@@ -125,7 +127,7 @@ func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -137,7 +139,7 @@ func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
 
 	post, err := ph.usecase.AddPost(userID, title, url, message)
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to add post", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -157,14 +159,14 @@ func (ph *postHandler) DeletePostByID(w http.ResponseWriter, r *http.Request) {
 	postID, err := strconv.Atoi(postIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
 	if err := ph.usecase.DeletePostByID(postID); err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to delete post by postID", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return

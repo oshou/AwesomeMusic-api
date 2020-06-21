@@ -3,9 +3,11 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
+	"go.uber.org/zap"
+
+	"github.com/oshou/AwesomeMusic-api/log"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
@@ -35,7 +37,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 	case "post_title":
 		posts, err := sh.usecase.GetPostsByTitle(q)
 		if err != nil {
-			fmt.Printf("%+v\n", err)
+			log.Logger.Error("failed to get posts by title", zap.Error(err))
 			w.WriteHeader(http.StatusBadRequest)
 
 			return
@@ -49,7 +51,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 	case "user_name":
 		posts, err := sh.usecase.GetPostsByUserName(q)
 		if err != nil {
-			fmt.Printf("%+v\n", err)
+			log.Logger.Error("failed to get posts by user name", zap.Error(err))
 			w.WriteHeader(http.StatusBadRequest)
 
 			return
@@ -63,7 +65,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 	case "tag_name":
 		posts, err := sh.usecase.GetPostsByTagName(q)
 		if err != nil {
-			fmt.Printf("%+v\n", err)
+			log.Logger.Error("failed to get posts by tag name", zap.Error(err))
 			w.WriteHeader(http.StatusBadRequest)
 
 			return

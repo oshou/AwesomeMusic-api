@@ -3,11 +3,13 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi"
+	"go.uber.org/zap"
+
+	"github.com/oshou/AwesomeMusic-api/log"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
@@ -36,7 +38,7 @@ func NewTagHandler(usecase usecase.ITagUsecase) ITagHandler {
 func (th *tagHandler) GetTags(w http.ResponseWriter, r *http.Request) {
 	tags, err := th.usecase.GetTags()
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to get tags", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -54,7 +56,7 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 	tagID, err := strconv.Atoi(tagIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -62,7 +64,7 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 
 	tag, err := th.usecase.GetTagByID(tagID)
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to get tag by tagID", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -80,7 +82,7 @@ func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 	postID, err := strconv.Atoi(postIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -88,7 +90,7 @@ func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 
 	tags, err := th.usecase.GetTagsByPostID(postID)
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to get tags by postID", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -106,7 +108,7 @@ func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
 	tag, err := th.usecase.AddTag(tagName)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to add tag", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -124,7 +126,7 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 	postID, err := strconv.Atoi(postIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -134,7 +136,7 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 	tagID, err := strconv.Atoi(tagIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -142,7 +144,7 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 
 	postTag, err := th.usecase.AttachTag(postID, tagID)
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to attach tag", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return

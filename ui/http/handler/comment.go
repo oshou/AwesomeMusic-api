@@ -3,11 +3,13 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi"
+	"go.uber.org/zap"
+
+	"github.com/oshou/AwesomeMusic-api/log"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
@@ -36,7 +38,7 @@ func (ch *commentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
 	postID, err := strconv.Atoi(postIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -44,7 +46,7 @@ func (ch *commentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
 
 	comments, err := ch.usecase.GetComments(postID)
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to get comments", zap.Error(err))
 		w.WriteHeader(http.StatusNotFound)
 
 		return
@@ -61,7 +63,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 	postID, err := strconv.Atoi(postIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -71,7 +73,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -81,7 +83,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 	comment, err := ch.usecase.AddComment(postID, userID, commentString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to add comment", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -99,7 +101,7 @@ func (ch *commentHandler) GetCommentByID(w http.ResponseWriter, r *http.Request)
 	commentID, err := strconv.Atoi(commentIDString)
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to convert string", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
@@ -107,7 +109,7 @@ func (ch *commentHandler) GetCommentByID(w http.ResponseWriter, r *http.Request)
 
 	comment, err := ch.usecase.GetCommentByID(commentID)
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Error("failed to get comment by commentID", zap.Error(err))
 		w.WriteHeader(http.StatusNotFound)
 
 		return
