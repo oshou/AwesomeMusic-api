@@ -20,7 +20,6 @@ func NewDB() (*sqlx.DB, error) {
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"),
 	)
-	fmt.Println("dsn:", dsn)
 
 	db, err := sqlx.Open(driver, dsn)
 	if err != nil {
