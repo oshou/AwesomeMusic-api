@@ -51,7 +51,7 @@ func Test_tagUsecase_GetTagByID(t *testing.T) {
 	tests := []struct {
 		name    string
 		tagID   int
-		mock    []*model.Tag
+		mock    *model.Tag
 		mockErr error
 		want    *model.Tag
 		wantErr error
