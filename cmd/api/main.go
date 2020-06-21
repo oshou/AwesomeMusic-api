@@ -3,24 +3,25 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
 	"github.com/go-chi/chi"
-	//_ "github.com/jackc/pgx/stdlib"
 	"github.com/joho/godotenv"
+	"go.uber.org/zap"
 
-	_ "github.com/lib/pq"
 	//_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 
 	"github.com/oshou/AwesomeMusic-api/db"
 	persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/postgres"
+	"github.com/oshou/AwesomeMusic-api/log"
 	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
+	mw "github.com/oshou/AwesomeMusic-api/ui/http/middleware"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
@@ -32,30 +33,27 @@ func init() {
 }
 
 func main() {
+	// Set Logger
+	log.Init()
+	defer log.Logger.Sync()
+
 	// Load Environment
 	if err := godotenv.Load(); err != nil {
-		fmt.Printf("error loading .env file: %+v\n", err)
-		log.Fatalln()
+		log.Logger.Fatal("failed to loading .env file", zap.Error(err))
 	}
 
 	// Set DBConnection
 	db, err := db.NewDB()
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Logger.Fatal("failed to connect db", zap.Error(err))
 	}
+
 	defer func() {
 		err := db.Close()
 		if err != nil {
-			fmt.Printf("%+v\n", err)
+			log.Logger.Fatal("failed to release db", zap.Error(err))
 		}
 	}()
-
-	// Routing
-	//i := injector.NewInjector(db)
-	//h := i.NewAppHandler()
-	//r := i.NewRouter(h)
-
-	r := chi.NewRouter()
 
 	// Injector
 	userRepository := persistence.NewUserRepository(db)
@@ -77,6 +75,8 @@ func main() {
 	searchHandler := handler.NewSearchHandler(searchUsecase)
 
 	// Routing
+	r := chi.NewRouter()
+	r.Use(mw.ZapLogger(log.Logger))
 	r.Route("/v1", func(r chi.Router) {
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", userHandler.GetUsers)
@@ -117,17 +117,24 @@ func main() {
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
-			log.Print("err1 port:", os.Getenv("API_SERVER_PORT"), " ", err)
-			os.Exit(1)
+			log.Logger.Fatal("failed to start server", zap.Error(err))
 		}
 	}()
+
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGTERM, os.Interrupt)
 	<-sigCh
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	second, err := strconv.Atoi(os.Getenv("API_TIMEOUT_SECOND"))
+	if err != nil {
+		log.Logger.Fatal("failed to set api timeout second", zap.Error(err))
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(second)*time.Second)
+
 	defer cancel()
+
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Println("err2")
+		log.Logger.Fatal("failed to stop server", zap.Error(err))
 	}
 }
