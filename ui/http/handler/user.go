@@ -43,6 +43,8 @@ func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+
 	if err := json.NewEncoder(w).Encode(users); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 
@@ -61,6 +63,8 @@ func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+
+	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(user); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -88,6 +92,8 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(user); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

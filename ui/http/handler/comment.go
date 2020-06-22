@@ -52,8 +52,11 @@ func (ch *commentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+
 	if err := json.NewEncoder(w).Encode(comments); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+
 		return
 	}
 }
@@ -89,6 +92,8 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusCreated)
+
 	if err := json.NewEncoder(w).Encode(comment); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 
@@ -114,6 +119,8 @@ func (ch *commentHandler) GetCommentByID(w http.ResponseWriter, r *http.Request)
 
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(comment); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

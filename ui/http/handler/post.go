@@ -45,6 +45,8 @@ func (ph *postHandler) GetPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
@@ -67,8 +69,12 @@ func (ph *postHandler) GetPostByID(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 	}
 
+	w.WriteHeader(http.StatusOK)
+
 	if err := json.NewEncoder(w).Encode(post); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+
+		return
 	}
 }
 
@@ -91,8 +97,12 @@ func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+
+		return
 	}
 }
 
@@ -114,6 +124,8 @@ func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) 
 
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -164,6 +176,8 @@ func (ph *postHandler) DeletePostByID(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+
+	w.WriteHeader(http.StatusNoContent)
 
 	if err := ph.usecase.DeletePostByID(postID); err != nil {
 		log.Logger.Error("failed to delete post by postID", zap.Error(err))
