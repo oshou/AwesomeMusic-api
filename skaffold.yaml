@@ -1,15 +1,14 @@
+---
 apiVersion: skaffold/v1beta16
 kind: Config
+metadata:
+  name: sample
 build:
-  tagPolicy:
-    envTemplate:
-      template: "{{.IMAGE_NAME}}:{{.IMAGE_TAG}}"
-  artifacts:
-    - image: asia.gcr.io/dev-oshou02/awesome-music-api
-      context: ./
-      docker:
-        dockerfile: ./deployments/Dockerfile
   local:
     push: false
     useBuildkit: true
-
+  artifacts:
+  - image: asia.gcr.io/dev-oshou02/awesome-music-api
+    context: .
+    docker:
+      dockerfile: ./deployments/Dockerfile
