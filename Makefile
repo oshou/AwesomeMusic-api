@@ -8,6 +8,7 @@ LIST=./domain/repository ./domain/model ./usecase
 GO ?= $(shell which go)
 GOLINT ?= golangci-lint
 DEPLOY_REPO = "oshou/awesome-music-api"
+API_CMD_PATH = "cmd/api/main.go"
 BINARY_NAME = main
 
 clean:
@@ -32,9 +33,9 @@ mockgen:
 		mockgen -source "$$x" --destination mock/"$$x"/"$$x".go; \
 	done
 
-build_local: clean fmt lint
+build_local: lint
 	cp -rp .env.local .env
-	$(GO) build -o $(BINARY_NAME)
+	$(GO) build -o $(BINARY_NAME) $(API_CMD_PATH)
 
 build_prd:
 	cp -rp .env.production .env
