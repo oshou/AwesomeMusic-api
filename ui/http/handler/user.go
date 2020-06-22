@@ -34,7 +34,6 @@ func NewUserHandler(usecase usecase.IUserUsecase) IUserHandler {
 }
 
 func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	users, err := uh.usecase.GetUsers()
 	if err != nil {
 		log.Logger.Error("failed to get users", zap.Error(err))
