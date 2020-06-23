@@ -12,6 +12,7 @@ DB_USER ?= root
 DB_HOST ?= 127.0.0.1
 DB_NAME ?= work
 DEPLOY_REPO = "oshou/awesome-music-api"
+API_CMD_PATH = "cmd/api/main.go"
 BINARY_NAME = main
 
 clean:
@@ -39,9 +40,15 @@ test: lint
 cov: lint
 	$(GO) test ./... -cover
 
+mockgen:
+	@LIST="$(LIST)"; \
+	for x in $$LIST; do \
+		echo "$$x"; \
+		mockgen -source "$$x" --destination mock/"$$x"/"$$x".go; \
+	done
+
 build_local: test
-	cp -rp .env.local .env
-	$(GO) build -o $(BINARY_NAME)
+	$(GO) build -o $(BINARY_NAME) $(API_CMD_PATH)
 
 build_prd: test
 	cp -rp .env.production .env

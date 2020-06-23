@@ -43,6 +43,8 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		w.WriteHeader(http.StatusOK)
+
 		if err := json.NewEncoder(w).Encode(posts); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 
@@ -57,6 +59,8 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		w.WriteHeader(http.StatusOK)
+
 		if err := json.NewEncoder(w).Encode(posts); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 
@@ -70,6 +74,8 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 
 			return
 		}
+
+		w.WriteHeader(http.StatusOK)
 
 		if err := json.NewEncoder(w).Encode(posts); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)

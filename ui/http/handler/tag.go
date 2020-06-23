@@ -44,6 +44,8 @@ func (th *tagHandler) GetTags(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+
 	if err := json.NewEncoder(w).Encode(tags); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 
@@ -69,6 +71,8 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(tag); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -96,6 +100,8 @@ func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+
 	if err := json.NewEncoder(w).Encode(tags); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 
@@ -113,6 +119,8 @@ func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+
+	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(tag); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -149,6 +157,8 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+
+	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(postTag); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
