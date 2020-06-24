@@ -5,9 +5,11 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
-
 	"github.com/oshou/AwesomeMusic-api/domain/model"
+	"github.com/oshou/AwesomeMusic-api/domain/repository"
 	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func Test_commentUsecase_GetComments(t *testing.T) {
@@ -152,6 +154,27 @@ func Test_commentUsecase_AddComment(t *testing.T) {
 
 			if diff := cmp.Diff(tt.want, got); diff != "" {
 				t.Errorf("commentUsecase.AddComment() mismatch (-want +got):\n%s", diff)
+			}
+		})
+	}
+}
+
+func TestNewCommentUsecase(t *testing.T) {
+	type args struct {
+		repo repository.ICommentRepository
+	}
+	tests := []struct {
+		name string
+		args args
+		want ICommentUsecase
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if got := NewCommentUsecase(tt.args.repo); !cmp.Equal(got, tt.want) {
+				t.Errorf("NewCommentUsecase() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}

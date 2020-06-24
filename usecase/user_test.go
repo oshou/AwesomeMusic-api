@@ -6,9 +6,11 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
-
 	"github.com/oshou/AwesomeMusic-api/domain/model"
+	"github.com/oshou/AwesomeMusic-api/domain/repository"
 	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func Test_userUsecase_GetUsers(t *testing.T) {
@@ -159,6 +161,27 @@ func Test_userUsecase_AddUser(t *testing.T) {
 
 			if diff := cmp.Diff(tt.want, got); diff != "" {
 				t.Errorf("userUsecase.AddUser() mismatch (-want +got):\n%s", diff)
+			}
+		})
+	}
+}
+
+func TestNewUserUsecase(t *testing.T) {
+	type args struct {
+		repo repository.IUserRepository
+	}
+	tests := []struct {
+		name string
+		args args
+		want IUserUsecase
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if got := NewUserUsecase(tt.args.repo); !cmp.Equal(got, tt.want) {
+				t.Errorf("NewUserUsecase() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}

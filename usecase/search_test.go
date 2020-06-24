@@ -4,110 +4,112 @@ package usecase
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
-	"github.com/google/go-cmp/cmp"
-
 	"github.com/oshou/AwesomeMusic-api/domain/model"
-	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
+	"github.com/oshou/AwesomeMusic-api/domain/repository"
+
+	"github.com/google/go-cmp/cmp"
 )
 
-func Test_searchUsecase_GetPostsByTitle(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
+func TestNewSearchUsecase(t *testing.T) {
+	type args struct {
+		repo repository.ISearchRepository
+	}
 	tests := []struct {
-		name    string
-		q       string
-		mock    []*model.Post
-		mockErr error
-		want    []*model.Post
-		wantErr error
+		name string
+		args args
+		want ISearchUsecase
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-
-			mock := mock_repository.NewMockISearchRepository(ctrl)
-			mock.EXPECT().GetByTitle(tt.q).Return(tt.mock, tt.mockErr)
-			su := &searchUsecase{repo: mock}
-			got, err := su.GetPostsByTagName(tt.q)
-
-			if err != tt.wantErr {
-				t.Errorf("searchUsecase.GetPostsByTitle() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+			if got := NewSearchUsecase(tt.args.repo); !cmp.Equal(got, tt.want) {
+				t.Errorf("NewSearchUsecase() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
+		})
+	}
+}
 
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("searchUsecase.GetPostsByTitle() mismatch (-want +got):\n%s", diff)
+func Test_searchUsecase_GetPostsByTitle(t *testing.T) {
+	type args struct {
+		q string
+	}
+	tests := []struct {
+		name    string
+		su      *searchUsecase
+		args    args
+		want    []*model.Post
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			got, err := tt.su.GetPostsByTitle(tt.args.q)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("searchUsecase.GetPostsByTitle() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("searchUsecase.GetPostsByTitle() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
 }
 
 func Test_searchUsecase_GetPostsByUserName(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
+	type args struct {
+		q string
+	}
 	tests := []struct {
 		name    string
-		q       string
-		mock    []*model.Post
-		mockErr error
+		su      *searchUsecase
+		args    args
 		want    []*model.Post
-		wantErr error
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-
-			mock := mock_repository.NewMockISearchRepository(ctrl)
-			mock.EXPECT().GetByTitle(tt.q).Return(tt.mock, tt.mockErr)
-			su := &searchUsecase{repo: mock}
-			got, err := su.GetPostsByUserName(tt.q)
-
-			if err != tt.wantErr {
-				t.Errorf("searchUsecase.GetPostsUserName() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+			got, err := tt.su.GetPostsByUserName(tt.args.q)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("searchUsecase.GetPostsByUserName() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
-
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("searchUsecase.GetPostsUserName() mismatch (-want +got):\n%s", diff)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("searchUsecase.GetPostsByUserName() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
 }
 
 func Test_searchUsecase_GetPostsByTagName(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
+	type args struct {
+		q string
+	}
 	tests := []struct {
 		name    string
-		q       string
-		mock    []*model.Post
-		mockErr error
+		su      *searchUsecase
+		args    args
 		want    []*model.Post
-		wantErr error
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-
-			mock := mock_repository.NewMockISearchRepository(ctrl)
-			mock.EXPECT().GetByTagName(tt.q).Return(tt.mock, tt.mockErr)
-			su := &searchUsecase{repo: mock}
-			got, err := su.GetPostsByTagName(tt.q)
-
-			if err != tt.wantErr {
-				t.Errorf("searchUsecase.GetPostsTagName() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+			got, err := tt.su.GetPostsByTagName(tt.args.q)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("searchUsecase.GetPostsByTagName() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
-
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("searchUsecase.GetPostsTagName() mismatch (-want +got):\n%s", diff)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("searchUsecase.GetPostsByTagName() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}

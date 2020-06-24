@@ -6,9 +6,11 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
-
 	"github.com/oshou/AwesomeMusic-api/domain/model"
+	"github.com/oshou/AwesomeMusic-api/domain/repository"
 	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func Test_postUsecase_GetPosts(t *testing.T) {
@@ -204,6 +206,27 @@ func Test_postUsecase_DeletePostByID(t *testing.T) {
 
 			if err != tt.wantErr {
 				t.Errorf("postUsecase.AddPost() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestNewPostUsecase(t *testing.T) {
+	type args struct {
+		repo repository.IPostRepository
+	}
+	tests := []struct {
+		name string
+		args args
+		want IPostUsecase
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if got := NewPostUsecase(tt.args.repo); !cmp.Equal(got, tt.want) {
+				t.Errorf("NewPostUsecase() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
