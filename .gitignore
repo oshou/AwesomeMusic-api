@@ -13,3 +13,4 @@ credentials.json
 cred64.txt
 vendor/*
 .vscode
+schema.sql
