@@ -9,6 +9,7 @@ import (
 
 var Logger *zap.Logger
 
+// Init is constructor for logger
 func Init() {
 	switch os.Getenv("GO_ENV") {
 	case "production":
