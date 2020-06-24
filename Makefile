@@ -1,12 +1,6 @@
-# Prerequisite
-# - Install golangci-lint
-#   https://github.com/golangci/golangci-lint#install
-
 export GO111MODULE=on
 
-LIST=./domain/repository ./domain/model ./usecase
 GO ?= $(shell which go)
-GOLINT ?= golangci-lint
 PG_DUMP ?= /usr/local/bin/pg_dump
 DB_USER ?= root
 DB_HOST ?= 127.0.0.1
@@ -14,6 +8,21 @@ DB_NAME ?= work
 DEPLOY_REPO = "oshou/awesome-music-api"
 API_CMD_PATH = "cmd/api/main.go"
 BINARY_NAME = main
+LIST=./domain/repository ./domain/model ./usecase
+
+dep:
+	go get -v github.com/rubenv/sql-migrate/...
+	go get github.com/golangci/golangci-lint/cmd/golangci-lint
+	go get -u github.com/cweill/gotests/...
+
+schema:
+	$(PG_DUMP) -h $(DB_HOST) -U $(DB_USER) -s $(DB_NAME) -f _db/schema.sql
+
+migrate: dep
+	sql-migrate up
+
+rollback: dep
+	sql-migrate down
 
 clean:
 	$(GO) mod tidy
@@ -21,18 +30,8 @@ clean:
 fmt: clean
 	$(GO) fmt ./...
 
-lint: fmt
-	$(GOLINT) run
-
-schema:
-	$(PG_DUMP) -h $(DB_HOST) -U $(DB_USER) -s $(DB_NAME) -f _db/schema.sql
-
-#mockgen:
-#	@LIST="$(LIST)"; \
-#	for x in $$LIST; do \
-#		echo "$$x"; \
-#		mockgen -source "$$x" --destination mock/"$$x"/"$$x".go; \
-#	done
+lint: fmt dep
+	golangci-lint run
 
 test: lint
 	$(GO) test ./...
@@ -57,4 +56,4 @@ build_prd: test
 run:
 	./$(BINARY_NAME)
 
-.PHONY: fmt lint test cov gen_test build_local build_prd run clean
+.PHONY: dep schema migrate rollback clean fmt lint test cov mockgen build_local build_prd run
