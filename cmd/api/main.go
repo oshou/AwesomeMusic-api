@@ -1,16 +1,11 @@
 package main
 
 import (
-	"context"
-	"flag"
 	"net/http"
-	"os"
-	"os/signal"
-	"strconv"
-	"syscall"
-	"time"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 
@@ -25,12 +20,12 @@ import (
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
-var port string
-
-func init() {
-	flag.StringVar(&port, "port", ":8080", "tcp host:port to connect")
-	flag.Parse()
-}
+const (
+	httpGzipLevel     = 6
+	corsMaxAgeSecond  = 300
+	httpTimeoutSecond = 60
+	httpPortString    = ":8080"
+)
 
 func main() {
 	// Set Logger
@@ -42,12 +37,11 @@ func main() {
 		log.Logger.Fatal("failed to loading .env file", zap.Error(err))
 	}
 
-	// Set DBConnection
+	// DB Connection
 	db, err := db.NewDB()
 	if err != nil {
 		log.Logger.Fatal("failed to connect db", zap.Error(err))
 	}
-
 	defer func() {
 		err := db.Close()
 		if err != nil {
@@ -74,9 +68,27 @@ func main() {
 	tagHandler := handler.NewTagHandler(tagUsecase)
 	searchHandler := handler.NewSearchHandler(searchUsecase)
 
-	// Routing
 	r := chi.NewRouter()
-	r.Use(mw.ZapLogger(log.Logger))
+
+	// Middlware
+	r.Use(
+		//middleware.Logger,
+		mw.ZapLogger(log.Logger),
+		middleware.Recoverer,
+		middleware.SetHeader("Content-Type", "application/json"),
+		middleware.Compress(httpGzipLevel, "gzip"),
+		middleware.Timeout(httpTimeoutSecond),
+		cors.Handler(cors.Options{
+			AllowedOrigins:   []string{"*"},
+			AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+			ExposedHeaders:   []string{"Link"},
+			AllowCredentials: false,
+			MaxAge:           corsMaxAgeSecond,
+		}),
+	)
+
+	// Routing
 	r.Route("/v1", func(r chi.Router) {
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", userHandler.GetUsers)
@@ -111,30 +123,11 @@ func main() {
 	})
 
 	srv := &http.Server{
-		Addr:    port,
+		Addr:    httpPortString,
 		Handler: r,
 	}
 
-	go func() {
-		if err := srv.ListenAndServe(); err != nil {
-			log.Logger.Fatal("failed to start server", zap.Error(err))
-		}
-	}()
-
-	sigCh := make(chan os.Signal, 1)
-	signal.Notify(sigCh, syscall.SIGTERM, os.Interrupt)
-	<-sigCh
-
-	second, err := strconv.Atoi(os.Getenv("API_TIMEOUT_SECOND"))
-	if err != nil {
-		log.Logger.Fatal("failed to set api timeout second", zap.Error(err))
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(second)*time.Second)
-
-	defer cancel()
-
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Logger.Fatal("failed to stop server", zap.Error(err))
+	if err := srv.ListenAndServe(); err != nil {
+		log.Logger.Fatal("failed to start server", zap.Error(err))
 	}
 }
