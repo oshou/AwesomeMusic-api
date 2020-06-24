@@ -7,10 +7,10 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 	"go.uber.org/zap"
 
 	//_ "github.com/go-sql-driver/mysql"
-	_ "github.com/lib/pq"
 
 	"github.com/oshou/AwesomeMusic-api/db"
 	persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/postgres"
@@ -38,23 +38,23 @@ func main() {
 	}
 
 	// DB Connection
-	db, err := db.NewDB()
+	err := db.Init()
 	if err != nil {
 		log.Logger.Fatal("failed to connect db", zap.Error(err))
 	}
 	defer func() {
-		err := db.Close()
+		err := db.Pool.Close()
 		if err != nil {
 			log.Logger.Fatal("failed to release db", zap.Error(err))
 		}
 	}()
 
 	// Injector
-	userRepository := persistence.NewUserRepository(db)
-	commentRepository := persistence.NewCommentRepository(db)
-	postRepository := persistence.NewPostRepository(db)
-	tagRepository := persistence.NewTagRepository(db)
-	searchRepository := persistence.NewSearchRepository(db)
+	userRepository := persistence.NewUserRepository(db.Pool)
+	commentRepository := persistence.NewCommentRepository(db.Pool)
+	postRepository := persistence.NewPostRepository(db.Pool)
+	tagRepository := persistence.NewTagRepository(db.Pool)
+	searchRepository := persistence.NewSearchRepository(db.Pool)
 
 	userUsecase := usecase.NewUserUsecase(userRepository)
 	commentUsecase := usecase.NewCommentUsecase(commentRepository)
