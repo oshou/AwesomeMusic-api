@@ -9,8 +9,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-// NewDB is constructor for db
-func NewDB() (*sqlx.DB, error) {
+var (
+	Pool    *sqlx.DB
+	maxconn = 10
+)
+
+// Init is constructor for db
+func Init() error {
 	driver := os.Getenv("DB_DRIVER")
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
@@ -20,11 +25,19 @@ func NewDB() (*sqlx.DB, error) {
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"),
 	)
+	fmt.Println("dsn:", dsn)
 
-	db, err := sqlx.Open(driver, dsn)
+	Pool, err := sqlx.Open(driver, dsn)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return errors.WithStack(err)
 	}
+	Pool.SetMaxIdleConns(maxconn)
 
-	return db, nil
+	return nil
+}
+
+func Close() {
+	if Pool != nil {
+		Pool.Close()
+	}
 }
