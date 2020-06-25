@@ -8,7 +8,7 @@ build:
     push: false
     useBuildkit: true
   artifacts:
-  - image: asia.gcr.io/dev-oshou02/awesome-music-api
+  - image: gcr.io/dev-oshou02/awesome-music-api
     context: .
     docker:
-      dockerfile: ./deployments/Dockerfile
+      dockerfile: ./deployments/api/Dockerfile
