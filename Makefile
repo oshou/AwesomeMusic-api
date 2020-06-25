@@ -62,6 +62,6 @@ build_prd: test
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build -a -installsuffix cgo -ldflags="-s -w" -o $(BINARY_NAME)
 
 run:
-	./$(BINARY_NAME)
+	go run cmd/api/main.go
 
 .PHONY: dep schema migrate rollback clean fmt lint test cov mockgen build_local build_prd run
