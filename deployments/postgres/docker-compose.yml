@@ -1,0 +1,22 @@
+version: "2"
+services:
+  pg-data:
+    container_name: pg-data
+    image: busybox
+    volumes:
+      - ./volume/db/postgres:/var/lib/postgresql/data
+  pg:
+    container_name: postgres
+    image: postgres:12-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+      LANG: ja_JP.utf8
+    volumes_from:
+      - pg-data
+    user: root
+    restart: always
+    working_dir: /var/lib/postgresql/data
