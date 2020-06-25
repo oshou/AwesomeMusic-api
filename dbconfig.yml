@@ -1,11 +1,11 @@
 development:
   dialect: postgres
-  datasource: dbname=work user=root password=password sslmode=disable
+  datasource: dbname=postgres user=root password=password sslmode=disable
   dir: _db/migrate
   table: migrations
 
 test:
   dialect: postgres
-  datasource: dbname=work_test user=root sslmode=disable
+  datasource: dbname=postgres_test user=root sslmode=disable
   dir: _db/migrate
   table: migrations
