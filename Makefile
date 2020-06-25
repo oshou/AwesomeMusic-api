@@ -10,23 +10,27 @@ API_CMD_PATH = "cmd/api/main.go"
 BINARY_NAME = main
 LIST=./domain/repository ./domain/model ./usecase
 
-dep:
+$(GOPATH)/bin/sql-migrate:
 	go get -v github.com/rubenv/sql-migrate/...
+
+$(GOPATH)/bin/golangci-lint:
 	go get github.com/golangci/golangci-lint/cmd/golangci-lint
+
+$(GOPATH)/bin/gotests:
 	go get -u github.com/cweill/gotests/...
 
 pg_local:
 	cp -rp .env.local .env
 	docker-compose -f deployments/postgres/docker-compose.yml up -d
 
-schema:
-	$(PG_DUMP) -h $(DB_HOST) -U $(DB_USER) -s $(DB_NAME) -f _db/schema.sql
-
-migrate: dep
+migrate: $(GOPATH)/bin/sql-migrate
 	sql-migrate up
 
-rollback: dep
+rollback: $(GOPATH)/bin/sql-migrate
 	sql-migrate down
+
+schema:
+	$(PG_DUMP) -h $(DB_HOST) -U $(DB_USER) -s $(DB_NAME) -f _db/schema.sql
 
 clean:
 	$(GO) mod tidy
@@ -34,7 +38,7 @@ clean:
 fmt: clean
 	$(GO) fmt ./...
 
-lint: fmt dep
+lint: fmt $(GOPATH)/bin/golangci-lint
 	golangci-lint run
 
 test: lint
