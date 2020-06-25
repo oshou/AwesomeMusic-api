@@ -15,6 +15,10 @@ dep:
 	go get github.com/golangci/golangci-lint/cmd/golangci-lint
 	go get -u github.com/cweill/gotests/...
 
+pg_local:
+	cp -rp .env.local .env
+	docker-compose -f deployments/postgres/docker-compose.yml up -d
+
 schema:
 	$(PG_DUMP) -h $(DB_HOST) -U $(DB_USER) -s $(DB_NAME) -f _db/schema.sql
 
