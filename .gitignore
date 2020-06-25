@@ -13,5 +13,4 @@ credentials.json
 cred64.txt
 vendor/*
 .vscode
-*.sql
 volume
