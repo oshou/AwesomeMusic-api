@@ -1,17 +1,35 @@
 // Package usecase is application layer package
-package usecase
+package usecase_test
 
 import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
-
-	"github.com/google/go-cmp/cmp"
+	"github.com/oshou/AwesomeMusic-api/usecase"
 )
+
+func TestNewUserUsecase(t *testing.T) {
+	tests := []struct {
+		name string
+		repo repository.IUserRepository
+		want usecase.IUserUsecase
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if got := usecase.NewUserUsecase(tt.repo); !cmp.Equal(got, tt.want) {
+				t.Errorf("NewUserUsecase() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
+			}
+		})
+	}
+}
 
 func Test_userUsecase_GetUsers(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -54,7 +72,7 @@ func Test_userUsecase_GetUsers(t *testing.T) {
 
 			mock := mock_repository.NewMockIUserRepository(ctrl)
 			mock.EXPECT().GetAll().Return(tt.mock, tt.mockErr)
-			uu := &userUsecase{repo: mock}
+			uu := usecase.NewUserUsecase(mock)
 			got, err := uu.GetUsers()
 
 			if err != tt.wantErr {
@@ -103,7 +121,7 @@ func Test_userUsecase_GetUserByID(t *testing.T) {
 
 			mock := mock_repository.NewMockIUserRepository(ctrl)
 			mock.EXPECT().GetByID(tt.userID).Return(tt.mock, tt.mockErr)
-			uu := &userUsecase{repo: mock}
+			uu := usecase.NewUserUsecase(mock)
 			got, err := uu.GetUserByID(tt.userID)
 
 			if err != tt.wantErr {
@@ -152,7 +170,7 @@ func Test_userUsecase_AddUser(t *testing.T) {
 
 			mock := mock_repository.NewMockIUserRepository(ctrl)
 			mock.EXPECT().Add(tt.username).Return(tt.mock, tt.mockErr)
-			uu := &userUsecase{repo: mock}
+			uu := usecase.NewUserUsecase(mock)
 			got, err := uu.AddUser(tt.username)
 
 			if err != tt.wantErr {
@@ -161,27 +179,6 @@ func Test_userUsecase_AddUser(t *testing.T) {
 
 			if diff := cmp.Diff(tt.want, got); diff != "" {
 				t.Errorf("userUsecase.AddUser() mismatch (-want +got):\n%s", diff)
-			}
-		})
-	}
-}
-
-func TestNewUserUsecase(t *testing.T) {
-	type args struct {
-		repo repository.IUserRepository
-	}
-	tests := []struct {
-		name string
-		args args
-		want IUserUsecase
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := NewUserUsecase(tt.args.repo); !cmp.Equal(got, tt.want) {
-				t.Errorf("NewUserUsecase() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}

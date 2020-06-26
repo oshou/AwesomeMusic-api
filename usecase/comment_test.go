@@ -1,16 +1,35 @@
-package usecase
+// Package usecase is application layer package
+package usecase_test
 
 import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
 	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
-
-	"github.com/google/go-cmp/cmp"
+	"github.com/oshou/AwesomeMusic-api/usecase"
 )
+
+func TestNewCommentUsecase(t *testing.T) {
+	tests := []struct {
+		name string
+		repo repository.ICommentRepository
+		want usecase.ICommentUsecase
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if got := usecase.NewCommentUsecase(tt.repo); !cmp.Equal(got, tt.want) {
+				t.Errorf("NewCommentUsecase() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
+			}
+		})
+	}
+}
 
 func Test_commentUsecase_GetComments(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -56,7 +75,7 @@ func Test_commentUsecase_GetComments(t *testing.T) {
 
 			mock := mock_repository.NewMockICommentRepository(ctrl)
 			mock.EXPECT().GetAll(tt.postID).Return(tt.mock, tt.mockErr)
-			cu := &commentUsecase{repo: mock}
+			cu := usecase.NewCommentUsecase(mock)
 			got, err := cu.GetComments(tt.postID)
 
 			if err != tt.wantErr {
@@ -98,7 +117,7 @@ func Test_commentUsecase_GetCommentByID(t *testing.T) {
 
 			mock := mock_repository.NewMockICommentRepository(ctrl)
 			mock.EXPECT().GetByID(tt.commentID).Return(tt.mock, tt.mockErr)
-			cu := &commentUsecase{repo: mock}
+			cu := usecase.NewCommentUsecase(mock)
 			got, err := cu.GetCommentByID(tt.commentID)
 
 			if err != tt.wantErr {
@@ -145,7 +164,7 @@ func Test_commentUsecase_AddComment(t *testing.T) {
 
 			mock := mock_repository.NewMockICommentRepository(ctrl)
 			mock.EXPECT().Add(tt.postID, tt.userID, tt.commentText).Return(tt.mock, tt.mockErr)
-			cu := &commentUsecase{repo: mock}
+			cu := usecase.NewCommentUsecase(mock)
 			got, err := cu.AddComment(tt.postID, tt.userID, tt.commentText)
 
 			if err != tt.wantErr {
@@ -154,27 +173,6 @@ func Test_commentUsecase_AddComment(t *testing.T) {
 
 			if diff := cmp.Diff(tt.want, got); diff != "" {
 				t.Errorf("commentUsecase.AddComment() mismatch (-want +got):\n%s", diff)
-			}
-		})
-	}
-}
-
-func TestNewCommentUsecase(t *testing.T) {
-	type args struct {
-		repo repository.ICommentRepository
-	}
-	tests := []struct {
-		name string
-		args args
-		want ICommentUsecase
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := NewCommentUsecase(tt.args.repo); !cmp.Equal(got, tt.want) {
-				t.Errorf("NewCommentUsecase() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
