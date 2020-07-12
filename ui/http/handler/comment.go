@@ -72,18 +72,19 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userIDString := r.URL.Query().Get("user_id")
-	userID, err := strconv.Atoi(userIDString)
+	req := struct {
+		UserID  int    `json:"user_id" validate:"required"`
+		Comment string `json:"comment" validate:"required"`
+	}{}
 
-	if err != nil {
-		log.Logger.Error("failed to convert string", zap.Error(err))
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Logger.Error("failed to add ", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	commentString := r.URL.Query().Get("comment")
-	comment, err := ch.usecase.AddComment(postID, userID, commentString)
+	comment, err := ch.usecase.AddComment(postID, req.UserID, req.Comment)
 
 	if err != nil {
 		log.Logger.Error("failed to add comment", zap.Error(err))

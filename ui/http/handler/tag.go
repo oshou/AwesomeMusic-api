@@ -110,8 +110,18 @@ func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
-	tagName := r.URL.Query().Get("name")
-	tag, err := th.usecase.AddTag(tagName)
+	req := struct {
+		Name string `json:"name" validate:"required"`
+	}{}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Logger.Error("failed to add tag", zap.Error(err))
+		w.WriteHeader(http.StatusBadRequest)
+
+		return
+	}
+
+	tag, err := th.usecase.AddTag(req.Name)
 
 	if err != nil {
 		log.Logger.Error("failed to add tag", zap.Error(err))

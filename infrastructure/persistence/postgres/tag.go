@@ -101,15 +101,13 @@ func (tr *tagRepository) Add(tagName string) (*model.Tag, error) {
 	query := `INSERT INTO
 							public.tag(name)
 						VALUES
-							($1)`
+							($1)
+						RETURNING
+							id`
 
-	result, err := tr.db.Exec(query, tagName)
-	if err != nil {
+	if err := tr.db.QueryRow(query, tagName).Scan(&t.ID); err != nil {
 		return nil, errors.WithStack(err)
 	}
-
-	i64, _ := result.LastInsertId()
-	t.ID = int(i64)
 
 	return &t, nil
 }

@@ -135,21 +135,21 @@ func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) 
 }
 
 func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
-	userIDString := r.URL.Query().Get("user_id")
-	userID, err := strconv.Atoi(userIDString)
+	req := struct {
+		UserID  int    `json:"user_id" validate:"required"`
+		Title   string `json:"title" validate:"required"`
+		URL     string `json:"url" validate:"required"`
+		Message string `json:"message" validate:"required"`
+	}{}
 
-	if err != nil {
-		log.Logger.Error("failed to convert string", zap.Error(err))
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Logger.Error("failed to add post", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
 	}
 
-	title := r.URL.Query().Get("title")
-	url := r.URL.Query().Get("url")
-	message := r.URL.Query().Get("message")
-
-	post, err := ph.usecase.AddPost(userID, title, url, message)
+	post, err := ph.usecase.AddPost(req.UserID, req.Title, req.URL, req.Message)
 	if err != nil {
 		log.Logger.Error("failed to add post", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)

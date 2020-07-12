@@ -53,9 +53,18 @@ func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 // Create: POST /v1/users
 func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
-	name := r.URL.Query().Get("name")
+	req := struct {
+		Name string `json:"name" validate:"required"`
+	}{}
 
-	user, err := uh.usecase.AddUser(name)
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Logger.Error("failed to add user", zap.Error(err))
+		w.WriteHeader(http.StatusBadRequest)
+
+		return
+	}
+
+	user, err := uh.usecase.AddUser(req.Name)
 	if err != nil {
 		log.Logger.Error("failed to add user", zap.Error(err))
 		w.WriteHeader(http.StatusBadRequest)

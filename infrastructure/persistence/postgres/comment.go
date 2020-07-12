@@ -39,8 +39,7 @@ func (cr *commentRepository) GetAll(postID int) ([]*model.Comment, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	//return cc, nil
-	return []*model.Comment{}, nil
+	return cc, nil
 }
 
 func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
@@ -67,20 +66,19 @@ func (cr *commentRepository) Add(postID, userID int, comment string) (*model.Com
 	query := `INSERT INTO
 							public.comment(post_id, user_id, comment)
 						VALUES
-							($1, $2, $3)`
-
-	result, err := cr.db.Exec(query, postID, userID, comment)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
+							($1, $2, $3)
+						RETURNING
+							id`
 
 	c := model.Comment{
 		UserID:  userID,
 		PostID:  postID,
 		Comment: comment,
 	}
-	i64, _ := result.LastInsertId()
-	c.ID = int(i64)
+
+	if err := cr.db.QueryRow(query, postID, userID, comment).Scan(&c.ID); err != nil {
+		return nil, errors.WithStack(err)
+	}
 
 	return &c, nil
 }

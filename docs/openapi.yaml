@@ -14,7 +14,7 @@ paths:
   /v1/users:
     get:
       summary: ユーザー一覧
-      operationId: GetUsers
+      operationId: V1GetUsers
       tags:
         - /users
       responses:
@@ -42,18 +42,35 @@ paths:
           $ref: "#/responses/InternalServerError"
     post:
       summary: ユーザー登録
-      operationId: AddUser
+      operationId: V1AddUser
       tags:
         - /users
       parameters:
-        - in: query
-          name: name
-          type: string
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+                example: "Mike"
       responses:
         "201":
           description: Created
           schema:
             type: object
+            items:
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+          examples:
+            application/json:
+              id: 4
+              name: "Mike"
         "400":
           $ref: "#/responses/BadRequest"
         "500":
@@ -61,7 +78,7 @@ paths:
   /v1/users/{user_id}:
     get:
       summary: ユーザー参照
-      operationId: GetUserByID
+      operationId: V1GetUserByID
       tags:
         - /users
       parameters:
@@ -93,24 +110,99 @@ paths:
   /v1/posts:
     get:
       summary: 投稿一覧
-      operationId: GetPosts
+      operationId: V1GetPosts
       tags:
         - /posts
       responses:
         "200":
           description: OK
+          schema:
+            type: array
+            items:
+              properties:
+                id:
+                  type: integer
+                user_id:
+                  type: integer
+                title:
+                  type: string
+                url:
+                  type: string
+                message:
+                  type: string
+          examples:
+            application/json:
+              - id: 1
+                user_id: 1
+                title: "Jamie Culum 「Mind Trick」"
+                url: "https://www.youtube.com/watch?v=7EdcRHpoU2s"
+                message: "天気の良い休日にぴったり、掃除中はいつもこれ流してます！"
+              - id: 2
+                user_id: 1
+                title: "WORLD FAMOUS「Sunlight Player」"
+                url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+                message: "よくBGMで流しっぱなしにしてます"
+              - id: 3
+                user_id: 1
+                title: "宇多田ヒカル「Time will tell」"
+                url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+                message: "シングルでも珠玉の１曲です！"
         "404":
           $ref: "#/responses/NotFound"
         "500":
           $ref: "#/responses/InternalServerError"
     post:
       summary: 投稿追加
-      operationId: AddPost
+      operationId: V1AddPost
       tags:
         - /posts
+      parameters:
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - user_id
+              - title
+              - url
+              - message
+            properties:
+              user_id:
+                type: integer
+                example: 1
+              title:
+                type: string
+                example: "Rage Against the Machine 「Bomb track」"
+              url:
+                type: string
+                example: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+              message:
+                type: string
+                example: "目覚め最悪ですが絶対起きられます！"
       responses:
         "201":
           description: Created
+          schema:
+            type: object
+            items:
+              properties:
+                id:
+                  type: integer
+                user_id:
+                  type: integer
+                title:
+                  type: string
+                url:
+                  type: string
+                message:
+                  type: string
+          examples:
+            application/json:
+              id: 125
+              user_id: 1
+              title: "Rage Against the Machine 「Bomb track」"
+              url: "https://www.youtube.com/watch?v=gbx55BK-6_4"
+              message: "目覚め最悪ですが絶対起きられます！"
         "400":
           $ref: "#/responses/BadRequest"
         "500":
@@ -118,12 +210,38 @@ paths:
   /v1/posts/{post_id}:
     get:
       summary: 特定投稿の参照
-      operationId: GetPostByID
+      operationId: V1GetPostByID
       tags:
         - /posts
+      parameters:
+        - in: path
+          name: post_id
+          type: integer
+          required: true
       responses:
         "200":
           description: OK
+          schema:
+            type: object
+            items:
+              properties:
+                id:
+                  type: integer
+                user_id:
+                  type: integer
+                title:
+                  type: string
+                url:
+                  type: string
+                message:
+                  type: string
+          examples:
+            application/json:
+              id: 1
+              user_id: 1
+              title: "Jamie Culum 「Mind Trick」"
+              url: "https://www.youtube.com/watch?v=7EdcRHpoU2s"
+              message: "天気の良い休日にぴったり、掃除中はいつもこれ流してます！"
         "400":
           $ref: "#/responses/BadRequest"
         "404":
@@ -132,9 +250,14 @@ paths:
           $ref: "#/responses/InternalServerError"
     delete:
       summary: 投稿削除
-      operationId: DeletePostByID
+      operationId: V1DeletePostByID
       tags:
         - /posts
+      parameters:
+        - in: path
+          name: post_id
+          type: integer
+          required: true
       responses:
         "204":
           description: NoContent
@@ -143,7 +266,7 @@ paths:
   /v1/posts/{post_id}/comments:
     get:
       summary: コメント一覧
-      operationId: GetComments
+      operationId: V1GetComments
       tags:
         - /comments
       responses:
@@ -157,9 +280,27 @@ paths:
           $ref: "#/responses/InternalServerError"
     post:
       summary: コメント追加
-      operationId: AddComment
+      operationId: V1AddComment
       tags:
         - /comments
+      parameters:
+        - in: path
+          name: post_id
+          type: integer
+          required: true
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              user_id:
+                type: integer
+                example: 1
+              comment:
+                type: string
+                example: "Sample-comment"
       responses:
         "201":
           description: Created
@@ -170,7 +311,7 @@ paths:
   /v1/posts/{post_id}/comments/{comment_id}:
     get:
       summary: 特定コメント参照
-      operationId: GetCommentByID
+      operationId: V1GetCommentByID
       tags:
         - /comments
       responses:
@@ -185,7 +326,7 @@ paths:
   /v1/tags:
     get:
       summary: タグ一覧
-      operationId: GetTags
+      operationId: V1GetTags
       tags:
         - /tags
       responses:
@@ -197,7 +338,7 @@ paths:
           $ref: "#/responses/InternalServerError"
     post:
       summary: タグ追加
-      operationId: AddTag
+      operationId: V1AddTag
       tags:
         - /tags
       responses:
@@ -210,7 +351,7 @@ paths:
   /v1/tags/{tag_id}:
     get:
       summary: 特定タグ参照
-      operationId: GetTagByID
+      operationId: V1GetTagByID
       tags:
         - /tags
       responses:
@@ -223,7 +364,7 @@ paths:
   /v1/search:
     get:
       summary: 検索
-      operationId: Search
+      operationId: V1Search
       tags:
         - /search
       responses:

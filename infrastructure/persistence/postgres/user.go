@@ -82,15 +82,14 @@ func (ur *userRepository) Add(name string) (*model.User, error) {
 	query := `INSERT INTO
 							public.user (name)
 						VALUES
-							($1)`
+							($1)
+						RETURNING
+							id`
 
-	result, err := ur.db.Exec(query, name)
+	err := ur.db.QueryRow(query, name).Scan(&u.ID)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-
-	i64, _ := result.LastInsertId()
-	u.ID = int(i64)
 
 	return &u, nil
 }

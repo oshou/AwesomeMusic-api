@@ -114,12 +114,9 @@ func (pr *postRepository) Add(userID int, title, url, message string) (*model.Po
 	query := `INSERT INTO
 							public.post(user_id, title, url, message)
 						VALUES
-							($1, $2, $3, $4)`
-
-	result, err := pr.db.Exec(query, userID, title, url, message)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
+							($1, $2, $3, $4)
+						RETURNING
+							id`
 
 	p := model.Post{
 		UserID:  userID,
@@ -128,8 +125,10 @@ func (pr *postRepository) Add(userID int, title, url, message string) (*model.Po
 		Message: message,
 	}
 
-	i64, _ := result.LastInsertId()
-	p.ID = int(i64)
+	err := pr.db.QueryRow(query, userID, title, url, message).Scan(&p.ID)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
 
 	return &p, nil
 }
