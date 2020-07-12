@@ -53,7 +53,7 @@ func Test_userUsecase_GetUsers(t *testing.T) {
 			want: []*model.User{
 				{ID: 1, Name: "Mike"},
 				{ID: 2, Name: "Jane"},
-				{ID: 3, Name: "John"},
+				{ID: 3, Name: "John1"},
 			},
 			wantErr: nil,
 		},

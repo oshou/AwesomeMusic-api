@@ -23,22 +23,19 @@ func NewUserRepository(db *sqlx.DB) repository.IUserRepository {
 }
 
 func (ur *userRepository) GetAll() ([]*model.User, error) {
-	var users []*model.User
+	var uu []*model.User
 
-	query := `
-		SELECT
-				id
-			,name
-		FROM
-			public.user`
+	query := `SELECT
+							id,
+							name
+						FROM
+							public.user`
 
-	err := ur.db.Select(&users, query)
-
-	if err != nil {
+	if err := ur.db.Select(&uu, query); err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	return users, nil
+	return uu, nil
 }
 
 func (ur *userRepository) GetByID(userID int) (*model.User, error) {
@@ -81,13 +78,13 @@ func (ur *userRepository) Add(name string) (*model.User, error) {
 	u := model.User{
 		Name: name,
 	}
+
 	query := `INSERT INTO
-							public.user(name)
+							public.user (name)
 						VALUES
 							($1)`
 
 	result, err := ur.db.Exec(query, name)
-
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

@@ -16,15 +16,16 @@ import (
 	persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/postgres"
 	"github.com/oshou/AwesomeMusic-api/log"
 	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
-	mw "github.com/oshou/AwesomeMusic-api/ui/http/middleware"
+
+	//mw "github.com/oshou/AwesomeMusic-api/ui/http/middleware"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
 const (
 	httpGzipLevel     = 6
-	corsMaxAgeSecond  = 300
 	httpTimeoutSecond = 60
 	httpPortString    = ":8080"
+	corsMaxAgeSecond  = 300
 )
 
 func main() {
@@ -38,23 +39,18 @@ func main() {
 	}
 
 	// DB Connection
-	err := db.Init()
-	if err != nil {
+	if err := db.Init(); err != nil {
 		log.Logger.Fatal("failed to connect db", zap.Error(err))
 	}
-	defer func() {
-		err := db.Pool.Close()
-		if err != nil {
-			log.Logger.Fatal("failed to release db", zap.Error(err))
-		}
-	}()
+	defer db.Close()
+	pool := db.GetDB()
 
 	// Injector
-	userRepository := persistence.NewUserRepository(db.Pool)
-	commentRepository := persistence.NewCommentRepository(db.Pool)
-	postRepository := persistence.NewPostRepository(db.Pool)
-	tagRepository := persistence.NewTagRepository(db.Pool)
-	searchRepository := persistence.NewSearchRepository(db.Pool)
+	userRepository := persistence.NewUserRepository(pool)
+	commentRepository := persistence.NewCommentRepository(pool)
+	postRepository := persistence.NewPostRepository(pool)
+	tagRepository := persistence.NewTagRepository(pool)
+	searchRepository := persistence.NewSearchRepository(pool)
 
 	userUsecase := usecase.NewUserUsecase(userRepository)
 	commentUsecase := usecase.NewCommentUsecase(commentRepository)
@@ -72,8 +68,8 @@ func main() {
 
 	// Middlware
 	r.Use(
-		//middleware.Logger,
-		mw.ZapLogger(log.Logger),
+		middleware.Logger,
+		//mw.ZapLogger(log.Logger),
 		middleware.Recoverer,
 		middleware.SetHeader("Content-Type", "application/json"),
 		middleware.Compress(httpGzipLevel, "gzip"),
@@ -107,7 +103,7 @@ func main() {
 					r.Get("/{comment_id}", commentHandler.GetCommentByID)
 				})
 				r.Route("/tags", func(r chi.Router) {
-					r.Post("/", tagHandler.GetTagsByPostID)
+					r.Get("/", tagHandler.GetTagsByPostID)
 					r.Post("/{tag_id}", tagHandler.AttachTag)
 				})
 			})

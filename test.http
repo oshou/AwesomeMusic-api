@@ -1,0 +1,14 @@
+### GetUsers
+GET http://localhost:8080/v1/users
+
+### GetUserByID
+GET http://localhost:8080/v1/users/1
+
+### AddUser
+POST http://localhost:8080/v1/users?name=mike
+
+### GetUserByID
+GET http://google.com/v1/users
+
+### GetPosts
+GET http://localhost:8080/v1/posts

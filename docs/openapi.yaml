@@ -1,0 +1,260 @@
+swagger: "2.0"
+info:
+  title: AwesomeMusic API
+  version: alpha
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - https
+definitions: {}
+security: []
+paths:
+  /v1/users:
+    get:
+      summary: ユーザー一覧
+      operationId: GetUsers
+      tags:
+        - /users
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+          examples:
+            application/json:
+              - id: 1
+                name: "John"
+              - id: 2
+                name: "Paul"
+              - id: 3
+                name: "Ringo"
+        "400":
+          $ref: "#/responses/BadRequest"
+        "500":
+          $ref: "#/responses/InternalServerError"
+    post:
+      summary: ユーザー登録
+      operationId: AddUser
+      tags:
+        - /users
+      parameters:
+        - in: query
+          name: name
+          type: string
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: object
+        "400":
+          $ref: "#/responses/BadRequest"
+        "500":
+          $ref: "#/responses/InternalServerError"
+  /v1/users/{user_id}:
+    get:
+      summary: ユーザー参照
+      operationId: GetUserByID
+      tags:
+        - /users
+      parameters:
+        - in: path
+          name: user_id
+          type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            items:
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+          examples:
+            application/json:
+              id: 1
+              name: "John"
+        "400":
+          $ref: "#/responses/BadRequest"
+        "404":
+          $ref: "#/responses/NotFound"
+        "500":
+          $ref: "#/responses/InternalServerError"
+  /v1/posts:
+    get:
+      summary: 投稿一覧
+      operationId: GetPosts
+      tags:
+        - /posts
+      responses:
+        "200":
+          description: OK
+        "404":
+          $ref: "#/responses/NotFound"
+        "500":
+          $ref: "#/responses/InternalServerError"
+    post:
+      summary: 投稿追加
+      operationId: AddPost
+      tags:
+        - /posts
+      responses:
+        "201":
+          description: Created
+        "400":
+          $ref: "#/responses/BadRequest"
+        "500":
+          $ref: "#/responses/InternalServerError"
+  /v1/posts/{post_id}:
+    get:
+      summary: 特定投稿の参照
+      operationId: GetPostByID
+      tags:
+        - /posts
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/responses/BadRequest"
+        "404":
+          $ref: "#/responses/NotFound"
+        "500":
+          $ref: "#/responses/InternalServerError"
+    delete:
+      summary: 投稿削除
+      operationId: DeletePostByID
+      tags:
+        - /posts
+      responses:
+        "204":
+          description: NoContent
+        "400":
+          $ref: "#/responses/BadRequest"
+  /v1/posts/{post_id}/comments:
+    get:
+      summary: コメント一覧
+      operationId: GetComments
+      tags:
+        - /comments
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/responses/BadRequest"
+        "404":
+          $ref: "#/responses/NotFound"
+        "500":
+          $ref: "#/responses/InternalServerError"
+    post:
+      summary: コメント追加
+      operationId: AddComment
+      tags:
+        - /comments
+      responses:
+        "201":
+          description: Created
+        "400":
+          $ref: "#/responses/BadRequest"
+        "500":
+          $ref: "#/responses/InternalServerError"
+  /v1/posts/{post_id}/comments/{comment_id}:
+    get:
+      summary: 特定コメント参照
+      operationId: GetCommentByID
+      tags:
+        - /comments
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/responses/BadRequest"
+        "404":
+          $ref: "#/responses/NotFound"
+        "500":
+          $ref: "#/responses/InternalServerError"
+  /v1/tags:
+    get:
+      summary: タグ一覧
+      operationId: GetTags
+      tags:
+        - /tags
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/responses/BadRequest"
+        "500":
+          $ref: "#/responses/InternalServerError"
+    post:
+      summary: タグ追加
+      operationId: AddTag
+      tags:
+        - /tags
+      responses:
+        "201":
+          description: Created
+        "400":
+          $ref: "#/responses/BadRequest"
+        "500":
+          $ref: "#/responses/InternalServerError"
+  /v1/tags/{tag_id}:
+    get:
+      summary: 特定タグ参照
+      operationId: GetTagByID
+      tags:
+        - /tags
+      responses:
+        "200":
+          description: OK
+        "400":
+          $ref: "#/responses/BadRequest"
+        "500":
+          $ref: "#/responses/InternalServerError"
+  /v1/search:
+    get:
+      summary: 検索
+      operationId: Search
+      tags:
+        - /search
+      responses:
+        "200":
+          description: OK
+
+responses:
+  BadRequest:
+    description: Bad Request
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: リクエストの形式が正しくありません。
+  NotFound:
+    description: Not Found
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: ページが見つかりません。
+  InternalServerError:
+    description: InternalServerError
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: システム内部エラーが発生しました。

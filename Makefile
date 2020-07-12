@@ -19,6 +19,12 @@ $(GOPATH)/bin/golangci-lint:
 $(GOPATH)/bin/gotests:
 	go get -u github.com/cweill/gotests/...
 
+redoc:
+	docker run -it --rm -p 10080:80 \
+		-v $(shell pwd)/docs/:/usr/share/nginx/html/openapi/ \
+		-e SPEC_URL=openapi/openapi.yaml \
+		redocly/redoc
+
 pg_local:
 	cp -rp .env.local .env
 	docker-compose -f deployments/postgres/docker-compose.yml up -d
@@ -54,7 +60,7 @@ mockgen:
 		mockgen -source "$$x" --destination mock/"$$x"/"$$x".go; \
 	done
 
-build_local: test
+build_local:
 	$(GO) build -o $(BINARY_NAME) $(API_CMD_PATH)
 
 build_prd: test
@@ -64,4 +70,4 @@ build_prd: test
 run:
 	go run cmd/api/main.go
 
-.PHONY: dep schema migrate rollback clean fmt lint test cov mockgen build_local build_prd run
+.PHONY: dep schema migrate rollback clean fmt lint test cov mockgen build_local build_prd run redoc

@@ -1,0 +1,2149 @@
+swagger: "2.0"
+info:
+  title: Mikoshi API
+  version: alpha
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - https
+definitions: {}
+security: []
+paths:
+  /v1/health:
+    get:
+      summary: ヘルスチェック
+      operationId: MikoshiV1GetHealth
+      produces:
+        - application/health+json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: pass
+              version:
+                type: string
+                example: v1.0.0
+      tags:
+        - /health
+      parameters: []
+  /v1/users:
+    post:
+      summary: ユーザー登録
+      operationId: MikoshiV1CreateUser
+      parameters:
+        - in: header
+          name: UUID
+          type: string
+          required: false
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - login_id
+              - password
+              - password_confirm
+            properties:
+              login_id:
+                type: string
+                minLength: 4
+                maxLength: 16
+                example: loginid
+              password:
+                type: string
+                minLength: 10
+                maxLength: 50
+                example: passw0rd1234
+              password_confirm:
+                type: string
+                minLength: 10
+                maxLength: 50
+                example: passw0rd1234
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              user:
+                type: object
+                properties:
+                  login_id:
+                    type: string
+                    example: loginid
+                  device:
+                    type: object
+                    properties:
+                      uuid:
+                        type: string
+                        example: 3ba00823-2bd2-4507-8731-0ac96f714222
+                      auth_token:
+                        type: string
+                        example: >-
+                          53a6aeb87b55fbf4c1b4aeaf50d66cf82aa245a7142f1cfabe7e3f70d756c1a7
+                  step:
+                    type: string
+                    example: login_id_registered
+                    enum:
+                      - login_id_registered
+                      - email_registered
+                      - register_completed
+        "400":
+          $ref: "#/responses/BadRequest"
+        "409":
+          $ref: "#/responses/ConflictUserID"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/login:
+    post:
+      summary: ログイン
+      operationId: MikoshiV1Login
+      parameters:
+        - in: header
+          name: UUID
+          type: string
+          required: false
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - login_id
+              - password
+            properties:
+              login_id:
+                type: string
+                example: loginid
+              password:
+                type: string
+                example: passw0rd1234
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              user:
+                type: object
+                properties:
+                  login_id:
+                    type: string
+                    example: bar
+                  device:
+                    type: object
+                    properties:
+                      uuid:
+                        type: string
+                        example: 3ba00823-2bd2-4507-8731-0ac96f714222
+                      auth_token:
+                        type: string
+                        example: >-
+                          53a6aeb87b55fbf4c1b4aeaf50d66cf82aa245a7142f1cfabe7e3f70d756c1a7
+                  account:
+                    type: object
+                    properties:
+                      uid:
+                        type: string
+                        example: a*******@example.com
+                  step:
+                    type: string
+                    example: register_completed
+                    enum:
+                      - login_id_registered
+                      - email_registered
+                      - register_completed
+        "400":
+          $ref: "#/responses/LoginFailed"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/logout:
+    delete:
+      summary: ログアウト
+      operationId: MikoshiV1Logout
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/me/passcodes:
+    post:
+      summary: 2段階認証コード発行（ログイン時）
+      operationId: MikoshiV1CreateLoginPasscode
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/me/passcodes/verify:
+    post:
+      summary: 2段階認証（ログイン時）
+      operationId: MikoshiV1VerifyLoginPasscode
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - passcode
+            properties:
+              passcode:
+                type: string
+                example: passcode
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              user:
+                type: object
+                properties:
+                  login_id:
+                    type: string
+                    example: loginid
+                  device:
+                    type: object
+                    properties:
+                      uuid:
+                        type: string
+                        example: 3ba00823-2bd2-4507-8731-0ac96f714222
+                      auth_token:
+                        type: string
+                        example: >-
+                          53a6aeb87b55fbf4c1b4aeaf50d66cf82aa245a7142f1cfabe7e3f70d756c1a7
+                  step:
+                    type: string
+                    example: register_completed
+                    enum:
+                      - login_id_registered
+                      - email_registered
+                      - register_completed
+        "400":
+          $ref: "#/responses/AuthCodeIsInvalid"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/me/password:
+    patch:
+      summary: パスワード更新
+      operationId: MikoshiV1UpdatePassword
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - password
+              - new_password
+            properties:
+              password:
+                type: string
+                example: passw0rd1234
+              new_password:
+                type: string
+                minLength: 10
+                maxLength: 50
+                example: newPassw0rd
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              user:
+                type: object
+                properties:
+                  login_id:
+                    type: string
+                    example: loginid
+                  device:
+                    type: object
+                    properties:
+                      uuid:
+                        type: string
+                        example: 3ba00823-2bd2-4507-8731-0ac96f714222
+                      auth_token:
+                        type: string
+                        example: >-
+                          53a6aeb87b55fbf4c1b4aeaf50d66cf82aa245a7142f1cfabe7e3f70d756c1a7
+                  step:
+                    type: string
+                    example: register_completed
+                    enum:
+                      - login_id_registered
+                      - email_registered
+                      - register_completed
+        "400":
+          $ref: "#/responses/CurrentPasswordIsIncorrect"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/reset_password:
+    post:
+      summary: パスワードリセットメール送信
+      operationId: MikoshiV1SendPasswordResetMail
+      parameters:
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - login_id
+            properties:
+              login_id:
+                type: string
+                example: loginid
+              contact_account:
+                type: string
+                example: user@example.com
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "400":
+          $ref: "#/responses/BadRequest"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  "/v1/users/reset_password/{token}":
+    get:
+      summary: パスワードリセット画面表示（HTML）
+      description: パスワードリセット画面をHTMLレスポンスで返す
+      operationId: MikoshiV1DisplayPasswordResetScreen
+      produces:
+        - text/html
+      parameters:
+        - in: path
+          name: token
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Display the password reset completion screen.
+        "400":
+          description: Display bad request screen.
+        "404":
+          description: Display not found screen.
+        "500":
+          description: Display internal server error screen.
+        "503":
+          description: Display service unavailable screen.
+      tags:
+        - /users
+    post:
+      summary: パスワードリセット（HTML）
+      description: パスワードをリセットし、結果をHTMLレスポンスで返す
+      operationId: MikoshiV1ResetPassword
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - text/html
+      parameters:
+        - in: path
+          name: token
+          required: true
+          type: string
+        - in: formData
+          name: password
+          type: string
+          required: true
+        - in: formData
+          name: password_confirm
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Display the password reset completion screen.
+        "400":
+          description: Display bad request screen.
+        "500":
+          description: Display internal server error screen.
+        "503":
+          description: Display service unavailable screen.
+      tags:
+        - /users
+  /v1/users/me:
+    delete:
+      summary: 退会
+      operationId: MikoshiV1DeleteUser
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/me/profiles:
+    get:
+      summary: ユーザー属性取得
+      operationId: MikoshiV1FetchUserProfile
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              profile:
+                type: object
+                properties:
+                  birth_year:
+                    type: integer
+                    example: 1978
+                  birth_month:
+                    type: integer
+                    example: 4
+                  gender:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      value:
+                        type: string
+                        example: 男性
+                      sort_key:
+                        type: integer
+                        example: 1
+                  prefecture:
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      value:
+                        type: string
+                        example: 北海道
+                      sort_key:
+                        type: integer
+                        example: 1
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+    patch:
+      summary: ユーザー属性更新
+      operationId: MikoshiV1UpdateUserProfile
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - birth_year
+              - birth_month
+              - gender
+              - prefecture
+            properties:
+              birth_year:
+                type: integer
+                example: 1978
+              birth_month:
+                type: integer
+                example: 4
+              gender:
+                type: integer
+                example: 1
+              prefecture:
+                type: integer
+                example: 1
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              profile:
+                type: object
+                properties:
+                  birth_year:
+                    type: integer
+                    example: 1978
+                  birth_month:
+                    type: integer
+                    example: 4
+                  gender:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      value:
+                        type: string
+                        example: 男性
+                      sort_key:
+                        type: integer
+                        example: 1
+                  prefecture:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      value:
+                        type: string
+                        example: 北海道
+                      sort_key:
+                        type: integer
+                        example: 1
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/me/analysis_state:
+    get:
+      summary: 解析状態取得
+      operationId: MikoshiV1FetchAnalysisState
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              is_analyzed:
+                type: boolean
+                example: false
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/me/accounts:
+    get:
+      summary: アカウント一覧取得
+      operationId: MikoshiV1FetchAccounts
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              contact_account_id:
+                type: string
+                example: 01E5CPFRF8VNKTYB189WXVD0NP
+              accounts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: 01E5CPFRF8VNKTYB189WXVD0NP
+                    uid:
+                      type: string
+                      example: foo@example.com
+                    analyzed_at:
+                      type: string
+                      format: date-time
+                      example: "2020-05-31T16:39:57+00:00"
+                    locked_at:
+                      type: string
+                      format: date-time
+                      example: "2020-05-31T16:39:57+00:00"
+                    provider:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          example: yahoo_jp
+                        name:
+                          type: string
+                          example: Yahoo! JAPAN
+                    updatet_at:
+                      type: string
+                      format: date-time
+                      example: "2020-05-31T16:39:57+00:00"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  "/v1/users/me/accounts/{account_id}":
+    delete:
+      summary: アカウント連携解除
+      operationId: MikoshiV1DeleteAccount
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: path
+          name: account_id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "400":
+          $ref: "#/responses/FailedToTokenAuth"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/me/accounts/imap:
+    post:
+      summary: IMAP連携アカウント追加
+      operationId: MikoshiV1CreateIMAPAccount
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - auth_key
+              - pass_token
+            properties:
+              auth_key:
+                type: string
+                example: xxxxxxxxxxxx
+              pass_token:
+                type: string
+                example: xxxxxxxxxxxx
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              user:
+                type: object
+                properties:
+                  device:
+                    type: object
+                    properties:
+                      auth_token:
+                        type: string
+                        example: >-
+                          53a6aeb87b55fbf4c1b4aeaf50d66cf82aa245a7142f1cfabe7e3f70d756c1a7
+                  step:
+                    type: string
+                    example: email_registered
+              account:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 01E5CPFRF8VNKTYB189WXVD0NP
+                  uid:
+                    type: string
+                    example: foo@example.com
+                  analyzed_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+                  locked_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+                  provider:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        example: yahoo_jp
+                      name:
+                        type: string
+                        example: Yahoo! JAPAN
+                  updatet_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  "/v1/users/me/accounts/{account_id}/imap":
+    post:
+      summary: IMAP連携アカウント再認証
+      operationId: MikoshiV1ReAuthIMAPAccount
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: path
+          name: account_id
+          type: string
+          required: true
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - auth_key
+            properties:
+              auth_key:
+                type: string
+                example: xxxxxxxxxxxx
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              account:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 01E5CPFRF8VNKTYB189WXVD0NP
+                  uid:
+                    type: string
+                    example: foo@example.com
+                  analyzed_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+                  locked_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+                  provider:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        example: yahoo_jp
+                      name:
+                        type: string
+                        example: Yahoo! JAPAN
+                  updatet_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/me/accounts/oauth:
+    post:
+      summary: OAuth連携アカウント追加
+      operationId: MikoshiV1CreateOAuthAccount
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - code
+              - provider
+              - pass_token
+              - code_verifier
+            properties:
+              code:
+                type: string
+                example: SplxlOBeZQQYbYS6WxSbIA
+              provider:
+                type: string
+                example: yahoo_jp
+              pass_token:
+                type: string
+                example: xxxxxxxxxxxx
+              code_verifier:
+                type: string
+                example: dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              user:
+                type: object
+                properties:
+                  device:
+                    type: object
+                    properties:
+                      auth_token:
+                        type: string
+                        example: >-
+                          53a6aeb87b55fbf4c1b4aeaf50d66cf82aa245a7142f1cfabe7e3f70d756c1a7
+                  step:
+                    type: string
+                    example: email_registered
+              account:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 01E5CPFRF8VNKTYB189WXVD0NP
+                  uid:
+                    type: string
+                    example: a**********@example.com
+                  analyzed_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+                  locked_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+                  provider:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        example: yahoo_jp
+                      name:
+                        type: string
+                        example: Yahoo! JAPAN
+                  updatet_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  "/v1/users/me/accounts/{account_id}/oauth":
+    post:
+      summary: OAuth連携アカウント再認証
+      operationId: MikoshiV1ReAuthOAuthAccount
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: path
+          name: account_id
+          type: string
+          required: true
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - code
+              - provider
+              - code_verifier
+            properties:
+              code:
+                type: string
+                example: SplxlOBeZQQYbYS6WxSbIA
+              provider:
+                type: string
+                example: yahoo_jp
+              code_verifier:
+                type: string
+                example: dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              account:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 01E5CPFRF8VNKTYB189WXVD0NP
+                  uid:
+                    type: string
+                    example: bar@example.com
+                  analyzed_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+                  locked_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+                  provider:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        example: yahoo_jp
+                      name:
+                        type: string
+                        example: Yahoo! JAPAN
+                  updatet_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/me/accounts/passcodes:
+    post:
+      summary: 認証コード発行（連携メールアドレス新規登録・追加時）
+      operationId: MikoshiV1CreateAccountPasscode
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - uid
+            properties:
+              uid:
+                type: string
+                example: xxxx@example.com
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "409":
+          $ref: "#/responses/ConflictEmail"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/users/me/accounts/passcodes/verify:
+    post:
+      summary: 認証コード確認（連携メールアドレス新規登録・追加時）
+      operationId: MikoshiV1VerifyAccountPasscode
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - uid
+              - passcode
+            properties:
+              uid:
+                type: string
+                example: user@example.com
+              passcode:
+                type: string
+                example: passcode
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              passcode_token:
+                type: string
+                example: >-
+                  53a6aeb87b55fbf4c1b4aeaf50d66cf82aa245a7142f1cfabe7e3f70d756c1a7
+        "400":
+          $ref: "#/responses/AuthCodeIsInvalid"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /users
+  /v1/campaigns:
+    get:
+      summary: キャンペーン一覧取得
+      operationId: MikoshiV1FetchCampaigns
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: query
+          name: cursor
+          type: integer
+        - in: query
+          name: supplier
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              campaigns:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: foo
+                    image_url:
+                      type: string
+                      example: >-
+                        https://img.travel.rakuten.co.jp/select/hokkaido/201911-2/images/67078_1.jpg
+                    description:
+                      type: string
+                      example: キャンペーンの参加条件
+                    about:
+                      type: string
+                      example: <h3>■キャンペーン参加について</h3>
+                    start_at:
+                      type: string
+                      format: date-time
+                      example: "2020-05-31T16:39:57+00:00"
+                    end_at:
+                      type: string
+                      format: date-time
+                      example: "2020-05-31T16:39:57+00:00"
+                    point:
+                      type: integer
+                      example: 50
+                    capacity:
+                      type: integer
+                      example: 5
+                    items:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          supplier_name:
+                            type: string
+                            example: Amazon
+                          url:
+                            type: string
+                            example: >-
+                              https://travel.rakuten.co.jp/select/hokkaido/201911-2/?lid=topC_feature_dom01
+              next_cursor:
+                type: integer
+                example: 20
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /campaigns
+  "/v1/campaigns/{campaign_id}":
+    post:
+      summary: キャンペーン参加
+      operationId: MikoshiV1ApplyCampaign
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: path
+          name: campaign_id
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              campaign_log:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  campaign_id:
+                    type: integer
+                    example: 2
+                  user_id:
+                    type: integer
+                    example: 3
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T23:20:50.52Z"
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /campaigns
+  /v1/users/me/points:
+    get:
+      summary: 獲得ポイント取得
+      operationId: MikoshiV1FetchPoints
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              point:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    example: 100
+                  temp:
+                    type: integer
+                    example: 100
+                  expired_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+                  can_earn_points:
+                    type: boolean
+                    example: true
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /points
+  /v1/users/me/point_histories:
+    get:
+      summary: ポイント履歴取得
+      operationId: MikoshiV1FetchPointHistories
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: query
+          name: cursor
+          type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              point_histories:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    campaign_id:
+                      type: integer
+                      example: 1
+                    purchase_log_id:
+                      type: string
+                      example: 01E64201ZYYY
+                    event_log_id:
+                      type: string
+                      example: 01E6427S2B48EZCNTMYXXX
+                    purchase_log_item_id:
+                      type: string
+                      example: 01E64201ZYYYS2B48
+                    title:
+                      type: string
+                      example: 仮ポイント
+                    point:
+                      type: integer
+                      example: 20
+                    gift_code:
+                      type: string
+                      example: 1
+                    state:
+                      type: integer
+                      example: 0
+                    type:
+                      type: integer
+                      example: 2
+                    is_mail_sent:
+                      type: boolean
+                      example: true
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: "2020-05-31T16:39:57+00:00"
+                    updated_at:
+                      type: string
+                      format: date-time
+                      example: "2020-05-31T16:39:57+00:00"
+              next_cursor:
+                type: integer
+                example: 20
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /point_histories
+  /v1/users/me/point_histories/amazon_gift:
+    post:
+      summary: ポイント交換
+      operationId: MikoshiV1ExchangePoint
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              point_history:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  campaign_id:
+                    type: integer
+                    example: 1
+                  purchase_log_id:
+                    type: string
+                    example: ""
+                  event_log_id:
+                    type: string
+                    example: ""
+                  purchase_log_item_id:
+                    type: string
+                    example: ""
+                  title:
+                    type: string
+                    example: ポイント交換
+                  point:
+                    type: integer
+                    example: 500
+                  gift_code:
+                    type: string
+                    example: 1
+                  state:
+                    type: integer
+                    example: 0
+                  type:
+                    type: integer
+                    example: 2
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /point_histories
+  "/v1/users/me/point_histories/{point_history_id}/resend":
+    post:
+      summary: ギフトコード再送
+      operationId: MikoshiV1ResendGiftCode
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: path
+          name: point_history_id
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              point_history:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  campaign_id:
+                    type: integer
+                    example: 1
+                  purchase_log_id:
+                    type: string
+                    example: ""
+                  event_log_id:
+                    type: string
+                    example: ""
+                  purchase_log_item_id:
+                    type: string
+                    example: ""
+                  title:
+                    type: string
+                    example: ポイント交換
+                  point:
+                    type: integer
+                    example: 500
+                  gift_code:
+                    type: string
+                    example: 1
+                  state:
+                    type: integer
+                    example: 0
+                  type:
+                    type: integer
+                    example: 2
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: "2020-05-31T16:39:57+00:00"
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /point_histories
+  "/v1/users/me/messages/{key}":
+    get:
+      summary: メッセージ取得
+      operationId: MikoshiV1FetchMessage
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: path
+          name: key
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              html:
+                type: string
+                example: <h1>こんにちは</h1>
+              text:
+                type: string
+                example: こんにちは
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "404":
+          $ref: "#/responses/NotFound"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /messages
+  /v1/users/me/purchase_logs:
+    get:
+      summary: 購買履歴取得
+      operationId: MikoshiV1FetchPurchaseLogs
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: query
+          name: sync_seq
+          type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              purchase_logs:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                      example: 1
+                    icon_url:
+                      type: string
+                      example: "https://stg-reward.swingmail.co/icons/amazon.png"
+                    message_key:
+                      type: string
+                      example: >-
+                        e5003a8aa36ebba79276ebc4f59ac4268ab2e2e91b914b54f33c3deaf071@example.com
+                    supplier_name:
+                      type: string
+                      example: Amazon
+                    order_at:
+                      type: string
+                      format: date-time
+                      example: "2020-01-24T15:00:00+00:00"
+                    payment_total:
+                      type: integer
+                      format: int64
+                      example: 32616
+                    items:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: ダーウィンズゲーム　５（少年チャンピオン・コミックス）
+                          subtotal:
+                            type: integer
+                            format: int64
+                            example: 1234
+                          image_url:
+                            type: string
+                            example: >-
+                              https://m.media-amazon.com/images/I/51G0UQ+FTGL.jpg
+                          earned_point:
+                            type: integer
+                            example: 100
+                    sync_seq:
+                      type: integer
+                      example: 1
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /purchase_logs
+  /v1/news:
+    get:
+      summary: お知らせ一覧取得
+      operationId: MikoshiV1FetchNews
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: query
+          name: cursor
+          type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              news:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: タイトル
+                    text:
+                      type: string
+                      example: お知らせ情報の詳細
+                    published_at:
+                      type: string
+                      format: date-time
+                      example: "2018-12-17T09:45:04+00:00"
+              next_cursor:
+                type: integer
+                example: 100
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /news
+  "/v1/auth/login/{provider}":
+    get:
+      summary: IMAPアカウント認証画面表示（HTML）
+      description: IMAPでのアカウント認証画面をHTMLレスポンスで返す
+      operationId: MikoshiV1AuthIMAPScreenDisplay
+      produces:
+        - text/html
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: path
+          name: provider
+          required: true
+          type: string
+        - in: query
+          name: client_state
+          required: true
+          type: string
+        - in: query
+          name: redirect_uri
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Display auth imap screen.
+        "404":
+          description: Display not found error screen.
+        "500":
+          description: Display internal server error screen.
+        "503":
+          description: Display service unavailable screen.
+      tags:
+        - /auth
+    post:
+      summary: IMAPアカウント認証（HTML）
+      operationId: MikoshiV1AuthIMAP
+      description: auth_keyを生成し、client_stateとともにredirect_uriへリダイレクトする
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - text/html
+      parameters:
+        - in: path
+          name: provider
+          required: true
+          type: string
+        - in: query
+          name: client_state
+          required: true
+          type: string
+        - in: query
+          name: redirect_uri
+          required: true
+          type: string
+        - in: formData
+          name: local
+          type: string
+          required: true
+        - in: formData
+          name: domain
+          type: string
+          required: true
+        - in: formData
+          name: user_name
+          type: string
+          required: true
+        - in: formData
+          name: password
+          type: string
+          required: true
+      responses:
+        "302":
+          description: >-
+            Redirect to redirect URI with `client_state` and `auth_key`
+            parameters
+        "400":
+          description: Display bad request error screen.
+        "404":
+          description: Display not found error screen.
+        "409":
+          description: Display conflict error screen.
+        "500":
+          description: Display internal server error screen.
+        "503":
+          description: Display service unavailable screen.
+      tags:
+        - /auth
+  "/v1/auth/reauth/{provider}":
+    get:
+      summary: IMAPアカウント再認証画面表示（HTML）
+      description: IMAPでのアカウント再認証画面をHTMLで表示する
+      operationId: MikoshiV1ReAuthIMAPScreenDisplay
+      produces:
+        - text/html
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: path
+          name: provider
+          required: true
+          type: string
+        - in: query
+          name: client_state
+          required: true
+          type: string
+        - in: query
+          name: redirect_uri
+          required: true
+          type: string
+        - in: query
+          name: account_id
+          type: string
+      responses:
+        "200":
+          description: Display reauth imap screen.
+        "401":
+          description: Display unauthorized error screen.
+        "404":
+          description: Display not found error screen.
+        "500":
+          description: Display internal server error screen.
+        "503":
+          description: Display service unavailable screen.
+      tags:
+        - /auth
+    post:
+      summary: IMAPアカウント再認証（HTML）
+      description: auth_keyを生成し、client_stateとともにredirect_uriへリダイレクトする
+      operationId: MikoshiV1ReAuthIMAP
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - text/html
+      parameters:
+        - in: path
+          name: provider
+          required: true
+          type: string
+        - in: query
+          name: client_state
+          required: true
+          type: string
+        - in: query
+          name: redirect_uri
+          required: true
+          type: string
+        - in: formData
+          name: local
+          type: string
+          required: true
+        - in: formData
+          name: domain
+          type: string
+          required: true
+        - in: formData
+          name: user_name
+          type: string
+          required: true
+        - in: formData
+          name: password
+          type: string
+          required: true
+      responses:
+        "302":
+          description: >-
+            Redirect to redirect URI with `client_state` and `auth_key`
+            parameters
+        "400":
+          description: Display bad request error screen.
+        "404":
+          description: Display not found error screen.
+        "409":
+          description: Display conflict error screen.
+        "500":
+          description: Display internal server error screen.
+        "503":
+          description: Display service unavailable screen.
+      tags:
+        - /auth
+  "/v1/auth/oauth/{platform}/{provider}":
+    get:
+      summary: OAuth認証のリダイレクトURL
+      operationId: MikoshiV1OAuthRedirect
+      produces:
+        - text/html
+      parameters:
+        - in: path
+          name: platform
+          required: true
+          type: string
+          enum:
+            - ios
+            - android
+        - in: path
+          name: provider
+          required: true
+          type: string
+      responses:
+        "302":
+          description: Redirect to custom URL schema with code and provider parameters
+        "400":
+          description: Display bad request error screen.
+        "500":
+          description: Display internal server error screen.
+        "503":
+          description: Display service unavailable screen.
+      tags:
+        - /auth
+  /v1/users/me/event_logs:
+    get:
+      summary: イベント履歴取得
+      operationId: MikoshiV1FetchEventlogs
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+        - in: query
+          name: sync_seq
+          type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              event_logs:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                      example: 1
+                    icon_url:
+                      type: string
+                      example: "https://stg-reward.swingmail.co/icons/amy_go.png"
+                    supplier_name:
+                      type: string
+                      example: アミー号
+                    event_name:
+                      type: string
+                      example: "東京駅：JR東京八重洲口　鍛冶橋駐車場22:10発"
+                    start_at:
+                      type: string
+                      format: date-time
+                      example: "2020-03-30T13:10:00+00:00"
+                    message_key:
+                      type: string
+                      example: >-
+                        e5003a8aa36ebba79276ebc4f59ac4268ab2e2e91b914b54f33c3deaf071@example.com
+                    place:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: マクドナルド恵比寿駅前店
+                        display_name:
+                          type: string
+                          example: "@マクドナルド恵比寿駅前店"
+                        address:
+                          type: string
+                          example: 東京都千代田区丸の内３丁目８
+                        disclaimer:
+                          type: string
+                          example: 地図は正確でない可能性があります
+                    infos:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          label:
+                            type: string
+                            example: 予約番号
+                          value:
+                            type: string
+                            example: "2055375"
+                    sync_seq:
+                      type: integer
+                      example: 1
+        "400":
+          $ref: "#/responses/BadRequest"
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /event_logs
+  /v1/master/profiles:
+    get:
+      summary: プロフィールマスターデータ取得
+      operationId: MikoshiV1FetchMasterProfiles
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              prefectures:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    value:
+                      type: string
+                      example: 北海道
+                    sort_key:
+                      type: integer
+                      example: 1
+              genders:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    value:
+                      type: string
+                      example: 男性
+                    sort_key:
+                      type: integer
+                      example: 1
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /master
+  /v1/master/providers:
+    get:
+      summary: プロバイダーマスターデータ取得
+      operationId: MikoshiV1FetchMasterProviders
+      parameters:
+        - in: header
+          name: AUTH-TOKEN
+          type: string
+          required: true
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            properties:
+              providers:
+                type: array
+                items:
+                  properties:
+                    key:
+                      type: string
+                    name:
+                      type: string
+                    image_url:
+                      type: string
+                    icon_url:
+                      type: string
+                    auth_url:
+                      type: string
+                    reauth_url:
+                      type: string
+                    sort_key:
+                      type: integer
+          examples:
+            application/json:
+              providers:
+                - key: google
+                  name: Google
+                  image_url: "https://api.dev.mikoshi.io/assets/img/logo/google.png"
+                  icon_url: "https://api.dev.mikoshi.io/assets/img/icon/google.png"
+                  auth_url: >-
+                    https://accounts.google.com/o/oauth2/auth?client_id=99999999999-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com&redirect_uri=https://api.dev.mikoshi.io/v1/auth/oauth/ios/google&scope=https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/gmail.readonly&access_type=offline&approval_prompt=force&response_type=code
+                  reauth_url: >-
+                    https://accounts.google.com/o/oauth2/auth?client_id=99999999999-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com&redirect_uri=https://api.dev.mikoshi.io/v1/auth/oauth/ios/google&scope=https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/gmail.readonly&access_type=offline&approval_prompt=force&response_type=code
+                  sort_key: 1
+                - key: yahoo_jp
+                  name: Yahoo! JAPAN
+                  image_url: "https://api.dev.mikoshi.io/assets/img/logo/yahoo_jp.png"
+                  icon_url: "https://api.dev.mikoshi.io/assets/img/icon/yahoo_jp.png"
+                  auth_url: "https://api.dev.mikoshi.io/v1/auth/login/yahoo_jp"
+                  reauth_url: "https://api.dev.mikoshi.io/v1/auth/reauth/yahoo_jp"
+                  sort_key: 2
+                - key: outlook
+                  name: Outlook
+                  image_url: "https://api.dev.mikoshi.io/assets/img/logo/outlook.png"
+                  icon_url: "https://api.dev.mikoshi.io/assets/img/icon/outlook.png"
+                  auth_url: >-
+                    https://login.live.com/oauth20_authorize.srf?client_id=99999999-9999-9999-9999-999999999999&redirect_uri=https://api.dev.mikoshi.io/v1/auth/oauth/ios/outlook&scope=wl.basic+wl.offline_access+wl.emails+wl.imap&response_type=code
+                  reauth_url: >-
+                    https://login.live.com/oauth20_authorize.srf?client_id=99999999-9999-9999-9999-999999999999&redirect_uri=https://api.dev.mikoshi.io/v1/auth/oauth/ios/outlook&scope=wl.basic+wl.offline_access+wl.emails+wl.imap&response_type=code
+                  sort_key: 3
+        "401":
+          $ref: "#/responses/Unauthorized"
+        "500":
+          $ref: "#/responses/InternalServerError"
+        "503":
+          $ref: "#/responses/ServiceUnavailable"
+      tags:
+        - /master
+responses:
+  BadRequest:
+    description: Bad Request
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: 要求の形式が正しくありません。
+  AuthCodeIsInvalid:
+    description: Bad Request
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: 認証コードをお確かめの上、入力し直すか、発行から再度手続きをお願い致します。
+  FailedToTokenAuth:
+    description: Bad Request
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: 認証コードの有効期限が切れました。認証コードの発行から再度手続きをお願い致します。
+  LoginFailed:
+    description: Bad Request
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: ログインに失敗しました。\nログインできない場合は「パスワードをお忘れの方」からパスワードの再設定を行ってください。
+  CurrentPasswordIsIncorrect:
+    description: Bad Request
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: 現在のパスワードが正しくありません。
+  Unauthorized:
+    description: Unauthorized
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: サーバーとの認証に失敗しました。再度ログインしてください。
+  NotFound:
+    description: Not Found
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: ページが見つかりません。
+  ConflictEmail:
+    description: Conflict
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: このメールアドレスは既に登録されています。
+  ConflictUserID:
+    description: Conflict
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: そのユーザーIDはご利用になれません。
+  InternalServerError:
+    description: InternalServerError
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: システム内部エラーが発生しました。
+  ServiceUnavailable:
+    description: ServiceUnavailable
+    schema:
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: サービスが利用できません。
+tags:
+  - name: /health
+  - name: /users
+  - name: /points
+  - name: /point_histories
+  - name: /campaigns
+  - name: /messages
+  - name: /purchase_logs
+  - name: /event_logs
+  - name: /news
+  - name: /auth
+  - name: /master

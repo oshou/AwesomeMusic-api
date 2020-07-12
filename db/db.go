@@ -9,10 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-var (
-	Pool    *sqlx.DB
-	maxconn = 10
-)
+var pool *sqlx.DB
 
 // Init is constructor for db
 func Init() error {
@@ -25,19 +22,22 @@ func Init() error {
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"),
 	)
-	fmt.Println("dsn:", dsn)
 
-	Pool, err := sqlx.Open(driver, dsn)
+	var err error
+	pool, err = sqlx.Open(driver, dsn)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	Pool.SetMaxIdleConns(maxconn)
 
 	return nil
 }
 
+func GetDB() *sqlx.DB {
+	return pool
+}
+
 func Close() {
-	if Pool != nil {
-		Pool.Close()
+	if pool != nil {
+		pool.Close()
 	}
 }
