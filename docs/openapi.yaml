@@ -341,6 +341,17 @@ paths:
       operationId: V1AddTag
       tags:
         - /tags
+      parameters:
+        - in: body
+          name: Body
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+                example: "夏に聞きたい曲"
       responses:
         "201":
           description: Created
