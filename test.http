@@ -1,28 +1,27 @@
+### GetHealth
+GET http://localhost:8080/v1/health HTTP/1.1
+
+
 ### GetUsers
 GET http://localhost:8080/v1/users HTTP/1.1
 
-
 ### GetUserByID
 GET http://localhost:8080/v1/users/1 HTTP/1.1
-
 
 ### AddUser
 POST http://localhost:8080/v1/users HTTP/1.1
 
 {
-  "name":"rokurou"
+  "name":"tarou"
 }
-
 
 
 
 ### GetPosts
 GET http://localhost:8080/v1/posts HTTP/1.1
 
-
 ### GetPostByID
 GET http://localhost:8080/v1/posts/1 HTTP/1.1
-
 
 ### AddPost
 POST http://localhost:8080/v1/posts HTTP/1.1
@@ -34,20 +33,13 @@ POST http://localhost:8080/v1/posts HTTP/1.1
   "message":"sample-message"
 }
 
-
 ### DeletePostByID
-DELETE http://localhost:8080/v1/posts/33 HTTP/1.1
-
+DELETE http://localhost:8080/v1/posts/32 HTTP/1.1
 
 
 
 ### GetComments
 GET http://localhost:8080/v1/posts/1/comments HTTP/1.1
-
-
-### GetCommentByID
-GET http://localhost:8080/v1/posts/1/comments/11 HTTP/1.1
-
 
 ### AddComment
 POST http://localhost:8080/v1/posts/1/comments HTTP/1.1
@@ -57,16 +49,23 @@ POST http://localhost:8080/v1/posts/1/comments HTTP/1.1
   "comment":"sample-comment"
 }
 
+### GetCommentByID
+GET http://localhost:8080/v1/posts/1/comments/11 HTTP/1.1
 
 
+
+### GetTagsByPostID
+GET http://localhost:8080/v1/posts/1/tags HTTP/1.1
+
+### AttachTag
+POST http://localhost:8080/v1/posts/1/tags/1 HTTP/1.1
+{
+  "user_id":1,
+  "comment":"sample-comment"
+}
 
 ### GetTags
 GET http://localhost:8080/v1/tags HTTP/1.1
-
-
-### GetTagByID
-GET http://localhost:8080/v1/tags/1 HTTP/1.1
-
 
 ### AddTag
 POST http://localhost:8080/v1/tags HTTP/1.1
@@ -74,3 +73,6 @@ POST http://localhost:8080/v1/tags HTTP/1.1
 {
   "name":"sample-tag"
 }
+
+### GetTagByID
+GET http://localhost:8080/v1/tags/1 HTTP/1.1
