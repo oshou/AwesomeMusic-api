@@ -10,13 +10,24 @@ schemes:
   - https
 definitions: {}
 security: []
+host: localhost
 paths:
+  /v1/health:
+    get:
+      summary: ヘルスチェック
+      operationId: V1Health
+      tags:
+        - /v1/health
+      parameters: []
+      responses:
+        "200":
+          description: OK
   /v1/users:
     get:
       summary: ユーザー一覧
       operationId: V1GetUsers
       tags:
-        - /users
+        - /v1/users
       responses:
         "200":
           description: OK
@@ -410,3 +421,10 @@ responses:
           type: string
       example:
         msg: システム内部エラーが発生しました。
+
+tags:
+  - name: /v1/health
+  - name: /v1/users
+  - name: /v1/posts
+  - name: /v1/tags
+  - name: /v1/search
