@@ -8,12 +8,18 @@ https://github.com/oshou/Portfolio
 
 ## 概要
 
+- Onion Architecture を参考にしています。
 - JSON 形式でレスポンスを返します。
 - 環境変数はレポジトリ直下の.env を読み込みます。<br>
   ビルド時に指定の「.env.(環境名)」を「.env」としてコピー作成いたします。<br>
   ex) cp -rp .env.local -> .env
 - デフォルトで Port 8080 で受付いたします。
-- Onion Architecture を参考にしています。
+
+## APIドキュメント
+```bash
+1. make gendoc
+2. http://localhost:10080にアクセス
+```
 
 ## Quick Start
 
@@ -29,9 +35,7 @@ go get -u github.com/oshou/AwesomeMusic-api
 # - DB_OPTION
 # - API_SERVER_PORT
 vim .env.local
-# ビルド(ローカル)
-make build_local
-# ビルド済バイナリ実行
+# APIサーバ起動
 make run
 ```
 
