@@ -13,9 +13,9 @@ var Logger *zap.Logger
 func Init() {
 	switch os.Getenv("GO_ENV") {
 	case "production":
-		Logger = NewMyLoggerProduction()
+		Logger = NewProduction()
 	default:
-		Logger = NewMyLoggerDevelopment()
+		Logger = NewDevelopment()
 	}
 }
 
@@ -65,16 +65,16 @@ func newStderrCore(encoderConfig zapcore.EncoderConfig) zapcore.Core {
 	)
 }
 
-func NewMyLoggerProduction() *zap.Logger {
+func NewProduction() *zap.Logger {
 	cfg := NewLoggerConfig()
 	cfg.Level = zap.NewAtomicLevelAt(zap.InfoLevel)
 	cfg.Development = false
 	core := NewCore(cfg)
-	return zap.New(core)
+	return zap.New(core, zap.AddCaller())
 }
 
-func NewMyLoggerDevelopment() *zap.Logger {
+func NewDevelopment() *zap.Logger {
 	cfg := NewLoggerConfig()
 	core := NewCore(cfg)
-	return zap.New(core)
+	return zap.New(core, zap.AddCaller())
 }

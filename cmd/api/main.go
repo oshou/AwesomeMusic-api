@@ -32,11 +32,13 @@ func main() {
 	// Set Logger
 	log.Init()
 	defer log.Logger.Sync()
+	log.Logger.Info("set logger")
 
 	// Load Environment
 	if err := godotenv.Load(); err != nil {
 		log.Logger.Fatal("failed to loading .env file", zap.Error(err))
 	}
+	log.Logger.Info("set environment")
 
 	// DB Connection
 	if err := db.Init(); err != nil {
@@ -44,6 +46,7 @@ func main() {
 	}
 	defer db.Close()
 	pool := db.GetDB()
+	log.Logger.Info("set db connection")
 
 	// Injector
 	userRepository := persistence.NewUserRepository(pool)
