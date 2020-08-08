@@ -2,10 +2,6 @@
 GET http://localhost:8080/v1/users HTTP/1.1
 
 
-### GetUserByID
-GET http://localhost:8080/v1/users/1 HTTP/1.1
-
-
 ### AddUser
 POST http://localhost:8080/v1/users HTTP/1.1
 
@@ -13,8 +9,19 @@ POST http://localhost:8080/v1/users HTTP/1.1
   "name":"rokurou"
 }
 
+### GetUserByID
+GET http://localhost:8080/v1/users/1 HTTP/1.1
 
 
+### AddPost
+POST http://localhost:8080/v1/posts HTTP/1.1
+
+{
+  "user_id":2,
+  "title":"sample-title",
+  "url":"sample-url",
+  "message":"sample-message"
+}
 
 ### GetPosts
 GET http://localhost:8080/v1/posts HTTP/1.1
@@ -22,18 +29,6 @@ GET http://localhost:8080/v1/posts HTTP/1.1
 
 ### GetPostByID
 GET http://localhost:8080/v1/posts/1 HTTP/1.1
-
-
-### AddPost
-POST http://localhost:8080/v1/posts HTTP/1.1
-
-{
-  "user_id":1,
-  "title":"sample-title",
-  "url":"sample-url",
-  "message":"sample-message"
-}
-
 
 ### DeletePostByID
 DELETE http://localhost:8080/v1/posts/33 HTTP/1.1

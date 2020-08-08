@@ -1,13 +1,17 @@
 export GO111MODULE=on
 
-GO ?= $(shell which go)
-PG_DUMP ?= /usr/local/bin/pg_dump
+GO_ENV=local
+
+PGDUMP_PATH ?= /usr/local/bin/pg_dump
+API_PATH ?= "cmd/api/main.go"
+
 DB_USER ?= root
 DB_HOST ?= 127.0.0.1
 DB_NAME ?= postgres
+
 DEPLOY_REPO = "oshou/awesome-music-api"
-API_CMD_PATH = "cmd/api/main.go"
 BINARY_NAME = main
+
 LIST=./domain/repository ./domain/model ./usecase
 
 $(GOPATH)/bin/sql-migrate:
@@ -19,7 +23,7 @@ $(GOPATH)/bin/golangci-lint:
 $(GOPATH)/bin/gotests:
 	go get -u github.com/cweill/gotests/...
 
-redoc:
+gendoc:
 	docker run -it --rm -p 10080:80 \
 		-v $(shell pwd)/docs/:/usr/share/nginx/html/openapi/ \
 		-e SPEC_URL=openapi/openapi.yaml \
@@ -30,28 +34,28 @@ pg_local:
 	docker-compose -f deployments/postgres/docker-compose.yml up -d
 
 migrate: $(GOPATH)/bin/sql-migrate
-	sql-migrate up
+	sql-migrate up -config=_db/config.yml -env=$(GO_ENV)
 
 rollback: $(GOPATH)/bin/sql-migrate
-	sql-migrate down
+	sql-migrate down -config=_db/config.yml -env=$(GO_ENV)
 
 schema:
-	$(PG_DUMP) -h $(DB_HOST) -U $(DB_USER) -s $(DB_NAME) -f _db/schema.sql
+	$(PGDUMP_PATH) -h $(DB_HOST) -U $(DB_USER) -s $(DB_NAME) -f _db/schema.sql
 
 clean:
-	$(GO) mod tidy
+	go mod tidy
 
 fmt: clean
-	$(GO) fmt ./...
+	go fmt ./...
 
 lint: fmt $(GOPATH)/bin/golangci-lint
 	golangci-lint run
 
 test: lint
-	$(GO) test ./...
+	go test ./...
 
 cov: lint
-	$(GO) test ./... -cover
+	go test ./... -cover
 
 mockgen:
 	@LIST="$(LIST)"; \
@@ -61,11 +65,11 @@ mockgen:
 	done
 
 build_local:
-	$(GO) build -o $(BINARY_NAME) $(API_CMD_PATH)
+	go build -o $(BINARY_NAME) $(API_PATH)
 
 build_prd: test
 	cp -rp .env.production .env
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build -a -installsuffix cgo -ldflags="-s -w" -o $(BINARY_NAME)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-s -w" -o $(BINARY_NAME)
 
 run:
 	go run cmd/api/main.go
