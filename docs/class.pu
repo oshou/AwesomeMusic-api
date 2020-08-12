@@ -8,12 +8,12 @@ package DomainService {
 }
 
 package Application {
-  class Service
-  interface IService
+  class Usecase
+  interface IUsecase
 }
 
 package Infrastructure {
-  class Datastore
+  class Persistence
 }
 package UI {
   interface IRouter
@@ -25,10 +25,10 @@ package UI {
 class main
 
 Model <-up- IRepository
-IService -up-> IRepository
-Datastore -up-> IRepository: DI
-Service -right-> IService: DI
-IHandler -up-> IService
+IUsecase -up-> IRepository
+Persistence -up-> IRepository: DI
+Usecase -right-> IUsecase: DI
+IHandler -up-> IUsecase
 Handler -right-> IHandler: DI
 Router -up-> IHandler
 Router -up-> Middleware

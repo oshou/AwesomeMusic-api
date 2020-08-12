@@ -9,16 +9,16 @@ https://github.com/oshou/Portfolio
 ## 概要
 
 - Onion Architecture を参考にしています。
-- JSON 形式でレスポンスを返します。
+- Content-Typeは、application/json
+- ポートはデフォルトで8080で受付
 - 環境変数はレポジトリ直下の.env を読み込みます。<br>
   ビルド時に指定の「.env.(環境名)」を「.env」としてコピー作成いたします。<br>
   ex) cp -rp .env.local -> .env
-- デフォルトで Port 8080 で受付いたします。
 
 ## APIドキュメント
 ```bash
 1. make gendoc
-2. http://localhost:10080にアクセス
+2. ブラウザからhttp://localhost:10080にアクセス
 ```
 
 ## Quick Start
@@ -50,7 +50,6 @@ make run
 ├── usecase/                 # Application Layer
 ├── ui/                      # UI Layer
 │   └── http/                # http
-│         └── router/        # http router
 │         └── middleware/    # http middleware
 │         └── handler/       # http handler
 ├── infrastructure/          # Infrastructure Layer
