@@ -38,7 +38,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 		posts, err := sh.usecase.GetPostsByTitle(q)
 		if err != nil {
 			log.Logger.Error("failed to get posts by title", zap.Error(err))
-			w.WriteHeader(http.StatusBadRequest)
+			badRequestError(w)
 
 			return
 		}
@@ -46,7 +46,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 		if err := json.NewEncoder(w).Encode(posts); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			internalServerError(w)
 
 			return
 		}
@@ -54,7 +54,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 		posts, err := sh.usecase.GetPostsByUserName(q)
 		if err != nil {
 			log.Logger.Error("failed to get posts by user name", zap.Error(err))
-			w.WriteHeader(http.StatusBadRequest)
+			badRequestError(w)
 
 			return
 		}
@@ -62,7 +62,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 		if err := json.NewEncoder(w).Encode(posts); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			internalServerError(w)
 
 			return
 		}
@@ -70,7 +70,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 		posts, err := sh.usecase.GetPostsByTagName(q)
 		if err != nil {
 			log.Logger.Error("failed to get posts by tag name", zap.Error(err))
-			w.WriteHeader(http.StatusBadRequest)
+			badRequestError(w)
 
 			return
 		}
@@ -78,7 +78,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 		if err := json.NewEncoder(w).Encode(posts); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			internalServerError(w)
 
 			return
 		}

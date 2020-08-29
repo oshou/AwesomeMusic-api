@@ -24,16 +24,16 @@ var (
 )
 
 func main() {
+	// Set Flag
 	flag.StringVar(&dir, "dir", dir, "seeds directory")
 	flag.StringVar(&pattern, "pattern", pattern, "seed files pattern")
 	flag.IntVar(&maxconn, "maxconn", maxconn, "max db connection")
 	flag.StringVar(&filePath, "filePath", filePath, "db config filePath")
+	flag.Parse()
 
 	// Set Logger
 	log.Init()
 	defer log.Logger.Sync()
-	flag.Parse()
-	log.Init()
 
 	// Load Environment
 	if err := godotenv.Load(); err != nil {
@@ -41,16 +41,11 @@ func main() {
 	}
 
 	// DB Connection
-	err := db.Init()
-	if err != nil {
+	if err := db.Init(); err != nil {
 		log.Logger.Fatal("failed to connect db", zap.Error(err))
 	}
-	defer func() {
-		err := db.Pool.Close()
-		if err != nil {
-			log.Logger.Fatal("failed to release db", zap.Error(err))
-		}
-	}()
+	defer db.Close()
+	pool := db.GetDB()
 
 	run(pattern)
 }

@@ -2,6 +2,7 @@ export GO111MODULE=on
 
 GO ?= $(shell which go)
 PG_DUMP ?= /usr/local/bin/pg_dump
+PG_DUMPALL ?= /usr/local/bin/pg_dumpall
 DB_USER ?= root
 DB_HOST ?= 127.0.0.1
 DB_NAME ?= postgres
@@ -30,13 +31,22 @@ pg_local:
 	docker-compose -f deployments/postgres/docker-compose.yml up -d
 
 migrate: $(GOPATH)/bin/sql-migrate
-	sql-migrate up
+	sql-migrate up -config=_db/config.yaml
 
 rollback: $(GOPATH)/bin/sql-migrate
-	sql-migrate down
+	sql-migrate down -config=_db/config.yaml
 
 schema:
 	$(PG_DUMP) -h $(DB_HOST) -U $(DB_USER) -s $(DB_NAME) -f _db/schema.sql
+
+dumpall:
+	$(PG_DUMP) -h $(DB_HOST) -U $(DB_USER) $(DB_NAME) -f _db/dumpall.sql
+
+restore:
+	psql -h $(DB_HOST) -U $(DB_USER) $(DB_NAME) < _db/dumpall.sql
+
+seed:
+	go run cmd/seed/main.go
 
 clean:
 	$(GO) mod tidy
@@ -47,7 +57,7 @@ fmt: clean
 lint: fmt $(GOPATH)/bin/golangci-lint
 	golangci-lint run
 
-test: lint
+test: fmt
 	$(GO) test ./...
 
 cov: lint

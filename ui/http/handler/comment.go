@@ -39,7 +39,7 @@ func (ch *commentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Logger.Error("failed to convert string", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -47,7 +47,7 @@ func (ch *commentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
 	comments, err := ch.usecase.GetComments(postID)
 	if err != nil {
 		log.Logger.Error("failed to get comments", zap.Error(err))
-		w.WriteHeader(http.StatusNotFound)
+		notFoundError(w)
 
 		return
 	}
@@ -55,7 +55,7 @@ func (ch *commentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(comments); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}
@@ -67,7 +67,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Logger.Error("failed to convert string", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -79,7 +79,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Logger.Error("failed to add ", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -88,7 +88,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Logger.Error("failed to add comment", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -96,7 +96,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(comment); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}
@@ -108,7 +108,7 @@ func (ch *commentHandler) GetCommentByID(w http.ResponseWriter, r *http.Request)
 
 	if err != nil {
 		log.Logger.Error("failed to convert string", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -116,7 +116,7 @@ func (ch *commentHandler) GetCommentByID(w http.ResponseWriter, r *http.Request)
 	comment, err := ch.usecase.GetCommentByID(commentID)
 	if err != nil {
 		log.Logger.Error("failed to get comment by commentID", zap.Error(err))
-		w.WriteHeader(http.StatusNotFound)
+		notFoundError(w)
 
 		return
 	}
@@ -124,7 +124,7 @@ func (ch *commentHandler) GetCommentByID(w http.ResponseWriter, r *http.Request)
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(comment); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}

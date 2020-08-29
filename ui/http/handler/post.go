@@ -40,7 +40,7 @@ func (ph *postHandler) GetPosts(w http.ResponseWriter, r *http.Request) {
 	posts, err := ph.usecase.GetPosts()
 	if err != nil {
 		log.Logger.Error("failed to get posts", zap.Error(err))
-		w.WriteHeader(http.StatusNotFound)
+		notFoundError(w)
 
 		return
 	}
@@ -48,7 +48,7 @@ func (ph *postHandler) GetPosts(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 	}
 }
 
@@ -58,7 +58,7 @@ func (ph *postHandler) GetPostByID(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Logger.Error("failed to convert string", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -66,13 +66,13 @@ func (ph *postHandler) GetPostByID(w http.ResponseWriter, r *http.Request) {
 	post, err := ph.usecase.GetPostByID(postID)
 	if err != nil {
 		log.Logger.Error("failed to get posts by postID", zap.Error(err))
-		w.WriteHeader(http.StatusNotFound)
+		notFoundError(w)
 	}
 
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(post); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}
@@ -84,7 +84,7 @@ func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Logger.Error("failed to convert string", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -92,7 +92,7 @@ func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
 	posts, err := ph.usecase.GetPostsByTagID(tagID)
 	if err != nil {
 		log.Logger.Error("failed to get posts by tagID", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -100,7 +100,7 @@ func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}
@@ -112,7 +112,7 @@ func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) 
 
 	if err != nil {
 		log.Logger.Error("failed to convert string", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -120,7 +120,7 @@ func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) 
 	posts, err := ph.usecase.GetPostsByUserID(userID)
 	if err != nil {
 		log.Logger.Error("failed to get posts by userID", zap.Error(err))
-		w.WriteHeader(http.StatusNotFound)
+		notFoundError(w)
 
 		return
 	}
@@ -128,7 +128,7 @@ func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) 
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}
@@ -144,7 +144,7 @@ func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Logger.Error("failed to add post", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -152,7 +152,7 @@ func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
 	post, err := ph.usecase.AddPost(req.UserID, req.Title, req.URL, req.Message)
 	if err != nil {
 		log.Logger.Error("failed to add post", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -160,7 +160,7 @@ func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(post); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}
@@ -172,7 +172,7 @@ func (ph *postHandler) DeletePostByID(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Logger.Error("failed to convert string", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -181,7 +181,7 @@ func (ph *postHandler) DeletePostByID(w http.ResponseWriter, r *http.Request) {
 
 	if err := ph.usecase.DeletePostByID(postID); err != nil {
 		log.Logger.Error("failed to delete post by postID", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}

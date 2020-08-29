@@ -37,7 +37,7 @@ func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := uh.usecase.GetUsers()
 	if err != nil {
 		log.Logger.Error("failed to get users", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -45,7 +45,7 @@ func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(users); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}
@@ -59,7 +59,7 @@ func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Logger.Error("failed to add user", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -67,7 +67,7 @@ func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 	user, err := uh.usecase.AddUser(req.Name)
 	if err != nil {
 		log.Logger.Error("failed to add user", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -75,7 +75,7 @@ func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(user); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}
@@ -88,7 +88,7 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Logger.Error("failed to convert string", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -96,7 +96,7 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	user, err := uh.usecase.GetUserByID(userID)
 	if err != nil {
 		log.Logger.Error("failed to get user by userID", zap.Error(err))
-		w.WriteHeader(http.StatusNotFound)
+		notFoundError(w)
 
 		return
 	}
@@ -104,7 +104,7 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(user); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}

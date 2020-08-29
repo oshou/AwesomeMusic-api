@@ -39,7 +39,7 @@ func (th *tagHandler) GetTags(w http.ResponseWriter, r *http.Request) {
 	tags, err := th.usecase.GetTags()
 	if err != nil {
 		log.Logger.Error("failed to get tags", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -47,7 +47,7 @@ func (th *tagHandler) GetTags(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(tags); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}
@@ -59,7 +59,7 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Logger.Error("failed to convert string", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -67,7 +67,7 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 	tag, err := th.usecase.GetTagByID(tagID)
 	if err != nil {
 		log.Logger.Error("failed to get tag by tagID", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -75,7 +75,7 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(tag); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}
@@ -87,7 +87,7 @@ func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Logger.Error("failed to convert string", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -95,7 +95,7 @@ func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 	tags, err := th.usecase.GetTagsByPostID(postID)
 	if err != nil {
 		log.Logger.Error("failed to get tags by postID", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -103,7 +103,7 @@ func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(tags); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}
@@ -116,7 +116,7 @@ func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Logger.Error("failed to add tag", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -125,7 +125,7 @@ func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Logger.Error("failed to add tag", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -133,7 +133,7 @@ func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(tag); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}
@@ -145,7 +145,7 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Logger.Error("failed to convert string", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -155,7 +155,7 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Logger.Error("failed to convert string", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -163,7 +163,7 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 	postTag, err := th.usecase.AttachTag(postID, tagID)
 	if err != nil {
 		log.Logger.Error("failed to attach tag", zap.Error(err))
-		w.WriteHeader(http.StatusBadRequest)
+		badRequestError(w)
 
 		return
 	}
@@ -171,7 +171,7 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(postTag); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		internalServerError(w)
 
 		return
 	}

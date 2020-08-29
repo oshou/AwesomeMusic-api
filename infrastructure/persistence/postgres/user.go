@@ -56,22 +56,23 @@ func (ur *userRepository) GetByID(userID int) (*model.User, error) {
 	return &user, nil
 }
 
-func (ur *userRepository) GetByName(name string) ([]*model.User, error) {
-	var users []*model.User
+func (ur *userRepository) GetByName(name string) (*model.User, error) {
+	var user model.User
 
 	query := `SELECT
 							id,
-							name
+							name,
+							password
 						FROM
 							public.user
 						WHERE
 							name LIKE $1`
 
-	if err := ur.db.Select(&users, query, "%"+name+"%"); err != nil {
+	if err := ur.db.Get(&user, query, "%"+name+"%"); err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	return users, nil
+	return &user, nil
 }
 
 func (ur *userRepository) Add(name string) (*model.User, error) {
