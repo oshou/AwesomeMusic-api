@@ -61,6 +61,7 @@ COMMENT ON COLUMN public.tag.updated_at IS '更新日時';
 CREATE TABLE "user" (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
+    password TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(name)

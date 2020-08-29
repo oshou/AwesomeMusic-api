@@ -8,6 +8,7 @@ main
 go.sum
 
 *.log
+dumpall.sql
 .DS_Store
 credentials.json
 cred64.txt
