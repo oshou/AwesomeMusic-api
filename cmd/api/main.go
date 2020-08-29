@@ -35,18 +35,21 @@ func main() {
 	// Set Logger
 	log.Init()
 	defer log.Logger.Sync()
+	log.Logger.Info("set logger")
 
-	// Load Environment
+	// Set Environments
 	if err := godotenv.Load(); err != nil {
 		log.Logger.Fatal("failed to loading .env file", zap.Error(err))
 	}
+	log.Logger.Info("set environment")
 
-	// DB Connection
+	// Set DBConnection
 	if err := db.Init(); err != nil {
 		log.Logger.Fatal("failed to connect db", zap.Error(err))
 	}
 	defer db.Close()
 	pool := db.GetDB()
+	log.Logger.Info("set db connection")
 
 	// Session
 	sskey := os.Getenv("SESSION_SECRET_KEY")

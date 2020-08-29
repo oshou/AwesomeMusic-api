@@ -1,5 +1,6 @@
 ```plantuml
 @startuml
+actor client
 participant main
 box "UI" #LightBlue
   participant router
@@ -17,6 +18,7 @@ box "Infrastructure" #Gray
 end box
 
 main -> main: Set Environment
+main -> main: Set Logger
 main -> main: Set DBConnection
 main -> main: DI
 persistence -> repository: DI
@@ -26,10 +28,11 @@ router -> router: Set Middleware(Authentication)
 router -> router: Set Middleware(CSRF Protection)
 router -> router: Set Middleware(CORS Policy)
 router -> router: Set Middleware(Rate Limit)
-[-> router : Request
+router -> router: Set Router
+client -> router : HTTP Request
 router -> handler: Routing
 activate handler
-handler -> handler: Parse Request
+handler -> handler: Parse HTTP Request
 handler -> usecase: Call usecase
 activate usecase
 usecase -> usecase: PreTask(Transaction..etc)
@@ -54,9 +57,8 @@ usecase <-- repository:
 usecase -> usecase: PostTask(Transaction..etc)
 deactivate usecase
 handler <-- usecase:
-handler -> handler: Create Response
-router <- handler: Response
+handler -> handler: Create HTTP Response
+client <- handler: HTTP Response
 deactivate handler
-[<- router: Response
 @enduml
 ```

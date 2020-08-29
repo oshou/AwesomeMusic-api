@@ -19,9 +19,10 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.5.1 // indirect
 	go.uber.org/zap v1.15.0
-	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
-	golang.org/x/mod v0.3.0 // indirect
-	golang.org/x/tools v0.0.0-20200624225443-88f3c62a19ff // indirect
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	golang.org/x/text v0.3.3 // indirect
+	golang.org/x/tools v0.0.0-20200804234916-fec4f28ebb08 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
