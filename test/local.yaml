@@ -1,0 +1,12 @@
+---
+variables:
+  api:
+    base_url: http://host.docker.internal:8080
+    user:
+      owner:
+        id: 4
+        name: "saburou"
+        password: "saburou"
+      dummy:
+        name: "dummy"
+        password: "dummy"

@@ -6,39 +6,33 @@ GET http://localhost:8080/v1/health HTTP/1.1
 POST http://localhost:8080/v1/login HTTP/1.1
 
 {
-  "name":"sample",
-  "password":"samplepassword"
+  "name":"tarou",
+  "password":"tarou"
 }
+
+### Logout
+POST http://localhost:8080/v1/logout HTTP/1.1
 
 
 ### GetUsers
 GET http://localhost:8080/v1/users HTTP/1.1
 
-<<<<<<< HEAD:test.http
 ### GetUserByID
 GET http://localhost:8080/v1/users/1 HTTP/1.1
-=======
->>>>>>> 12ec5f16edc976c82e83ea88633e2ceb818402a8:test/test.http
 
 ### AddUser
 POST http://localhost:8080/v1/users HTTP/1.1
 
 {
-  "name":"tarou"
+  "name":"saburou",
+  "password":"saburou"
 }
-
-<<<<<<< HEAD:test.http
-
 
 ### GetPosts
 GET http://localhost:8080/v1/posts HTTP/1.1
 
 ### GetPostByID
 GET http://localhost:8080/v1/posts/1 HTTP/1.1
-=======
-### GetUserByID
-GET http://localhost:8080/v1/users/1 HTTP/1.1
->>>>>>> 12ec5f16edc976c82e83ea88633e2ceb818402a8:test/test.http
 
 ### AddPost
 POST http://localhost:8080/v1/posts HTTP/1.1
@@ -50,16 +44,6 @@ POST http://localhost:8080/v1/posts HTTP/1.1
   "message":"sample-message"
 }
 
-<<<<<<< HEAD:test.http
-=======
-### GetPosts
-GET http://localhost:8080/v1/posts HTTP/1.1
-
-
-### GetPostByID
-GET http://localhost:8080/v1/posts/1 HTTP/1.1
-
->>>>>>> 12ec5f16edc976c82e83ea88633e2ceb818402a8:test/test.http
 ### DeletePostByID
 DELETE http://localhost:8080/v1/posts/32 HTTP/1.1
 

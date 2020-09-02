@@ -1,0 +1,65 @@
+---
+test_name: Health_200
+stages:
+  - name: Health_200
+    request:
+      url: "{api.base_url}/v1/health"
+      method: GET
+    response:
+      status_code: 200
+
+---
+test_name: Login_400
+stages:
+  - name: Login_400
+    request:
+      url: "{api.base_url}/v1/login"
+      method: POST
+    response:
+      status_code: 400
+---
+test_name: Login_401
+stages:
+  - name: Login_401
+    request:
+      url: "{api.base_url}/v1/login"
+      method: POST
+      json:
+        name: "{api.user.dummy.name}"
+        password: "{api.user.dummy.password}"
+    response:
+---
+test_name: Login_200
+stages:
+  - &stage_Login_200
+    name: Login_200
+    request:
+      url: "{api.base_url}/v1/login"
+      method: POST
+      json:
+        name: "{api.user.owner.name}"
+        password: "{api.user.owner.password}"
+    response:
+      status_code: 200
+
+---
+test_name: GetUsers_200
+stages:
+  - *stage_Login_200
+  - name: GetUsers_200
+    request:
+      url: "{api.base_url}/v1/users"
+      method: GET
+    response:
+      status_code: 200
+
+---
+test_name: GetUserByID_200
+stages:
+  - *stage_Login_200
+  - name: GetUserByID_200
+    request:
+      url: "{api.base_url}/v1/users/{api.user.owner.id}"
+      method: GET
+    response:
+      status_code: 200
