@@ -8,19 +8,15 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/gorilla/sessions"
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"go.uber.org/zap"
 
-	//_ "github.com/go-sql-driver/mysql"
-
+	"github.com/oshou/AwesomeMusic-api/config"
 	"github.com/oshou/AwesomeMusic-api/db"
 	persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/postgres"
 	"github.com/oshou/AwesomeMusic-api/log"
 	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
 	"github.com/oshou/AwesomeMusic-api/ui/http/session"
-
-	//mw "github.com/oshou/AwesomeMusic-api/ui/http/middleware"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
@@ -37,18 +33,19 @@ func main() {
 	defer log.Logger.Sync()
 	log.Logger.Info("set logger")
 
-	// Set Environments
-	if err := godotenv.Load(); err != nil {
-		log.Logger.Fatal("failed to loading .env file", zap.Error(err))
+	// Set Config
+	conf, err := config.NewConfig()
+	if err != nil {
+		log.Logger.Fatal("failed to initialize config", zap.Error(err))
 	}
-	log.Logger.Info("set environment")
+	log.Logger.Info("set config")
 
 	// Set DBConnection
-	if err := db.Init(); err != nil {
-		log.Logger.Fatal("failed to connect db", zap.Error(err))
+	db, err := db.NewDB(conf)
+	if err != nil {
+		log.Logger.Fatal("failed to initialize db", zap.Error(err))
 	}
 	defer db.Close()
-	pool := db.GetDB()
 	log.Logger.Info("set db connection")
 
 	// Session
@@ -61,18 +58,18 @@ func main() {
 		HttpOnly: true,
 	}
 	ssstore, err := session.NewStore(sskey, opt)
-
 	if err != nil {
 		log.Logger.Fatal("failed to initialize session store", zap.Error(err))
 	}
+	log.Logger.Info("set session store")
 
 	// Injector
-	healthRepository := persistence.NewHealthRepository(pool)
-	userRepository := persistence.NewUserRepository(pool)
-	commentRepository := persistence.NewCommentRepository(pool)
-	postRepository := persistence.NewPostRepository(pool)
-	tagRepository := persistence.NewTagRepository(pool)
-	searchRepository := persistence.NewSearchRepository(pool)
+	healthRepository := persistence.NewHealthRepository(db.Pool)
+	userRepository := persistence.NewUserRepository(db.Pool)
+	commentRepository := persistence.NewCommentRepository(db.Pool)
+	postRepository := persistence.NewPostRepository(db.Pool)
+	tagRepository := persistence.NewTagRepository(db.Pool)
+	searchRepository := persistence.NewSearchRepository(db.Pool)
 
 	healthUsecase := usecase.NewHealthUsecase(healthRepository)
 	userUsecase := usecase.NewUserUsecase(userRepository)
@@ -95,7 +92,6 @@ func main() {
 	// Middlware
 	r.Use(
 		middleware.Logger,
-		//mw.ZapLogger(log.Logger),
 		middleware.Recoverer,
 		middleware.SetHeader("Content-Type", "application/json"),
 		middleware.Compress(httpGzipLevel, "gzip"),

@@ -2,42 +2,36 @@
 package db
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/jmoiron/sqlx"
+	"github.com/oshou/AwesomeMusic-api/config"
 	"github.com/pkg/errors"
 )
 
-var pool *sqlx.DB
+type IDB interface {
+	Close()
+}
+
+type db struct {
+	Pool *sqlx.DB
+}
+
+var _ IDB = &db{}
 
 // Init is constructor for db
-func Init() error {
-	driver := os.Getenv("DB_DRIVER")
-	dsn := fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
-	)
+func NewDB(c config.IConfig) (*db, error) {
+	dsn := c.GetDSN()
+	driver := c.GetDriver()
+	pool, err := sqlx.Open(driver, dsn)
 
-	var err error
-	pool, err = sqlx.Open(driver, dsn)
 	if err != nil {
-		return errors.WithStack(err)
+		return nil, errors.WithStack(err)
 	}
 
-	return nil
+	return &db{pool}, nil
 }
 
-func GetDB() *sqlx.DB {
-	return pool
-}
-
-func Close() {
-	if pool != nil {
-		pool.Close()
+func (db *db) Close() {
+	if db.Pool != nil {
+		db.Pool.Close()
 	}
 }

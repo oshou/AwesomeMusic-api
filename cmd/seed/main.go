@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -45,7 +46,6 @@ func main() {
 		log.Logger.Fatal("failed to connect db", zap.Error(err))
 	}
 	defer db.Close()
-	pool := db.GetDB()
 
 	run(pattern)
 }
@@ -95,49 +95,48 @@ func importCSV(path string) error {
 									DO UPDATE SET %s`
 
 	}
+
+	table := strings.TrimSuffix(filepath.Base(path), ".csv")
+
+	var pkeys []string
+	for i, v := range cols {
+		if strings.HasSuffix(v, "(PK)") {
+			cols[i] = strings.Replace(v, "(PK)", "", -1)
+			pkeys = append(pkeys, cols[i])
+		}
+	}
+	pkey := strings.Join(pkeys, ",")
+
+	var setters []string
+	for _, c := range cols {
+		setters = append(setters, fmt.Sprintf("%s = EXCLUDED.$s", c, c))
+	}
+
+	var vals []interface{}
+	for _, r := range rows {
+		for _, v := range r {
+			if v == "<NULL>" {
+				vals = append(vals, nil)
+			} else {
+				vals = append(vals, v)
+			}
+		}
+	}
+
+	err = db.With(func(conn db.Conn) error {
+		q := fmt.Sprintf(
+			sql,
+			strings.TrimSuffix(filepath.Base(path), ".csv"),
+			strings.Join(cols, ","),
+			db.BuilBulkedPlaceholders(len(cols), len(rows)),
+			pkey,
+			strings.Join(setters, ","),
+		)
+		_, err := conn.Exec(q, vals...)
+	})
+
+	if err != nil {
+		return errors.WithStack(err)
+	}
 	return nil
-
-	//table := strings.TrimSuffix(filepath.Base(path), ".csv")
-
-	//var pkeys []string
-	//for i, v := range cols {
-	//	if strings.HasSuffix(v, "(PK)") {
-	//		cols[i] = strings.Replace(v, "(PK)", "", -1)
-	//		pkeys = append(pkeys, cols[i])
-	//	}
-	//}
-	//pkey := strings.Join(pkeys, ",")
-
-	//var setters []string
-	//for _, c := range cols {
-	//	setters = append(setters, fmt.Sprintf("%s = EXCLUDED.$s", c, c))
-	//}
-
-	//var vals []interface{}
-	//for _, r := range rows {
-	//	for _, v := range r {
-	//		if v == "<NULL>" {
-	//			vals = append(vals, nil)
-	//		} else {
-	//			vals = append(vals, v)
-	//		}
-	//	}
-	//}
-
-	//err = db.With(func(conn db.Conn) error {
-	//	q := fmt.Sprintf(
-	//		sql,
-	//		strings.TrimSuffix(filepath.Base(path), ".csv"),
-	//		strings.Join(cols, ","),
-	//		db.BuilBulkedPlaceholders(len(cols), len(rows)),
-	//		pkey,
-	//		strings.Join(setters, ","),
-	//	)
-	//	_, err := conn.Exec(q, vals...)
-	//})
-
-	//if err != nil {
-	//	return errors.WithStack(err)
-	//}
-	//return nil
 }
