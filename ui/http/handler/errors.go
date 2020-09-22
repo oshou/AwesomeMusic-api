@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/oshou/AwesomeMusic-api/log"
 	"go.uber.org/zap"
+
+	"github.com/oshou/AwesomeMusic-api/log"
 )
 
 type errorResponse struct {

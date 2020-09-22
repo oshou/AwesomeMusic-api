@@ -4,9 +4,10 @@ package handler
 import (
 	"net/http"
 
+	"go.uber.org/zap"
+
 	"github.com/oshou/AwesomeMusic-api/log"
 	"github.com/oshou/AwesomeMusic-api/usecase"
-	"go.uber.org/zap"
 )
 
 // IHealthHandler is ui layer http-handler interface

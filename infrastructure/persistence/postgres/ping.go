@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/oshou/AwesomeMusic-api/domain/repository"
 	"github.com/pkg/errors"
+
+	"github.com/oshou/AwesomeMusic-api/domain/repository"
 )
 
 type healthRepository struct {

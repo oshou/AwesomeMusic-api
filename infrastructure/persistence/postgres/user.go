@@ -62,7 +62,7 @@ func (ur *userRepository) GetByName(name string) (*model.User, error) {
 	query := `SELECT
 							id,
 							name,
-							password
+							password_hash
 						FROM
 							public.user
 						WHERE
@@ -75,19 +75,19 @@ func (ur *userRepository) GetByName(name string) (*model.User, error) {
 	return &user, nil
 }
 
-func (ur *userRepository) Add(name string) (*model.User, error) {
+func (ur *userRepository) Add(name string, passwordHash []byte) (*model.User, error) {
 	u := model.User{
 		Name: name,
 	}
 
 	query := `INSERT INTO
-							public.user (name)
+							public.user(name,password_hash)
 						VALUES
-							($1)
+							($1, $2)
 						RETURNING
 							id`
 
-	err := ur.db.QueryRow(query, name).Scan(&u.ID)
+	err := ur.db.QueryRow(query, name, passwordHash).Scan(&u.ID)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

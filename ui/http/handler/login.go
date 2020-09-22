@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/oshou/AwesomeMusic-api/log"
 	"github.com/oshou/AwesomeMusic-api/ui/http/session"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
@@ -15,7 +16,7 @@ type ILoginHandler interface {
 
 type loginHandler struct {
 	usecase usecase.IUserUsecase
-	store   *session.Store
+	store   *session.IStore
 }
 
 type loginRequest struct {
@@ -25,10 +26,10 @@ type loginRequest struct {
 
 var _ ILoginHandler = &loginHandler{}
 
-func NewLoginHandler(usecase usecase.IUserUsecase, store *session.Store) ILoginHandler {
+func NewLoginHandler(usecase usecase.IUserUsecase, store session.IStore) ILoginHandler {
 	return &loginHandler{
 		usecase: usecase,
-		store:   store,
+		store:   &store,
 	}
 }
 
@@ -40,45 +41,21 @@ func (h *loginHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := h.usecase.Authenticate(req.Name, req.Password)
+	user, err := h.usecase.Authenticate(req.Name, req.Password)
 	if err != nil {
 		unauthorizedError(w)
 
 		return
 	}
 
-	if err := h.store.Save(r, w, u.ID); err != nil {
+	if err := h.store.Set(r, w, user.ID); err != nil {
 		unauthorizedError(w)
 
 		return
 	}
 
-	type (
-		role struct {
-			Name string `json:"name`
-		}
-		user struct {
-			ID   int    `json:"id,omitempty" db:"id"`
-			Name string `json:"name,omitempty" db:"name"`
-		}
-		response struct {
-			User *user `json:"user"`
-		}
-	)
-
-	resp := &response{
-		User: &user{
-			ID:   u.ID,
-			Name: u.Name,
-		},
-	}
-
-	w.WriteHeader(http.StatusOK)
-
-	if err := json.NewEncoder(w).Encode(resp); err != nil {
-		internalServerError(w)
-
-		return
+	if err := json.NewEncoder(w).Encode(user); err != nil {
+		log.Logger.Error("failed to encode json")
 	}
 }
 

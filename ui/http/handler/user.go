@@ -26,6 +26,11 @@ type userHandler struct {
 
 var _ IUserHandler = &userHandler{}
 
+type addUserRequest struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
 // NewUserHandler is constructor for userHandler
 func NewUserHandler(usecase usecase.IUserUsecase) IUserHandler {
 	return &userHandler{
@@ -53,10 +58,7 @@ func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 // Create: POST /v1/users
 func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
-	req := struct {
-		Name string `json:"name" validate:"required"`
-	}{}
-
+	req := addUserRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Logger.Error("failed to add user", zap.Error(err))
 		badRequestError(w)
@@ -64,7 +66,7 @@ func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := uh.usecase.AddUser(req.Name)
+	user, err := uh.usecase.AddUser(req.Name, req.Password)
 	if err != nil {
 		log.Logger.Error("failed to add user", zap.Error(err))
 		badRequestError(w)
