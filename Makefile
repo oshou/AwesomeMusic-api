@@ -58,6 +58,10 @@ fmt: clean
 lint: fmt $(GOPATH)/bin/golangci-lint
 	golangci-lint run
 
+apitest:
+	docker build -t tavern -f deployments/apitest/Dockerfile ./test/ \
+	&& docker run --rm tavern
+
 test: fmt
 	go test ./...
 
