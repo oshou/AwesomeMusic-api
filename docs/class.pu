@@ -16,7 +16,6 @@ package Infrastructure {
   class Persistence
 }
 package UI {
-  interface IRouter
   class Router
   class Middleware
   interface IHandler
@@ -30,8 +29,7 @@ Persistence -up-> IRepository: DI
 Usecase -right-> IUsecase: DI
 IHandler -up-> IUsecase
 Handler -right-> IHandler: DI
-Router -up-> IHandler
+Middleware -up-> IHandler
 Router -up-> Middleware
-IRouter -up-> Router
-main -up-> IRouter
+main -up-> Router
 @enduml

@@ -17,15 +17,15 @@ box "Infrastructure" #Gray
   participant persistence
 end box
 
-main -> main: Set Environment
 main -> main: Set Logger
+main -> main: Set Config
 main -> main: Set DBConnection
+main -> main: Set SessionStore
 main -> main: DI
 persistence -> repository: DI
 main -> router: Start Server
 activate router
 router -> router: Set Middleware(Authentication)
-router -> router: Set Middleware(CSRF Protection)
 router -> router: Set Middleware(CORS Policy)
 router -> router: Set Middleware(Rate Limit)
 router -> router: Set Router
