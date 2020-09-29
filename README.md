@@ -9,9 +9,9 @@ https://github.com/oshou/Portfolio
 ## 概要
 
 - Onion Architecture を参考にしています。
-- Content-Typeは、application/json
-- ポートはデフォルトで8080で受付
-- 環境変数はレポジトリ直下の.env を読み込みます。<br>
+- Content-Type: application/json
+- ポート: デフォルト8080で受付
+- 環境変数: レポジトリ直下の.env を読み込みます。<br>
   ビルド時に指定の「.env.(環境名)」を「.env」としてコピー作成いたします。<br>
   ex) cp -rp .env.local -> .env
 
@@ -42,24 +42,38 @@ make run
 ## ディレクトリ構成
 
 ```
-└── main.go                  # Entry Point
-├── injector/                # DI
-├── domain/                  # Domain Layer
-│   └── model/               # Domain Model Layer
-│   └── repository/          # Domain Service Layer
-├── usecase/                 # Application Layer
-├── ui/                      # UI Layer
-│   └── http/                # http
-│         └── middleware/    # http middleware
-│         └── handler/       # http handler
-├── infrastructure/          # Infrastructure Layer
-│   └── persistence/         # Persistence
-├── db/                      # DB Connetion
-└── Makefile                 # Task Runner
-└── go.mod                   # Go Package management
-└── go.sum                   # Go Package management
-└── .env                     # Config Environment
-└── Dockerfile               # Docker Container
+└─ .circleci                # CI config
+└─ cmd/                     # CI config
+│     └─ main.go           # Entry Point
+└─ config/                  #
+│     └─ config.go         # Config
+└─ db/                      #
+│     └─ db.go             # DB Connection
+└─ deployments/             # Dockerfiles
+│     └─ api/              #
+│     └─ apitest/          #
+│     └─ postgres/         #
+├─ docs/                    # DI
+├─ domain/                  # Domain Layer
+│     └─ model/            # Domain Model Layer
+│     └─ repository/       # Domain Service Layer
+├─ infrastructure/          # Infrastructure Layer
+│     └─ persistence/      # Persistence
+└─ log/                      #
+│     └─ logger.go             # DB Connection
+└─ test/                      #
+│     └─ test.http             # DB Connection
+│     └─ test_api.tavern.yaml  # DB Connection
+├─ ui/                      # UI Layer
+│     └─ http/                # http
+│           └─ middleware/    # http middleware
+│           └─ handler/       # http handler
+├─ usecase/                 # Application Layer
+└─ Makefile                 # Task Runner
+└─ go.mod                   # Go Package management
+└─ go.sum                   # Go Package management
+└─ .env                     # Config Environment
+└─ Dockerfile               # Docker Container
 ```
 
 ## 処理フロー
