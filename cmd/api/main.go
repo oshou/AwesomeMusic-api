@@ -48,7 +48,7 @@ func main() {
 	defer db.Close()
 	log.Logger.Info("set db connection")
 
-	// Session
+	// Set Session-Store
 	sskey := os.Getenv("SESSION_SECRET_KEY")
 	opt := &sessions.Options{
 		Path:     "/",
@@ -111,6 +111,7 @@ func main() {
 		r.Get("/health", healthHandler.Health)
 		r.Post("/login", loginHandler.Login)
 		r.Post("/logout", loginHandler.Logout)
+
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", userHandler.GetUsers)
 			r.Post("/", userHandler.AddUser)

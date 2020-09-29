@@ -61,7 +61,7 @@ COMMENT ON COLUMN public.tag.updated_at IS '更新日時';
 CREATE TABLE "user" (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
-    password TEXT NOT NULL,
+    password_hash TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(name)
@@ -69,6 +69,7 @@ CREATE TABLE "user" (
 ALTER TABLE public."user" OWNER TO root;
 COMMENT ON COLUMN public."user".id IS 'ユーザーID';
 COMMENT ON COLUMN public."user".name IS 'ユーザー名';
+COMMENT ON COLUMN public."user".password_hash IS 'パスワードハッシュ';
 COMMENT ON COLUMN public."user".created_at IS '作成日時';
 COMMENT ON COLUMN public."user".updated_at IS '更新日時';
 

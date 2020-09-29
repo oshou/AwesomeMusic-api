@@ -6,12 +6,12 @@ local:
 
 development:
   dialect: postgres
-  datasource: dbname=postgres user=postgres sslmode=disable
+  datasource: dbname=postgres user=root password=password sslmode=disable
   dir: _db/migrate
   table: migrations
 
 test:
   dialect: postgres
-  datasource: dbname=postgres_test user=postgres sslmode=disable
+  datasource: dbname=postgres_test user=root sslmode=disable
   dir: _db/migrate
   table: migrations
