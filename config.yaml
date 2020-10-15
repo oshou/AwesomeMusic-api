@@ -1,0 +1,11 @@
+db:
+  host: "localhost"
+  driver: postgres
+  port: 5432
+  user: root
+  password: password
+  dbname: postgres
+  sslmode: disable
+server:
+  port: 8080
+  timeoutsec: 10
