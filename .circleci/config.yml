@@ -88,13 +88,13 @@ jobs:
   lint_test:
     executor: default
     steps:
+      - echo_inventory
       - checkout
       - go_mod_download
       - install_make
       - install_golangci_lint
       - lint
       - test
-      - echo_inventory
 
 workflows:
   version: 2
