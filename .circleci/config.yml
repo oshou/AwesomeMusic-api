@@ -104,7 +104,7 @@ workflows:
       - lint_test:
           filters:
             tags:
-              only: ^v\d+\.\d+\.\d+$/
-            #branches:
-            #  only: feature/ci_test_dummy2
+              only: /^v\d+\.\d+\.\d+$/
+            branches:
+              only: feature/ci_test_dummy2
 #ab
