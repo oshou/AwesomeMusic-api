@@ -106,13 +106,13 @@ workflows:
               only: /^v\d+\.\d+\.\d+$/
             branches:
               only: master
-      - lint_test1:
+      - lint_test:
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
             branches:
               only: develop
-      - lint_test2:
+      - lint_test:
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
