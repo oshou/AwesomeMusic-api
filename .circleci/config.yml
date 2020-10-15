@@ -102,13 +102,17 @@ workflows:
     jobs:
       - deploy_prd:
           filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
             branches:
               only: master
-      - lint_test:
+      - lint_test1:
           filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
             branches:
               only: develop
-      - lint_test:
+      - lint_test2:
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
