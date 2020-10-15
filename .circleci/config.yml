@@ -64,7 +64,7 @@ commands:
   deploy_hub:
     steps:
       - run:
-          name: Deploy Docker Registry
+          name: Deploy  Docker Registry
           command: make deploy_hub
 
 jobs:
