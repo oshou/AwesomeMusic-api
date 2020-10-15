@@ -103,5 +103,5 @@ workflows:
               only: develop
       - lint_test:
           filters:
-            branches:
-              only: feature/ci_test
+            tags:
+              only: ^v\d+\.\d+\.\d+$/
