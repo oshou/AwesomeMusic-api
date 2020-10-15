@@ -8,9 +8,12 @@ commands:
   echo_inventory:
     steps:
       - run: |
-          echo "circle_tag: ${CIRCLE_TAG}"
-          echo "circle_branch: ${CIRCLE_BRANCH}"
-          echo "circle_sha1: ${CIRCLE_BRANCH}"
+          echo "TAG"
+          echo ${CIRCLE_TAG}
+          echo "BRANCH"
+          echo ${CIRCLE_BRANCH}
+          echo "SHA1"
+          echo ${CIRCLE_SHA1}
   install_gcloud_sdk:
     steps:
       - run: |
@@ -118,4 +121,3 @@ workflows:
               only: /^v\d+\.\d+\.\d+$/
             branches:
               only: feature/ci_test_dummy2
-#abcd
