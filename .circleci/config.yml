@@ -13,7 +13,7 @@ commands:
           echo "BRANCH"
           $BRANCH_NAME=$CIRCLE_BRANCH
           if [ -n $CIRCLE_BRANCH ]; then
-            $CIRCLE_BRANCH=none
+            $BRANCH_NAME=none
           fi
           echo "${BRANCH_NAME}_${CIRCLE_SHA1}_${CIRCLE_TAG}"
   install_gcloud_sdk:
