@@ -11,9 +11,9 @@ commands:
           echo "TAG"
           echo $CIRCLE_TAG
           echo "BRANCH"
-          $BRANCH_NAME=$CIRCLE_BRANCH
+          BRANCH_NAME=$CIRCLE_BRANCH
           if [ -n $CIRCLE_BRANCH ]; then
-            $BRANCH_NAME=none
+            BRANCH_NAME=none
           fi
           echo "${BRANCH_NAME}_${CIRCLE_SHA1}_${CIRCLE_TAG}"
   install_gcloud_sdk:
