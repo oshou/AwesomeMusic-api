@@ -9,11 +9,11 @@ commands:
     steps:
       - run: |
           echo "TAG"
-          echo ${CIRCLE_TAG}
+          echo $CIRCLE_TAG
           echo "BRANCH"
-          echo ${CIRCLE_BRANCH}
+          echo $CIRCLE_BRANCH
           echo "SHA1"
-          echo ${CIRCLE_SHA1}
+          echo $CIRCLE_SHA1
   install_gcloud_sdk:
     steps:
       - run: |
