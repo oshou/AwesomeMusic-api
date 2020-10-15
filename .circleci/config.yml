@@ -106,4 +106,4 @@ workflows:
             tags:
               only: ^v\d+\.\d+\.\d+$/
             branches:
-              only: feature/ci_test_dummy
+              only: feature/ci_test_dummy2
