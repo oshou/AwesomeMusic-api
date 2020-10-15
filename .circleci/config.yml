@@ -5,6 +5,12 @@ executors:
     docker:
       - image: circleci/golang:latest
 commands:
+  echo_inventory:
+    steps:
+      - run: |
+          echo "circle_tag: ${CIRCLE_TAG}"
+          echo "circle_branch: ${CIRCLE_BRANCH}"
+          echo "circle_sha1: ${CIRCLE_BRANCH}"
   install_gcloud_sdk:
     steps:
       - run: |
@@ -88,6 +94,7 @@ jobs:
       - install_golangci_lint
       - lint
       - test
+      - echo_inventory
 
 workflows:
   version: 2
