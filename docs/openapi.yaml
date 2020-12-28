@@ -10,24 +10,32 @@ schemes:
   - https
 definitions: {}
 security: []
-host: localhost
 paths:
   /v1/health:
     get:
       summary: ヘルスチェック
-      operationId: V1Health
+      operationId: V1GetHealth
       tags:
-        - /v1/health
+        - /health
       parameters: []
       responses:
         "200":
           description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: pass
+              version:
+                type: string
+                example: v1.0.0
   /v1/users:
     get:
       summary: ユーザー一覧
       operationId: V1GetUsers
       tags:
-        - /v1/users
+        - /users
       responses:
         "200":
           description: OK
@@ -423,8 +431,8 @@ responses:
         msg: システム内部エラーが発生しました。
 
 tags:
-  - name: /v1/health
-  - name: /v1/users
-  - name: /v1/posts
-  - name: /v1/tags
-  - name: /v1/search
+  - name: /health
+  - name: /users
+  - name: /posts
+  - name: /tags
+  - name: /search

@@ -2,13 +2,20 @@
 left to right direction
 :APIClient:
 rectangle User {
-  APIClient --> (Get Users)
+  APIClient --> (Login)
+  APIClient --> (Logout)
+  APIClient --> (List Users)
   APIClient --> (Get User by ID)
   APIClient --> (Add User)
 }
 rectangle Post {
-  APIClient --> (Get PostList)
-  APIClient --> (Get PostLista)
+  APIClient --> (List Posts)
   APIClient --> (Add Post)
+  APIClient --> (Add PostComment)
+  APIClient --> (List PostComment)
+}
+rectangle Tag {
+  APIClient --> (List Tags)
+  APIClient --> (Add Tag)
 }
 @enduml
