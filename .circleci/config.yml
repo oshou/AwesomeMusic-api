@@ -8,14 +8,11 @@ commands:
   echo_inventory:
     steps:
       - run: |
-          echo "TAG"
-          echo $CIRCLE_TAG
-          echo "BRANCH"
           BRANCH_NAME=$CIRCLE_BRANCH
           if [ -n $CIRCLE_BRANCH ]; then
             BRANCH_NAME=none
           fi
-          echo "${BRANCH_NAME}_${CIRCLE_SHA1}_${CIRCLE_TAG}"
+          echo "${CIRCLE_TAG}_${CIRCLE_SHA1}_${CIRCLE_TAG}"
   install_gcloud_sdk:
     steps:
       - run: |
@@ -75,7 +72,7 @@ commands:
   deploy_hub:
     steps:
       - run:
-          name: Deploy   Docker Registry
+          name: Deploy Docker Registry
           command: make deploy_hub
 
 jobs:
@@ -89,6 +86,7 @@ jobs:
       - install_gcloud_sdk
       - setup_remote_docker
       - auth_gcp
+      -
       - deploy_hub
   lint_test:
     executor: default
@@ -109,14 +107,14 @@ workflows:
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
-            branches:
-              only: master
       - lint_test:
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
             branches:
-              only: develop
+              only:
+                - develop
+                - master
       - lint_test:
           filters:
             tags:
