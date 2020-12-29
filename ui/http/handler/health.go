@@ -12,7 +12,7 @@ import (
 
 // IHealthHandler is ui layer http-handler interface
 type IHealthHandler interface {
-	Health(w http.ResponseWriter, r *http.Request)
+	GetHealth(w http.ResponseWriter, r *http.Request)
 }
 
 type healthHandler struct {
@@ -28,9 +28,9 @@ func NewHealthHandler(u usecase.IHealthUsecase) IHealthHandler {
 	}
 }
 
-func (hu healthHandler) Health(w http.ResponseWriter, r *http.Request) {
+func (hu healthHandler) GetHealth(w http.ResponseWriter, r *http.Request) {
 	if err := hu.usecase.GetHealth(); err != nil {
-		log.Logger.Error("failed to get health", zap.Error(err))
+		log.Logger.Error("failed to get health.", zap.Error(err))
 		internalServerError(w)
 
 		return
