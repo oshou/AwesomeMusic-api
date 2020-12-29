@@ -30,7 +30,7 @@ func NewZapLogEntry(logger *zap.Logger, fields []zapcore.Field) *ZapLogEntry {
 
 func (l *ZapLogEntry) Write(status, bytes int, header http.Header, elapsed time.Duration, extra interface{}) {
 	l.logger.With(l.fields...).Info(
-		"http-request done",
+		"http request",
 		zap.Int("http.code", status),
 		zap.Int("http.size", bytes),
 		zap.Float32("http.time_ms", float32(elapsed.Nanoseconds()/1000)/1000),

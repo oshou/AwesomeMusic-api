@@ -84,7 +84,7 @@ func main() {
 	searchUsecase := usecase.NewSearchUsecase(searchRepository)
 
 	healthHandler := handler.NewHealthHandler(healthUsecase)
-	loginHandler := handler.NewLoginHandler(userUsecase, store)
+	authHandler := handler.NewAuthHandler(userUsecase, store)
 	userHandler := handler.NewUserHandler(userUsecase)
 	commentHandler := handler.NewCommentHandler(commentUsecase)
 	postHandler := handler.NewPostHandler(postUsecase)
@@ -116,8 +116,8 @@ func main() {
 	// Routing
 	r.Route("/v1", func(r chi.Router) {
 		r.Get("/health", healthHandler.GetHealth)
-		r.Post("/login", loginHandler.Login)
-		r.Post("/logout", loginHandler.Logout)
+		r.Post("/login", authHandler.Login)
+		r.Post("/logout", authHandler.Logout)
 
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", userHandler.GetUsers)
