@@ -10,6 +10,7 @@ schemes:
   - https
 definitions: {}
 security: []
+host: localhost
 paths:
   /v1/health:
     get:

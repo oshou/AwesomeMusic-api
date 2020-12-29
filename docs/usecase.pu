@@ -1,21 +1,33 @@
 @startuml
 left to right direction
-:APIClient:
-rectangle User {
-  APIClient --> (Login)
-  APIClient --> (Logout)
-  APIClient --> (List Users)
-  APIClient --> (Get User by ID)
-  APIClient --> (Add User)
-}
-rectangle Post {
-  APIClient --> (List Posts)
-  APIClient --> (Add Post)
-  APIClient --> (Add PostComment)
-  APIClient --> (List PostComment)
-}
-rectangle Tag {
-  APIClient --> (List Tags)
-  APIClient --> (Add Tag)
+:アプリユーザ:
+:アプリ管理者:
+package AwesomeMusic-api {
+  rectangle ユーザー管理機能 {
+    アプリユーザ --> (ログイン)
+    アプリユーザ --> (ログアウト)
+    アプリ管理者 --> (ヘルスチェック)
+    アプリ管理者 --> (ログイン)
+    アプリ管理者 --> (ログアウト)
+    アプリ管理者 --> (ユーザー一覧)
+    アプリ管理者 --> (ユーザーIDで検索)
+    アプリ管理者 --> (ユーザー追加)
+    アプリ管理者 --> (ユーザー更新)
+    アプリ管理者 --> (ユーザー削除)
+  }
+  rectangle 投稿機能 {
+    アプリユーザ --> (投稿一覧)
+    アプリユーザ --> (投稿追加)
+    アプリユーザ --> (特定投稿の削除)
+    アプリユーザ --> (特定投稿のタグ一覧)
+    アプリユーザ --> (特定投稿のタグ追加)
+    アプリユーザ --> (特定投稿のコメント一覧)
+    アプリユーザ --> (特定投稿のコメント追加)
+  }
+  rectangle 検索機能 {
+    アプリユーザ --> (投稿名での投稿検索)
+    アプリユーザ --> (ユーザ名での投稿検索)
+    アプリユーザ --> (タグ名での投稿検索)
+  }
 }
 @enduml
