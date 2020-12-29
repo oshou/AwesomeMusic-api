@@ -3,9 +3,10 @@ package mysql
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
+
 	"github.com/oshou/AwesomeMusic-api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/domain/repository"
-	"github.com/pkg/errors"
 )
 
 type userRepository struct {

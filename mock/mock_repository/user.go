@@ -5,9 +5,11 @@
 package mock_repository
 
 import (
-	gomock "github.com/golang/mock/gomock"
-	model "github.com/oshou/AwesomeMusic-api/domain/model"
 	reflect "reflect"
+
+	gomock "github.com/golang/mock/gomock"
+
+	model "github.com/oshou/AwesomeMusic-api/domain/model"
 )
 
 // MockIUserRepository is a mock of IUserRepository interface

@@ -1,7 +1,9 @@
 // Package repository is domain-service
 package repository
 
-import "github.com/oshou/AwesomeMusic-api/domain/model"
+import (
+	"github.com/oshou/AwesomeMusic-api/domain/model"
+)
 
 // ISearchRepository is Domain-access interface for Post
 type ISearchRepository interface {

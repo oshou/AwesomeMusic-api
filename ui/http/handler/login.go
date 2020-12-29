@@ -4,10 +4,17 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/sessions"
+	"go.uber.org/zap"
+
 	"github.com/oshou/AwesomeMusic-api/log"
-	"github.com/oshou/AwesomeMusic-api/ui/http/session"
 	"github.com/oshou/AwesomeMusic-api/usecase"
 )
+
+type loginRequest struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
 
 type ILoginHandler interface {
 	Login(w http.ResponseWriter, r *http.Request)

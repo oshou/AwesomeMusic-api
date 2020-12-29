@@ -1,7 +1,9 @@
 // Package repository is domain-service
 package repository
 
-import "github.com/oshou/AwesomeMusic-api/domain/model"
+import (
+	"github.com/oshou/AwesomeMusic-api/domain/model"
+)
 
 // ICommentRepository is Domain-access interface for Comment
 type ICommentRepository interface {

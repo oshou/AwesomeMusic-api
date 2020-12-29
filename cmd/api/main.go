@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -16,8 +20,9 @@ import (
 	persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/postgres"
 	"github.com/oshou/AwesomeMusic-api/log"
 	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
-	"github.com/oshou/AwesomeMusic-api/ui/http/session"
+	mw "github.com/oshou/AwesomeMusic-api/ui/http/middleware"
 	"github.com/oshou/AwesomeMusic-api/usecase"
+	//session "github.com/oshou/AwesomeMusic-api/ui/http/session"
 )
 
 const (
@@ -50,16 +55,16 @@ func main() {
 
 	// Set Session-Store
 	sskey := os.Getenv("SESSION_SECRET_KEY")
-	opt := &sessions.Options{
+	store := sessions.NewCookieStore([]byte(sskey))
+	if err != nil {
+		log.Logger.Fatal("failed to initialize session store", zap.Error(err))
+	}
+	store.Options = &sessions.Options{
 		Path:     "/",
 		Domain:   os.Getenv("COOKIE_DOMAIN"),
 		MaxAge:   60 * 60 * 1,
 		Secure:   false,
 		HttpOnly: true,
-	}
-	ssstore, err := session.NewStore(sskey, opt)
-	if err != nil {
-		log.Logger.Fatal("failed to initialize session store", zap.Error(err))
 	}
 	log.Logger.Info("set session store")
 
@@ -79,7 +84,7 @@ func main() {
 	searchUsecase := usecase.NewSearchUsecase(searchRepository)
 
 	healthHandler := handler.NewHealthHandler(healthUsecase)
-	loginHandler := handler.NewLoginHandler(userUsecase, ssstore)
+	loginHandler := handler.NewLoginHandler(userUsecase, store)
 	userHandler := handler.NewUserHandler(userUsecase)
 	commentHandler := handler.NewCommentHandler(commentUsecase)
 	postHandler := handler.NewPostHandler(postUsecase)
@@ -91,7 +96,9 @@ func main() {
 
 	// Middlware
 	r.Use(
-		middleware.Logger,
+		mw.ZapLogger(log.Logger),
+		middleware.RequestID,
+		middleware.StripSlashes,
 		middleware.Recoverer,
 		middleware.SetHeader("Content-Type", "application/json"),
 		middleware.Compress(httpGzipLevel, "gzip"),
@@ -108,7 +115,7 @@ func main() {
 
 	// Routing
 	r.Route("/v1", func(r chi.Router) {
-		r.Get("/health", healthHandler.Health)
+		r.Get("/health", healthHandler.GetHealth)
 		r.Post("/login", loginHandler.Login)
 		r.Post("/logout", loginHandler.Logout)
 
@@ -149,8 +156,22 @@ func main() {
 		Handler: r,
 	}
 
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Logger.Error("failed to listen server", zap.Error(err))
+			os.Exit(1)
+		}
+	}()
 	log.Logger.Info("start server")
-	if err := srv.ListenAndServe(); err != nil {
-		log.Logger.Fatal("failed to start server", zap.Error(err))
+
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGTERM, os.Interrupt)
+	<-sigCh
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Logger.Error("err", zap.Error(err))
 	}
+	log.Logger.Info("shutdown server")
 }

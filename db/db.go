@@ -3,8 +3,9 @@ package db
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/oshou/AwesomeMusic-api/config"
 	"github.com/pkg/errors"
+
+	"github.com/oshou/AwesomeMusic-api/config"
 )
 
 type IDB interface {

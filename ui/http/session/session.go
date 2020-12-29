@@ -7,10 +7,11 @@ import (
 	"time"
 
 	"github.com/gorilla/sessions"
-	"github.com/oshou/AwesomeMusic-api/log"
 	cache "github.com/patrickmn/go-cache"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+
+	"github.com/oshou/AwesomeMusic-api/log"
 )
 
 const (
