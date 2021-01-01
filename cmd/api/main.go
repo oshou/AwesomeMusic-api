@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/antonlindstrom/pgstore"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
@@ -55,10 +56,12 @@ func main() {
 
 	// Set Session-Store
 	sskey := os.Getenv("SESSION_SECRET_KEY")
-	store := sessions.NewCookieStore([]byte(sskey))
+	dsn := conf.GetDSN()
+	store, err := pgstore.NewPGStore(dsn, []byte(sskey))
 	if err != nil {
 		log.Logger.Fatal("failed to initialize session store", zap.Error(err))
 	}
+	defer store.Close()
 	store.Options = &sessions.Options{
 		Path:     "/",
 		Domain:   os.Getenv("COOKIE_DOMAIN"),
