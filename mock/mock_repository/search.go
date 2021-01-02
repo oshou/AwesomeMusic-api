@@ -9,7 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 
-	model "github.com/oshou/AwesomeMusic-api/domain/model"
+	model "github.com/oshou/AwesomeMusic-api/api/domain/model"
 )
 
 // MockISearchRepository is a mock of ISearchRepository interface

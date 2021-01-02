@@ -37,7 +37,7 @@ var _ IConfig = &config{}
 
 func NewConfig() (IConfig, error) {
 	conf := &config{}
-	if err := configor.Load(conf, "./config.yaml"); err != nil {
+	if err := configor.Load(conf, "./config/config.yml"); err != nil {
 		return nil, err
 	}
 

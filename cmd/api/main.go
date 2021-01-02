@@ -16,14 +16,13 @@ import (
 	_ "github.com/lib/pq"
 	"go.uber.org/zap"
 
+	"github.com/oshou/AwesomeMusic-api/api/handler"
+	persistence "github.com/oshou/AwesomeMusic-api/api/infrastructure/persistence/postgres"
+	mw "github.com/oshou/AwesomeMusic-api/api/middleware"
+	"github.com/oshou/AwesomeMusic-api/api/usecase"
 	"github.com/oshou/AwesomeMusic-api/config"
 	"github.com/oshou/AwesomeMusic-api/db"
-	persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/postgres"
 	"github.com/oshou/AwesomeMusic-api/log"
-	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
-	mw "github.com/oshou/AwesomeMusic-api/ui/http/middleware"
-	"github.com/oshou/AwesomeMusic-api/usecase"
-	//session "github.com/oshou/AwesomeMusic-api/ui/http/session"
 )
 
 const (
