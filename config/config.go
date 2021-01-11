@@ -35,9 +35,9 @@ type Server struct {
 
 var _ IConfig = &config{}
 
-func NewConfig() (IConfig, error) {
+func NewConfig(filePath string) (IConfig, error) {
 	conf := &config{}
-	if err := configor.Load(conf, "./config/config.yml"); err != nil {
+	if err := configor.Load(conf, filePath); err != nil {
 		return nil, err
 	}
 

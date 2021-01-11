@@ -30,6 +30,7 @@ const (
 	httpTimeoutSecond = 60
 	httpPortString    = ":8080"
 	corsMaxAgeSecond  = 300
+	filePath          = "./config/config.yml"
 )
 
 func main() {
@@ -39,7 +40,7 @@ func main() {
 	log.Logger.Info("set logger")
 
 	// Set Config
-	conf, err := config.NewConfig()
+	conf, err := config.NewConfig(filePath)
 	if err != nil {
 		log.Logger.Fatal("failed to initialize config", zap.Error(err))
 	}
