@@ -86,7 +86,7 @@ func (h *authHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	session, err := h.store.Get(r, sessionKey)
 	if err != nil || session.ID == "" {
 		log.Logger.Error("failed to get session.", zap.Error(err))
-		unauthorizedError(w)
+		badRequestError(w)
 
 		return
 	}
@@ -98,4 +98,6 @@ func (h *authHandler) Logout(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
 }

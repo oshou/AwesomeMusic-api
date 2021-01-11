@@ -60,7 +60,6 @@ func main() {
 	if err != nil {
 		log.Logger.Fatal("failed to initialize session store", zap.Error(err))
 	}
-	defer store.Close()
 	store.Options = &sessions.Options{
 		Path:     "/",
 		Domain:   os.Getenv("COOKIE_DOMAIN"),
@@ -68,6 +67,8 @@ func main() {
 		Secure:   false,
 		HttpOnly: true,
 	}
+	defer store.Close()
+	defer store.StopCleanup(store.Cleanup(time.Minute * 5))
 	log.Logger.Info("set session store")
 
 	// Injector
