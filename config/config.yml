@@ -2,7 +2,7 @@ db:
   host: 127.0.0.1
   driver: postgres
   port: 5432
-  user: root
+  user: postgres
   password: password
   dbname: postgres
   sslmode: disable
