@@ -17,8 +17,14 @@ https://github.com/oshou/Portfolio
 ## API ドキュメント
 
 ```bash
-$ make gendoc
+$ make apidoc
 $ open http://localhost:10080
+```
+
+## ER 図
+
+```bash
+$ make dbdoc
 ```
 
 ## ディレクトリ構成
@@ -58,14 +64,6 @@ $ open http://localhost:10080
 └─ Dockerfile               # Docker Container
 ```
 
-## 処理フロー
-
-![sequence](https://github.com/oshou/AwesomeMusic-api/blob/img/out/docs/sequence/sequence.png)
-
-## クラス構成(のようなもの)
-
-![class](https://github.com/oshou/AwesomeMusic-api/blob/img/out/docs/class/class.png)
-
 ## Quick Start
 
 ```bash
@@ -77,3 +75,11 @@ $ vim .env.local
 # APIサーバ起動
 $ make run
 ```
+
+## 処理フロー
+
+![sequence](https://github.com/oshou/AwesomeMusic-api/blob/img/out/docs/sequence/sequence.png)
+
+## クラス構成(のようなもの)
+
+![class](https://github.com/oshou/AwesomeMusic-api/blob/img/out/docs/class/class.png)

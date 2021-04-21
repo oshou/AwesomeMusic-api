@@ -21,15 +21,29 @@ $(GOPATH)/bin/golangci-lint:
 $(GOPATH)/bin/gotests:
 	go get -u github.com/cweill/gotests/...
 
-gendoc:
-	docker run -it --rm -p 10080:80 \
+pg_local:
+	cp -rp .env.local .env
+	docker run -d --rm \
+	  --name postgres \
+    -p 5432:5432 \
+    -e POSTGRES_DB=postgres \
+    -e POSTGRES_HOST_AUTH_METHOD=trust \
+		postgres:12-alpine
+
+apidoc:
+	docker run --rm \
+	  --name apidoc \
+		-p 10080:80 \
 		-v $(shell pwd)/docs/:/usr/share/nginx/html/openapi/ \
 		-e SPEC_URL=openapi/openapi.yaml \
 		redocly/redoc
 
-pg_local:
-	cp -rp .env.local .env
-	docker-compose -f deployments/postgres/docker-compose.yml up -d
+dbdoc:
+	docker run --rm \
+	  --name dbdoc \
+		-v $(PWD):/work \
+		--network=host \
+		k1low/tbls doc postgres://postgres:postgres@localhost/postgres?sslmode=disable
 
 migrate: $(GOPATH)/bin/sql-migrate
 	sql-migrate up -config=_db/config.yaml
