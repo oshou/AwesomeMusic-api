@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"net/http"
 	"os"
 	"os/signal"
@@ -33,20 +34,27 @@ const (
 	filePath          = "./config/config.yml"
 )
 
+var (
+	port                 string = "8080"
+	sessionClearInterval int    = 5
+)
+
 func main() {
-	// Set Logger
+	// Logger
 	log.Init()
 	defer log.Logger.Sync()
 	log.Logger.Info("set logger")
 
-	// Set Config
+	flag.StringVar(&port, "port", httpPortString, "tcp host:port to connect")
+
+	// Config
 	conf, err := config.NewConfig(filePath)
 	if err != nil {
 		log.Logger.Fatal("failed to initialize config", zap.Error(err))
 	}
 	log.Logger.Info("set config")
 
-	// Set DBConnection
+	// DBConnection
 	db, err := db.NewDB(conf)
 	if err != nil {
 		log.Logger.Fatal("failed to initialize db", zap.Error(err))
@@ -54,13 +62,15 @@ func main() {
 	defer db.Close()
 	log.Logger.Info("set db connection")
 
-	// Set Session-Store
+	// Session-Store
 	sskey := os.Getenv("SESSION_SECRET_KEY")
 	dsn := conf.GetDSN()
 	store, err := pgstore.NewPGStore(dsn, []byte(sskey))
+
 	if err != nil {
 		log.Logger.Fatal("failed to initialize session store", zap.Error(err))
 	}
+
 	store.Options = &sessions.Options{
 		Path:     "/",
 		Domain:   os.Getenv("COOKIE_DOMAIN"),
@@ -69,7 +79,7 @@ func main() {
 		HttpOnly: true,
 	}
 	defer store.Close()
-	defer store.StopCleanup(store.Cleanup(time.Minute * 5))
+	defer store.StopCleanup(store.Cleanup(time.Duration(sessionClearInterval) * time.Minute))
 	log.Logger.Info("set session store")
 
 	// Injector
@@ -156,7 +166,7 @@ func main() {
 	})
 
 	srv := &http.Server{
-		Addr:    httpPortString,
+		Addr:    port,
 		Handler: r,
 	}
 

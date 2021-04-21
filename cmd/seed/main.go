@@ -35,6 +35,7 @@ func main() {
 	// Set Logger
 	log.Init()
 	defer log.Logger.Sync()
+	log.Logger.Info("set logger")
 
 	// Load Environment
 	if err := godotenv.Load(); err != nil {
@@ -42,10 +43,12 @@ func main() {
 	}
 
 	// DB Connection
-	if err := db.Init(); err != nil {
-		log.Logger.Fatal("failed to connect db", zap.Error(err))
+	db, err := db.NewDB(conf)
+	if err != nil {
+		log.Logger.Fatal("failed to initialize db", zap.Error(err))
 	}
 	defer db.Close()
+	log.Logger.Info("set db connection")
 
 	run(pattern)
 }

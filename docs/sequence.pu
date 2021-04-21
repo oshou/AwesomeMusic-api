@@ -58,7 +58,7 @@ usecase -> usecase: PostTask(Transaction..etc)
 deactivate usecase
 handler <-- usecase:
 handler -> handler: Create HTTP Response
-client <- handler: HTTP Response
+client <-- handler: HTTP Response
 deactivate handler
 @enduml
 ```
