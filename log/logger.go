@@ -7,7 +7,9 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var Logger *zap.Logger
+var (
+	Logger *zap.Logger
+)
 
 // Init is constructor for logger
 func Init() {

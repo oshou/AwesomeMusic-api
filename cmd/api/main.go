@@ -1,9 +1,15 @@
 package main
 
 import (
+	"context"
+	"flag"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
+	"github.com/antonlindstrom/pgstore"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
@@ -11,13 +17,13 @@ import (
 	_ "github.com/lib/pq"
 	"go.uber.org/zap"
 
+	"github.com/oshou/AwesomeMusic-api/api/handler"
+	persistence "github.com/oshou/AwesomeMusic-api/api/infrastructure/persistence/postgres"
+	mw "github.com/oshou/AwesomeMusic-api/api/middleware"
+	"github.com/oshou/AwesomeMusic-api/api/usecase"
 	"github.com/oshou/AwesomeMusic-api/config"
 	"github.com/oshou/AwesomeMusic-api/db"
-	persistence "github.com/oshou/AwesomeMusic-api/infrastructure/persistence/postgres"
 	"github.com/oshou/AwesomeMusic-api/log"
-	"github.com/oshou/AwesomeMusic-api/ui/http/handler"
-	"github.com/oshou/AwesomeMusic-api/ui/http/session"
-	"github.com/oshou/AwesomeMusic-api/usecase"
 )
 
 const (
@@ -25,22 +31,30 @@ const (
 	httpTimeoutSecond = 60
 	httpPortString    = ":8080"
 	corsMaxAgeSecond  = 300
+	filePath          = "./config/config.yml"
+)
+
+var (
+	port                 string = "8080"
+	sessionClearInterval int    = 5
 )
 
 func main() {
-	// Set Logger
+	// Logger
 	log.Init()
 	defer log.Logger.Sync()
 	log.Logger.Info("set logger")
 
-	// Set Config
-	conf, err := config.NewConfig()
+	flag.StringVar(&port, "port", httpPortString, "tcp host:port to connect")
+
+	// Config
+	conf, err := config.NewConfig(filePath)
 	if err != nil {
 		log.Logger.Fatal("failed to initialize config", zap.Error(err))
 	}
 	log.Logger.Info("set config")
 
-	// Set DBConnection
+	// DBConnection
 	db, err := db.NewDB(conf)
 	if err != nil {
 		log.Logger.Fatal("failed to initialize db", zap.Error(err))
@@ -48,19 +62,24 @@ func main() {
 	defer db.Close()
 	log.Logger.Info("set db connection")
 
-	// Set Session-Store
+	// Session-Store
 	sskey := os.Getenv("SESSION_SECRET_KEY")
-	opt := &sessions.Options{
+	dsn := conf.GetDSN()
+	store, err := pgstore.NewPGStore(dsn, []byte(sskey))
+
+	if err != nil {
+		log.Logger.Fatal("failed to initialize session store", zap.Error(err))
+	}
+
+	store.Options = &sessions.Options{
 		Path:     "/",
 		Domain:   os.Getenv("COOKIE_DOMAIN"),
 		MaxAge:   60 * 60 * 1,
 		Secure:   false,
 		HttpOnly: true,
 	}
-	ssstore, err := session.NewStore(sskey, opt)
-	if err != nil {
-		log.Logger.Fatal("failed to initialize session store", zap.Error(err))
-	}
+	defer store.Close()
+	defer store.StopCleanup(store.Cleanup(time.Duration(sessionClearInterval) * time.Minute))
 	log.Logger.Info("set session store")
 
 	// Injector
@@ -79,7 +98,7 @@ func main() {
 	searchUsecase := usecase.NewSearchUsecase(searchRepository)
 
 	healthHandler := handler.NewHealthHandler(healthUsecase)
-	loginHandler := handler.NewLoginHandler(userUsecase, ssstore)
+	authHandler := handler.NewAuthHandler(userUsecase, store)
 	userHandler := handler.NewUserHandler(userUsecase)
 	commentHandler := handler.NewCommentHandler(commentUsecase)
 	postHandler := handler.NewPostHandler(postUsecase)
@@ -91,7 +110,9 @@ func main() {
 
 	// Middlware
 	r.Use(
-		middleware.Logger,
+		mw.ZapLogger(log.Logger),
+		middleware.RequestID,
+		middleware.StripSlashes,
 		middleware.Recoverer,
 		middleware.SetHeader("Content-Type", "application/json"),
 		middleware.Compress(httpGzipLevel, "gzip"),
@@ -108,9 +129,9 @@ func main() {
 
 	// Routing
 	r.Route("/v1", func(r chi.Router) {
-		r.Get("/health", healthHandler.Health)
-		r.Post("/login", loginHandler.Login)
-		r.Post("/logout", loginHandler.Logout)
+		r.Get("/health", healthHandler.GetHealth)
+		r.Post("/login", authHandler.Login)
+		r.Post("/logout", authHandler.Logout)
 
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", userHandler.GetUsers)
@@ -145,12 +166,26 @@ func main() {
 	})
 
 	srv := &http.Server{
-		Addr:    httpPortString,
+		Addr:    port,
 		Handler: r,
 	}
 
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Logger.Error("failed to listen server", zap.Error(err))
+			os.Exit(1)
+		}
+	}()
 	log.Logger.Info("start server")
-	if err := srv.ListenAndServe(); err != nil {
-		log.Logger.Fatal("failed to start server", zap.Error(err))
+
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGTERM, os.Interrupt)
+	<-sigCh
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Logger.Error("err", zap.Error(err))
 	}
+	log.Logger.Info("shutdown server")
 }

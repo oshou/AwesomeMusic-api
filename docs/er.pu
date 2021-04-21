@@ -1,0 +1,54 @@
+@startuml
+
+entity user {
+  + id [PK]
+  --
+  name
+  password_hash
+  created_at
+  updated_at
+}
+
+entity post {
+  + id [PK]
+  --
+  # user_id [FK]
+  title
+  url
+  message
+  created_at
+  updated_at
+}
+
+entity post_tag {
+  # post_id [FK]
+  # tag_id [FK]
+}
+
+entity tag {
+  + id [PK]
+  --
+  name
+  created_at
+  updated_at
+}
+
+entity comment {
+  + id [PK]
+  --
+  # post_id [FK]
+  # user_id [FK]
+  comment
+  created_at
+  updated_at
+}
+
+user --o{ post
+
+post --o{ comment
+user --o{ comment
+
+post --o{ post_tag
+tag --o{ post_tag
+
+@enduml
