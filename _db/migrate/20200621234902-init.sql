@@ -8,7 +8,7 @@ CREATE TABLE comment (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-ALTER TABLE public.comment OWNER TO root;
+ALTER TABLE public.comment OWNER TO postgres;
 COMMENT ON COLUMN public.comment.id IS 'コメントID';
 COMMENT ON COLUMN public.comment.user_id IS 'ユーザーID';
 COMMENT ON COLUMN public.comment.post_id IS '投稿ID';
@@ -25,7 +25,7 @@ CREATE TABLE post (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-ALTER TABLE public.post OWNER TO root;
+ALTER TABLE public.post OWNER TO postgres;
 COMMENT ON COLUMN public.post.id IS '投稿ID';
 COMMENT ON COLUMN public.post.user_id IS 'ユーザーID';
 COMMENT ON COLUMN public.post.title IS '投稿タイトル';
@@ -39,7 +39,7 @@ CREATE TABLE public.post_tag (
     post_id bigint NOT NULL,
     tag_id bigint NOT NULL
 );
-ALTER TABLE post_tag OWNER TO root;
+ALTER TABLE post_tag OWNER TO postgres;
 COMMENT ON COLUMN public.post_tag.post_id IS '投稿ID';
 COMMENT ON COLUMN public.post_tag.tag_id IS 'タグID';
 
@@ -51,7 +51,7 @@ CREATE TABLE tag (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(name)
 );
-ALTER TABLE public.tag OWNER TO root;
+ALTER TABLE public.tag OWNER TO postgres;
 COMMENT ON COLUMN public.tag.id IS 'タグID';
 COMMENT ON COLUMN public.tag.name IS 'タグ名';
 COMMENT ON COLUMN public.tag.created_at IS '作成日時';
@@ -66,7 +66,7 @@ CREATE TABLE "user" (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(name)
 );
-ALTER TABLE public."user" OWNER TO root;
+ALTER TABLE public."user" OWNER TO postgres;
 COMMENT ON COLUMN public."user".id IS 'ユーザーID';
 COMMENT ON COLUMN public."user".name IS 'ユーザー名';
 COMMENT ON COLUMN public."user".password_hash IS 'パスワードハッシュ';
