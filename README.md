@@ -1,4 +1,4 @@
-# AwesomeMusic-api Server
+# AwesomeMusic API-Server
 
 ![GithubAction](https://github.com/oshou/AwesomeMusic-api/workflows/develop/badge.svg)
 ![Go Report Card](https://goreportcard.com/badge/github.com/oshou/AwesomeMusic-api)
@@ -9,15 +9,16 @@ https://github.com/oshou/Portfolio
 ## 概要
 
 - Onion Architecture を参考にしています。
-- ポートはデフォルト8080で受付
+- ポートはデフォルト 8080 で受付
 - 環境変数: レポジトリ直下の.env を読み込みます。<br>
   ビルド時に指定の「.env.(環境名)」を「.env」としてコピー作成いたします。<br>
   ex) cp -rp .env.local -> .env
 
-## APIドキュメント
+## API ドキュメント
+
 ```bash
-1. make gendoc
-2. ブラウザからhttp://localhost:10080にアクセス
+$ make gendoc
+$ open http://localhost:10080
 ```
 
 ## ディレクトリ構成
@@ -68,17 +69,11 @@ https://github.com/oshou/Portfolio
 ## Quick Start
 
 ```bash
-go get -u github.com/oshou/AwesomeMusic-api
+$ go get -u github.com/oshou/AwesomeMusic-api
+
 # 環境変数を指定(.env.localに設定例を記載)
-# - DB_DRIVER
-# - DB_HOST
-# - DB_PORT
-# - DB_USER
-# - DB_PASSWORD
-# - DB_NAME
-# - DB_OPTION
-# - API_SERVER_PORT
-vim .env.local
+$ vim .env.local
+
 # APIサーバ起動
-make run
+$ make run
 ```
