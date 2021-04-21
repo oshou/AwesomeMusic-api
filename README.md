@@ -9,8 +9,7 @@ https://github.com/oshou/Portfolio
 ## 概要
 
 - Onion Architecture を参考にしています。
-- Content-Type: application/json
-- ポート: デフォルト8080で受付
+- ポートはデフォルト8080で受付
 - 環境変数: レポジトリ直下の.env を読み込みます。<br>
   ビルド時に指定の「.env.(環境名)」を「.env」としてコピー作成いたします。<br>
   ex) cp -rp .env.local -> .env
@@ -19,24 +18,6 @@ https://github.com/oshou/Portfolio
 ```bash
 1. make gendoc
 2. ブラウザからhttp://localhost:10080にアクセス
-```
-
-## Quick Start
-
-```bash
-go get -u github.com/oshou/AwesomeMusic-api
-# 環境変数指定(.env.local)
-# - DB_DRIVER
-# - DB_HOST
-# - DB_PORT
-# - DB_USER
-# - DB_PASSWORD
-# - DB_NAME
-# - DB_OPTION
-# - API_SERVER_PORT
-vim .env.local
-# APIサーバ起動
-make run
 ```
 
 ## ディレクトリ構成
@@ -83,3 +64,21 @@ make run
 ## クラス構成(のようなもの)
 
 ![class](https://github.com/oshou/AwesomeMusic-api/blob/img/out/docs/class/class.png)
+
+## Quick Start
+
+```bash
+go get -u github.com/oshou/AwesomeMusic-api
+# 環境変数を指定(.env.localに設定例を記載)
+# - DB_DRIVER
+# - DB_HOST
+# - DB_PORT
+# - DB_USER
+# - DB_PASSWORD
+# - DB_NAME
+# - DB_OPTION
+# - API_SERVER_PORT
+vim .env.local
+# APIサーバ起動
+make run
+```
