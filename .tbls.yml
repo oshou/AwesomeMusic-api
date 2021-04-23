@@ -1,1 +1,2 @@
 docPath: docs/dbdoc
+dsn: postgres://postgres:postgres@localhost/postgres?sslmode=disable

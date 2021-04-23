@@ -39,11 +39,12 @@ apidoc:
 		redocly/redoc
 
 dbdoc:
+	test -d docs/dbdoc || \
 	docker run --rm \
 		--name dbdoc \
 		-v $(PWD):/work \
 		--network=host \
-		k1low/tbls doc postgres://postgres:postgres@localhost/postgres?sslmode=disable
+		k1low/tbls doc
 
 migrate: $(GOPATH)/bin/sql-migrate
 	sql-migrate up -config=_db/config.yaml
