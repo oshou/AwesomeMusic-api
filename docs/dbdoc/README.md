@@ -4,6 +4,12 @@
 
 | Name | Columns | Comment | Type |
 | ---- | ------- | ------- | ---- |
+| [public.migrations](public.migrations.md) | 2 |  | BASE TABLE |
+| [public.comment](public.comment.md) | 6 |  | BASE TABLE |
+| [public.post](public.post.md) | 7 |  | BASE TABLE |
+| [public.post_tag](public.post_tag.md) | 2 |  | BASE TABLE |
+| [public.tag](public.tag.md) | 4 |  | BASE TABLE |
+| [public.user](public.user.md) | 5 |  | BASE TABLE |
 
 ## Relations
 
