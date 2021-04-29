@@ -32,7 +32,7 @@ func (sr *searchRepository) GetByTitle(q string) ([]*model.Post, error) {
 							url,
 							message
 						FROM
-							public.post
+							public.posts
 						WHERE
 							title LIKE $1`
 
@@ -53,8 +53,8 @@ func (sr *searchRepository) GetByUserName(q string) ([]*model.Post, error) {
 							p.url,
 							p.message
 						FROM
-							public.post AS p
-						INNER JOIN public.user AS u
+							public.posts AS p
+						INNER JOIN public.users AS u
 						  ON u.id = p.user_id
 						WHERE
 							u.name LIKE $1`
@@ -76,10 +76,10 @@ func (sr *searchRepository) GetByTagName(q string) ([]*model.Post, error) {
 							p.url,
 							p.message
 						FROM
-							public.post AS p
+							public.posts AS p
 						INNER JOIN public.post_tag AS pt
 							ON pt.post_id = p.id
-						INNER JOIN public.tag AS t
+						INNER JOIN public.tags AS t
 							ON pt.tag_id = t.id
 						WHERE
 							t.name LIKE $1`

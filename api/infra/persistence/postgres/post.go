@@ -32,7 +32,7 @@ func (pr *postRepository) GetAll() ([]*model.Post, error) {
 							url,
 							message
 						FROM
-							public.post`
+							public.posts`
 
 	if err := pr.db.Select(&pp, query); err != nil {
 		return nil, errors.WithStack(err)
@@ -51,7 +51,7 @@ func (pr *postRepository) GetByID(postID int) (*model.Post, error) {
 							url,
 							message
 						FROM
-							public.post
+							public.posts
 						WHERE
 							id = $1`
 
@@ -72,10 +72,10 @@ func (pr *postRepository) GetByTagID(tagID int) ([]*model.Post, error) {
 							p.url,
 							p.message
 						FROM
-							public.post AS p
+							public.posts AS p
 						INNER JOIN public.post_tag AS pt
 							ON pt.post_id = p.id
-						INNER JOIN public.tag AS t
+						INNER JOIN public.tags AS t
 							ON pt.tag_id = t.id
 						WHERE
 							t.id = $1`
@@ -97,8 +97,8 @@ func (pr *postRepository) GetByUserID(userID int) ([]*model.Post, error) {
 							p.url,
 							p.message
 						FROM
-							public.post AS p
-						INNER JOIN public.user AS u
+							public.posts AS p
+						INNER JOIN public.users AS u
 							ON u.id = p.user_id
 						WHERE
 							u.id = $1`
@@ -112,7 +112,7 @@ func (pr *postRepository) GetByUserID(userID int) ([]*model.Post, error) {
 
 func (pr *postRepository) Add(userID int, title, url, message string) (*model.Post, error) {
 	query := `INSERT INTO
-							public.post(user_id, title, url, message)
+							public.posts(user_id, title, url, message)
 						VALUES
 							($1, $2, $3, $4)
 						RETURNING
@@ -135,7 +135,7 @@ func (pr *postRepository) Add(userID int, title, url, message string) (*model.Po
 
 func (pr *postRepository) DeleteByID(postID int) error {
 	query := `DELETE FROM
-							public.post
+							public.posts
 						WHERE
 							id = $1`
 

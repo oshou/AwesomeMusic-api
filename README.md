@@ -45,7 +45,7 @@ $ make dbdoc
 ├─ domain/                  # Domain Layer
 │     └─ model/            # Domain Model Layer
 │     └─ repository/       # Domain Service Layer
-├─ infrastructure/          # Infrastructure Layer
+├─ infra/                   # Infrastructure Layer
 │     └─ persistence/      # Persistence
 └─ log/                      #
 │     └─ logger.go             # DB Connection

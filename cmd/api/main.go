@@ -18,7 +18,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/oshou/AwesomeMusic-api/api/handler"
-	persistence "github.com/oshou/AwesomeMusic-api/api/infrastructure/persistence/postgres"
+	persistence "github.com/oshou/AwesomeMusic-api/api/infra/persistence/postgres"
 	mw "github.com/oshou/AwesomeMusic-api/api/middleware"
 	"github.com/oshou/AwesomeMusic-api/api/usecase"
 	"github.com/oshou/AwesomeMusic-api/config"
@@ -184,6 +184,7 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Logger.Error("err", zap.Error(err))
 	}

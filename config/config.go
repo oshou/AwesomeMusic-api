@@ -55,7 +55,6 @@ func (c *config) GetDSN() string {
 		c.DB.DBName,
 		c.DB.SSLMode,
 	)
-
 	return dsn
 }
 

@@ -12,7 +12,7 @@ package Application {
   interface IUsecase
 }
 
-package Infrastructure {
+package Infra {
   class Persistence
 }
 package UI {

@@ -29,7 +29,7 @@ func (ur *userRepository) GetAll() ([]*model.User, error) {
 							id,
 							name
 						FROM
-							public.user`
+							public.users`
 
 	if err := ur.db.Select(&uu, query); err != nil {
 		return nil, errors.WithStack(err)
@@ -45,7 +45,7 @@ func (ur *userRepository) GetByID(userID int) (*model.User, error) {
 							id,
 							name
 						FROM
-							public.user
+							public.users
 						WHERE
 							id = $1`
 
@@ -64,7 +64,7 @@ func (ur *userRepository) GetByName(name string) (*model.User, error) {
 							name,
 							password_hash
 						FROM
-							public.user
+							public.users
 						WHERE
 							name LIKE $1`
 
@@ -81,7 +81,7 @@ func (ur *userRepository) Add(name string, passwordHash []byte) (*model.User, er
 	}
 
 	query := `INSERT INTO
-							public.user(name,password_hash)
+							public.users(name,password_hash)
 						VALUES
 							($1, $2)
 						RETURNING

@@ -13,7 +13,7 @@ box "Domain" #Orange
   participant repository
   participant model
 end box
-box "Infrastructure" #Gray
+box "Infra" #Gray
   participant persistence
 end box
 
