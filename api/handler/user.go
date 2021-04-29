@@ -13,6 +13,11 @@ import (
 	"github.com/oshou/AwesomeMusic-api/log"
 )
 
+type addUserRequest struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
 // IUserHandler is ui layer http-handler interface
 type IUserHandler interface {
 	GetUsers(w http.ResponseWriter, r *http.Request)
@@ -25,11 +30,6 @@ type userHandler struct {
 }
 
 var _ IUserHandler = &userHandler{}
-
-type addUserRequest struct {
-	Name     string `json:"name"`
-	Password string `json:"password"`
-}
 
 // NewUserHandler is constructor for userHandler
 func NewUserHandler(usecase usecase.IUserUsecase) IUserHandler {

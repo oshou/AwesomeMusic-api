@@ -13,6 +13,11 @@ import (
 	"github.com/oshou/AwesomeMusic-api/log"
 )
 
+type AddCommentRequest struct {
+	UserID  string `json:"user_id" validate:"required"`
+	Comment string `json:"comment" validate:"required"`
+}
+
 // ICommentHandler is ui layer http-handler interface
 type ICommentHandler interface {
 	GetComments(w http.ResponseWriter, r *http.Request)
@@ -72,19 +77,23 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req := struct {
-		UserID  int    `json:"user_id" validate:"required"`
-		Comment string `json:"comment" validate:"required"`
-	}{}
-
+	req := AddCommentRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		log.Logger.Error("failed to add ", zap.Error(err))
+		log.Logger.Error("failed to add comment", zap.Error(err))
 		badRequestError(w)
 
 		return
 	}
 
-	comment, err := ch.usecase.AddComment(postID, req.UserID, req.Comment)
+	userID, err := strconv.Atoi(req.UserID)
+	if err != nil {
+		log.Logger.Error("failed to add comment", zap.Error(err))
+		internalServerError(w)
+
+		return
+	}
+
+	comment, err := ch.usecase.AddComment(postID, userID, req.Comment)
 
 	if err != nil {
 		log.Logger.Error("failed to add comment", zap.Error(err))
@@ -96,6 +105,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(comment); err != nil {
+		log.Logger.Error("failed to add comment", zap.Error(err))
 		internalServerError(w)
 
 		return

@@ -13,6 +13,13 @@ import (
 	"github.com/oshou/AwesomeMusic-api/log"
 )
 
+type addPostRequest struct {
+	UserID  string `json:"user_id" validate:"required"`
+	Title   string `json:"title" validate:"required"`
+	URL     string `json:"url" validate:"required"`
+	Message string `json:"message" validate:"required"`
+}
+
 // IPostHandler is ui layer http-handler interface
 type IPostHandler interface {
 	GetPosts(w http.ResponseWriter, r *http.Request)
@@ -34,13 +41,6 @@ func NewPostHandler(usecase usecase.IPostUsecase) IPostHandler {
 	return &postHandler{
 		usecase: usecase,
 	}
-}
-
-type addPostRequest struct {
-	UserID  string `json:"user_id" validate:"required"`
-	Title   string `json:"title" validate:"required"`
-	URL     string `json:"url" validate:"required"`
-	Message string `json:"message" validate:"required"`
 }
 
 func (ph *postHandler) GetPosts(w http.ResponseWriter, r *http.Request) {

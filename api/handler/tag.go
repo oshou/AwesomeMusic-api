@@ -13,6 +13,10 @@ import (
 	"github.com/oshou/AwesomeMusic-api/log"
 )
 
+type addTagRequest struct {
+	Name string `json:"name" validate:"required"`
+}
+
 // ITagHandler is ui layer http-handler interface
 type ITagHandler interface {
 	GetTags(w http.ResponseWriter, r *http.Request)
@@ -110,9 +114,7 @@ func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
-	req := struct {
-		Name string `json:"name" validate:"required"`
-	}{}
+	req := addTagRequest{}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Logger.Error("failed to add tag", zap.Error(err))
