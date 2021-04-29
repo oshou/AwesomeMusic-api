@@ -29,7 +29,7 @@ func (tr *tagRepository) GetAll() ([]*model.Tag, error) {
 							id,
 							name
 						FROM
-							public.tag`
+							public.tags`
 
 	if err := tr.db.Select(&tt, query); err != nil {
 		return nil, errors.WithStack(err)
@@ -45,7 +45,7 @@ func (tr *tagRepository) GetByID(tagID int) (*model.Tag, error) {
 							id,
 							name
 						FROM
-							public.tag
+							public.tags
 						WHERE
 							id = $1`
 
@@ -63,7 +63,7 @@ func (tr *tagRepository) GetByName(tagName string) ([]*model.Tag, error) {
 							id,
 							name
 						FROM
-							public.tag
+							public.tags
 						WHERE
 							name LIKE $1`
 
@@ -81,7 +81,7 @@ func (tr *tagRepository) GetByPostID(postID int) ([]*model.Tag, error) {
 							t.id,
 							t.name
 						FROM
-							public.tag AS t
+							public.tags AS t
 						INNER JOIN public.post_tag AS pt
 							ON t.id = pt.tag_id
 						WHERE
@@ -99,7 +99,7 @@ func (tr *tagRepository) Add(tagName string) (*model.Tag, error) {
 		Name: tagName,
 	}
 	query := `INSERT INTO
-							public.tag(name)
+							public.tags(name)
 						VALUES
 							($1)
 						RETURNING

@@ -36,16 +36,28 @@ func NewPostHandler(usecase usecase.IPostUsecase) IPostHandler {
 	}
 }
 
+type addPostRequest struct {
+	UserID  string `json:"user_id" validate:"required"`
+	Title   string `json:"title" validate:"required"`
+	URL     string `json:"url" validate:"required"`
+	Message string `json:"message" validate:"required"`
+}
+
 func (ph *postHandler) GetPosts(w http.ResponseWriter, r *http.Request) {
 	posts, err := ph.usecase.GetPosts()
 	if err != nil {
 		log.Logger.Error("failed to get posts", zap.Error(err))
-		notFoundError(w)
+		internalServerError(w)
 
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
+
+	if len(posts) == 0 {
+		log.Logger.Error("failed to get posts", zap.Error(err))
+		notFoundError(w)
+	}
 
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
 		internalServerError(w)
@@ -135,13 +147,7 @@ func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) 
 }
 
 func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
-	req := struct {
-		UserID  int    `json:"user_id" validate:"required"`
-		Title   string `json:"title" validate:"required"`
-		URL     string `json:"url" validate:"required"`
-		Message string `json:"message" validate:"required"`
-	}{}
-
+	req := addPostRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Logger.Error("failed to add post", zap.Error(err))
 		badRequestError(w)
@@ -149,7 +155,14 @@ func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post, err := ph.usecase.AddPost(req.UserID, req.Title, req.URL, req.Message)
+	userID, err := strconv.Atoi(req.UserID)
+	if err != nil {
+		internalServerError(w)
+
+		return
+	}
+
+	post, err := ph.usecase.AddPost(userID, req.Title, req.URL, req.Message)
 	if err != nil {
 		log.Logger.Error("failed to add post", zap.Error(err))
 		badRequestError(w)

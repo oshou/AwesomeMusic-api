@@ -31,7 +31,7 @@ func (cr *commentRepository) GetAll(postID int) ([]*model.Comment, error) {
 							post_id,
 							comment
 						FROM
-							public.comment
+							public.comments
 						WHERE
 							post_id = $1`
 
@@ -51,7 +51,7 @@ func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
 							post_id,
 							comment
 						FROM
-							public.comment
+							public.comments
 						WHERE
 							id = $1`
 
@@ -64,7 +64,7 @@ func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
 
 func (cr *commentRepository) Add(postID, userID int, comment string) (*model.Comment, error) {
 	query := `INSERT INTO
-							public.comment(post_id, user_id, comment)
+							public.comments(post_id, user_id, comment)
 						VALUES
 							($1, $2, $3)
 						RETURNING
