@@ -6,6 +6,11 @@
 | ---- | ------- | ------- | ---- |
 | [public.http_sessions](public.http_sessions.md) | 6 |  | BASE TABLE |
 | [public.migrations](public.migrations.md) | 2 |  | BASE TABLE |
+| [public.users](public.users.md) | 5 |  | BASE TABLE |
+| [public.posts](public.posts.md) | 7 |  | BASE TABLE |
+| [public.comments](public.comments.md) | 6 |  | BASE TABLE |
+| [public.tags](public.tags.md) | 4 |  | BASE TABLE |
+| [public.post_tag](public.post_tag.md) | 2 |  | BASE TABLE |
 
 ## Relations
 
