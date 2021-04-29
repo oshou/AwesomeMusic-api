@@ -1,4 +1,4 @@
-# AwesomeMusic API-Server
+# AwesomeMusic API
 
 ![GithubAction](https://github.com/oshou/AwesomeMusic-api/workflows/develop/badge.svg)
 ![Go Report Card](https://goreportcard.com/badge/github.com/oshou/AwesomeMusic-api)
