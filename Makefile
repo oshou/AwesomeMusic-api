@@ -10,12 +10,15 @@ DB_HOST ?= 127.0.0.1
 DB_NAME ?= postgres
 DEPLOY_REPO = "oshou/awesome-music-api"
 BINARY_NAME = main
+DIRS = \
+	api/usecase \
+	api/handler
 
 $(GOPATH)/bin/sql-migrate:
-	go get -v github.com/rubenv/sql-migrate/...
+	go get -u github.com/rubenv/sql-migrate/...
 
 $(GOPATH)/bin/golangci-lint:
-	go get github.com/golangci/golangci-lint/cmd/golangci-lint
+	go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
 
 $(GOPATH)/bin/gotests:
 	go get -u github.com/cweill/gotests/...
@@ -29,7 +32,6 @@ apidoc:
 		redocly/redoc
 
 dbdoc:
-	test -d docs/dbdoc || \
 	docker run --rm \
 		--name dbdoc \
 		-v $(PWD):/work \
@@ -62,6 +64,12 @@ seed:
 
 mockgen:
 	go generate ./...
+
+testgen:
+	for DIR in $(DIRS); do \
+		gotests -w -all $$DIR; \
+	done
+
 
 clean:
 	go mod tidy
