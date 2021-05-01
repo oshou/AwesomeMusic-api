@@ -22,10 +22,10 @@ type addPostRequest struct {
 
 // IPostHandler is ui layer http-handler interface
 type IPostHandler interface {
-	GetPosts(w http.ResponseWriter, r *http.Request)
+	ListPosts(w http.ResponseWriter, r *http.Request)
+	ListPostsByTagID(w http.ResponseWriter, r *http.Request)
+	ListPostsByUserID(w http.ResponseWriter, r *http.Request)
 	GetPostByID(w http.ResponseWriter, r *http.Request)
-	GetPostsByTagID(w http.ResponseWriter, r *http.Request)
-	GetPostsByUserID(w http.ResponseWriter, r *http.Request)
 	AddPost(w http.ResponseWriter, r *http.Request)
 	DeletePostByID(w http.ResponseWriter, r *http.Request)
 }
@@ -43,8 +43,8 @@ func NewPostHandler(usecase usecase.IPostUsecase) IPostHandler {
 	}
 }
 
-func (ph *postHandler) GetPosts(w http.ResponseWriter, r *http.Request) {
-	posts, err := ph.usecase.GetPosts()
+func (ph *postHandler) ListPosts(w http.ResponseWriter, r *http.Request) {
+	posts, err := ph.usecase.ListPosts()
 	if err != nil {
 		log.Logger.Error("failed to get posts", zap.Error(err))
 		internalServerError(w)
@@ -57,9 +57,12 @@ func (ph *postHandler) GetPosts(w http.ResponseWriter, r *http.Request) {
 	if len(posts) == 0 {
 		log.Logger.Error("failed to get posts", zap.Error(err))
 		notFoundError(w)
+
+		return
 	}
 
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
+		log.Logger.Error("failed to get posts", zap.Error(err))
 		internalServerError(w)
 	}
 }
@@ -90,7 +93,7 @@ func (ph *postHandler) GetPostByID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
+func (ph *postHandler) ListPostsByTagID(w http.ResponseWriter, r *http.Request) {
 	tagIDString := chi.URLParam(r, "tag_id")
 	tagID, err := strconv.Atoi(tagIDString)
 
@@ -101,7 +104,7 @@ func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := ph.usecase.GetPostsByTagID(tagID)
+	posts, err := ph.usecase.ListPostsByTagID(tagID)
 	if err != nil {
 		log.Logger.Error("failed to get posts by tagID", zap.Error(err))
 		badRequestError(w)
@@ -118,7 +121,7 @@ func (ph *postHandler) GetPostsByTagID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) {
+func (ph *postHandler) ListPostsByUserID(w http.ResponseWriter, r *http.Request) {
 	userIDString := chi.URLParam(r, "user_Id")
 	userID, err := strconv.Atoi(userIDString)
 
@@ -129,7 +132,7 @@ func (ph *postHandler) GetPostsByUserID(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	posts, err := ph.usecase.GetPostsByUserID(userID)
+	posts, err := ph.usecase.ListPostsByUserID(userID)
 	if err != nil {
 		log.Logger.Error("failed to get posts by userID", zap.Error(err))
 		notFoundError(w)

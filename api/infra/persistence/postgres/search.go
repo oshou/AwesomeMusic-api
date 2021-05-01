@@ -22,7 +22,7 @@ func NewSearchRepository(db *sqlx.DB) repository.ISearchRepository {
 	}
 }
 
-func (sr *searchRepository) GetByTitle(q string) ([]*model.Post, error) {
+func (sr *searchRepository) ListByTitle(q string) ([]*model.Post, error) {
 	var pp []*model.Post
 
 	query := `SELECT
@@ -43,7 +43,7 @@ func (sr *searchRepository) GetByTitle(q string) ([]*model.Post, error) {
 	return pp, nil
 }
 
-func (sr *searchRepository) GetByUserName(q string) ([]*model.Post, error) {
+func (sr *searchRepository) ListByUserName(q string) ([]*model.Post, error) {
 	var pp []*model.Post
 
 	query := `SELECT
@@ -66,7 +66,7 @@ func (sr *searchRepository) GetByUserName(q string) ([]*model.Post, error) {
 	return pp, nil
 }
 
-func (sr *searchRepository) GetByTagName(q string) ([]*model.Post, error) {
+func (sr *searchRepository) ListByTagName(q string) ([]*model.Post, error) {
 	var pp []*model.Post
 
 	query := `SELECT

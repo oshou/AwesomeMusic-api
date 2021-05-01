@@ -9,9 +9,9 @@ import (
 
 // ISearchUsecase is usecase layer Interface
 type ISearchUsecase interface {
-	GetPostsByTitle(q string) ([]*model.Post, error)
-	GetPostsByUserName(q string) ([]*model.Post, error)
-	GetPostsByTagName(q string) ([]*model.Post, error)
+	ListPostsByTitle(q string) ([]*model.Post, error)
+	ListPostsByUserName(q string) ([]*model.Post, error)
+	ListPostsByTagName(q string) ([]*model.Post, error)
 }
 
 type searchUsecase struct {
@@ -27,14 +27,14 @@ func NewSearchUsecase(repo repository.ISearchRepository) ISearchUsecase {
 	}
 }
 
-func (su *searchUsecase) GetPostsByTitle(q string) ([]*model.Post, error) {
-	return su.repo.GetByTitle(q)
+func (su *searchUsecase) ListPostsByTitle(q string) ([]*model.Post, error) {
+	return su.repo.ListByTitle(q)
 }
 
-func (su *searchUsecase) GetPostsByUserName(q string) ([]*model.Post, error) {
-	return su.repo.GetByUserName(q)
+func (su *searchUsecase) ListPostsByUserName(q string) ([]*model.Post, error) {
+	return su.repo.ListByUserName(q)
 }
 
-func (su *searchUsecase) GetPostsByTagName(q string) ([]*model.Post, error) {
-	return su.repo.GetByTagName(q)
+func (su *searchUsecase) ListPostsByTagName(q string) ([]*model.Post, error) {
+	return su.repo.ListByTagName(q)
 }

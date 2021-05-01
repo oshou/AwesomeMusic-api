@@ -20,7 +20,7 @@ type AddCommentRequest struct {
 
 // ICommentHandler is ui layer http-handler interface
 type ICommentHandler interface {
-	GetComments(w http.ResponseWriter, r *http.Request)
+	ListComments(w http.ResponseWriter, r *http.Request)
 	GetCommentByID(w http.ResponseWriter, r *http.Request)
 	AddComment(w http.ResponseWriter, r *http.Request)
 }
@@ -38,7 +38,7 @@ func NewCommentHandler(usecase usecase.ICommentUsecase) ICommentHandler {
 	}
 }
 
-func (ch *commentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
+func (ch *commentHandler) ListComments(w http.ResponseWriter, r *http.Request) {
 	postIDString := chi.URLParam(r, "post_id")
 	postID, err := strconv.Atoi(postIDString)
 
@@ -49,9 +49,9 @@ func (ch *commentHandler) GetComments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comments, err := ch.usecase.GetComments(postID)
+	comments, err := ch.usecase.ListComments(postID)
 	if err != nil {
-		log.Logger.Error("failed to get comments", zap.Error(err))
+		log.Logger.Error("failed to list comments", zap.Error(err))
 		notFoundError(w)
 
 		return

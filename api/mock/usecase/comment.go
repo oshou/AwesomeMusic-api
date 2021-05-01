@@ -33,19 +33,19 @@ func (m *MockICommentUsecase) EXPECT() *MockICommentUsecaseMockRecorder {
 	return m.recorder
 }
 
-// GetComments mocks base method
-func (m *MockICommentUsecase) GetComments(postID int) ([]*model.Comment, error) {
+// ListComments mocks base method
+func (m *MockICommentUsecase) ListComments(postID int) ([]*model.Comment, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetComments", postID)
+	ret := m.ctrl.Call(m, "ListComments", postID)
 	ret0, _ := ret[0].([]*model.Comment)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetComments indicates an expected call of GetComments
-func (mr *MockICommentUsecaseMockRecorder) GetComments(postID interface{}) *gomock.Call {
+// ListComments indicates an expected call of ListComments
+func (mr *MockICommentUsecaseMockRecorder) ListComments(postID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetComments", reflect.TypeOf((*MockICommentUsecase)(nil).GetComments), postID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListComments", reflect.TypeOf((*MockICommentUsecase)(nil).ListComments), postID)
 }
 
 // GetCommentByID mocks base method

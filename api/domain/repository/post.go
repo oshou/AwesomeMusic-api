@@ -6,7 +6,7 @@ import "github.com/oshou/AwesomeMusic-api/api/domain/model"
 
 // IPostRepository is Domain-access interface for Post
 type IPostRepository interface {
-	GetAll() ([]*model.Post, error)
+	List() ([]*model.Post, error)
 	GetByID(postID int) (*model.Post, error)
 	GetByTagID(tagID int) ([]*model.Post, error)
 	GetByUserID(userID int) ([]*model.Post, error)

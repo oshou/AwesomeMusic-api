@@ -22,7 +22,7 @@ func NewUserRepository(db *sqlx.DB) repository.IUserRepository {
 	}
 }
 
-func (ur *userRepository) GetAll() ([]*model.User, error) {
+func (ur *userRepository) List() ([]*model.User, error) {
 	var uu []*model.User
 
 	query := `SELECT

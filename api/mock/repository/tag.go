@@ -33,19 +33,19 @@ func (m *MockITagRepository) EXPECT() *MockITagRepositoryMockRecorder {
 	return m.recorder
 }
 
-// GetAll mocks base method
-func (m *MockITagRepository) GetAll() ([]*model.Tag, error) {
+// List mocks base method
+func (m *MockITagRepository) List() ([]*model.Tag, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll")
+	ret := m.ctrl.Call(m, "List")
 	ret0, _ := ret[0].([]*model.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetAll indicates an expected call of GetAll
-func (mr *MockITagRepositoryMockRecorder) GetAll() *gomock.Call {
+// List indicates an expected call of List
+func (mr *MockITagRepositoryMockRecorder) List() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockITagRepository)(nil).GetAll))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockITagRepository)(nil).List))
 }
 
 // GetByID mocks base method

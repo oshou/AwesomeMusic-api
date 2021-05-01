@@ -9,8 +9,8 @@ import (
 
 	"github.com/oshou/AwesomeMusic-api/api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/api/domain/repository"
+	"github.com/oshou/AwesomeMusic-api/api/mock/mock_repository"
 	"github.com/oshou/AwesomeMusic-api/api/usecase"
-	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
 )
 
 func TestNewSearchUsecase(t *testing.T) {
@@ -31,7 +31,7 @@ func TestNewSearchUsecase(t *testing.T) {
 	}
 }
 
-func Test_searchUsecase_GetPostsByTitle(t *testing.T) {
+func Test_searchUsecase_ListPostsByTitle(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -50,9 +50,9 @@ func Test_searchUsecase_GetPostsByTitle(t *testing.T) {
 			t.Parallel()
 
 			mock := mock_repository.NewMockISearchRepository(ctrl)
-			mock.EXPECT().GetByTitle(tt.q).Return(tt.mock, tt.mockErr)
+			mock.EXPECT().ListByTitle(tt.q).Return(tt.mock, tt.mockErr)
 			su := usecase.NewSearchUsecase(mock)
-			got, err := su.GetPostsByTitle(tt.q)
+			got, err := su.ListPostsByTitle(tt.q)
 
 			if err != tt.wantErr {
 				t.Errorf("seearchUsecase.AddPost() error (wantErr %v, gotErr %v)", tt.wantErr, err)
@@ -65,7 +65,7 @@ func Test_searchUsecase_GetPostsByTitle(t *testing.T) {
 	}
 }
 
-func Test_searchUsecase_GetPostsByUserName(t *testing.T) {
+func Test_searchUsecase_ListPostsByUserName(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -84,9 +84,9 @@ func Test_searchUsecase_GetPostsByUserName(t *testing.T) {
 			t.Parallel()
 
 			mock := mock_repository.NewMockISearchRepository(ctrl)
-			mock.EXPECT().GetByUserName(tt.q).Return(tt.mock, tt.mockErr)
+			mock.EXPECT().ListByUserName(tt.q).Return(tt.mock, tt.mockErr)
 			su := usecase.NewSearchUsecase(mock)
-			got, err := su.GetPostsByUserName(tt.q)
+			got, err := su.ListPostsByUserName(tt.q)
 
 			if err != tt.wantErr {
 				t.Errorf("searchUsecase.GetPostByUserName() error (wantErr %v, gotErr %v)", tt.wantErr, err)
@@ -99,7 +99,7 @@ func Test_searchUsecase_GetPostsByUserName(t *testing.T) {
 	}
 }
 
-func Test_searchUsecase_GetPostsByTagName(t *testing.T) {
+func Test_searchUsecase_ListPostsByTagName(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -118,9 +118,9 @@ func Test_searchUsecase_GetPostsByTagName(t *testing.T) {
 			t.Parallel()
 
 			mock := mock_repository.NewMockISearchRepository(ctrl)
-			mock.EXPECT().GetByTagName(tt.q).Return(tt.mock, tt.mockErr)
+			mock.EXPECT().ListByTagName(tt.q).Return(tt.mock, tt.mockErr)
 			su := usecase.NewSearchUsecase(mock)
-			got, err := su.GetPostsByTagName(tt.q)
+			got, err := su.ListPostsByTagName(tt.q)
 
 			if err != tt.wantErr {
 				t.Errorf("searchUsecase.GetPostByTagName() error (wantErr %v, gotErr %v)", tt.wantErr, err)

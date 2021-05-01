@@ -2,15 +2,15 @@
 package usecase_test
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
-
 	"github.com/oshou/AwesomeMusic-api/api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/api/domain/repository"
+	"github.com/oshou/AwesomeMusic-api/api/mock/mock_repository"
 	"github.com/oshou/AwesomeMusic-api/api/usecase"
-	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
 )
 
 func TestNewCommentUsecase(t *testing.T) {
@@ -31,7 +31,7 @@ func TestNewCommentUsecase(t *testing.T) {
 	}
 }
 
-func Test_commentUsecase_GetComments(t *testing.T) {
+func Test_commentUsecase_ListComments(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -74,17 +74,17 @@ func Test_commentUsecase_GetComments(t *testing.T) {
 			t.Parallel()
 
 			mock := mock_repository.NewMockICommentRepository(ctrl)
-			mock.EXPECT().GetAll(tt.postID).Return(tt.mock, tt.mockErr)
+			mock.EXPECT().List(tt.postID).Return(tt.mock, tt.mockErr)
 
 			cu := usecase.NewCommentUsecase(mock)
-			got, err := cu.GetComments(tt.postID)
+			got, err := cu.ListComments(tt.postID)
 
 			if err != tt.wantErr {
-				t.Errorf("commentUsecase.GetComments() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+				t.Errorf("commentUsecase.ListComments() error (wantErr %v, gotErr %v)", tt.wantErr, err)
 			}
 
 			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("commentUsecase.GetComments() mismatch (-want +got):\n%s", diff)
+				t.Errorf("commentUsecase.ListComments() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
@@ -165,6 +165,7 @@ func Test_commentUsecase_AddComment(t *testing.T) {
 
 			mock := mock_repository.NewMockICommentRepository(ctrl)
 			mock.EXPECT().Add(tt.postID, tt.userID, tt.commentText).Return(tt.mock, tt.mockErr)
+
 			cu := usecase.NewCommentUsecase(mock)
 			got, err := cu.AddComment(tt.postID, tt.userID, tt.commentText)
 
@@ -174,6 +175,33 @@ func Test_commentUsecase_AddComment(t *testing.T) {
 
 			if diff := cmp.Diff(tt.want, got); diff != "" {
 				t.Errorf("commentUsecase.AddComment() mismatch (-want +got):\n%s", diff)
+			}
+		})
+	}
+}
+
+func Test_commentUsecase_ListComments(t *testing.T) {
+	type args struct {
+		postID int
+	}
+	tests := []struct {
+		name    string
+		cu      *commentUsecase
+		args    args
+		want    []*model.Comment
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.cu.ListComments(tt.args.postID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("commentUsecase.ListComments() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("commentUsecase.ListComments() = %v, want %v", got, tt.want)
 			}
 		})
 	}

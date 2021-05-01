@@ -33,19 +33,19 @@ func (m *MockIUserRepository) EXPECT() *MockIUserRepositoryMockRecorder {
 	return m.recorder
 }
 
-// GetAll mocks base method
-func (m *MockIUserRepository) GetAll() ([]*model.User, error) {
+// List mocks base method
+func (m *MockIUserRepository) List() ([]*model.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll")
+	ret := m.ctrl.Call(m, "List")
 	ret0, _ := ret[0].([]*model.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetAll indicates an expected call of GetAll
-func (mr *MockIUserRepositoryMockRecorder) GetAll() *gomock.Call {
+// List indicates an expected call of List
+func (mr *MockIUserRepositoryMockRecorder) List() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockIUserRepository)(nil).GetAll))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockIUserRepository)(nil).List))
 }
 
 // GetByID mocks base method

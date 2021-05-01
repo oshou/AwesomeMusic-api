@@ -22,7 +22,7 @@ func NewPostRepository(db *sqlx.DB) repository.IPostRepository {
 	}
 }
 
-func (pr *postRepository) GetAll() ([]*model.Post, error) {
+func (pr *postRepository) List() ([]*model.Post, error) {
 	var pp []*model.Post
 
 	query := `SELECT

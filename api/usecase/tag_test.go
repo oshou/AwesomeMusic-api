@@ -9,8 +9,8 @@ import (
 
 	"github.com/oshou/AwesomeMusic-api/api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/api/domain/repository"
+	"github.com/oshou/AwesomeMusic-api/api/mock/mock_repository"
 	"github.com/oshou/AwesomeMusic-api/api/usecase"
-	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
 )
 
 func TestNewTagUsecase(t *testing.T) {
@@ -31,7 +31,7 @@ func TestNewTagUsecase(t *testing.T) {
 	}
 }
 
-func Test_tagUsecase_GetTags(t *testing.T) {
+func Test_tagUsecase_ListTags(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -49,16 +49,16 @@ func Test_tagUsecase_GetTags(t *testing.T) {
 			t.Parallel()
 
 			mock := mock_repository.NewMockITagRepository(ctrl)
-			mock.EXPECT().GetAll().Return(tt.mock, tt.mockErr)
+			mock.EXPECT().List().Return(tt.mock, tt.mockErr)
 			tu := usecase.NewTagUsecase(mock)
-			got, err := tu.GetTags()
+			got, err := tu.ListTags()
 
 			if err != tt.wantErr {
-				t.Errorf("tagUsecase.GetTags() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+				t.Errorf("tagUsecase.ListTags() error (wantErr %v, gotErr %v)", tt.wantErr, err)
 			}
 
 			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("tagUsecase.GetTags() mismatch (-want +got):\n%s", diff)
+				t.Errorf("tagUsecase.ListTags() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
@@ -98,7 +98,7 @@ func Test_tagUsecase_GetTagByID(t *testing.T) {
 	}
 }
 
-func Test_tagUsecase_GetTagsByPostID(t *testing.T) {
+func Test_tagUsecase_ListTagsByPostID(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -119,14 +119,14 @@ func Test_tagUsecase_GetTagsByPostID(t *testing.T) {
 			mock := mock_repository.NewMockITagRepository(ctrl)
 			mock.EXPECT().GetByPostID(tt.postID).Return(tt.mock, tt.mockErr)
 			tu := usecase.NewTagUsecase(mock)
-			got, err := tu.GetTagsByPostID(tt.postID)
+			got, err := tu.ListTagsByPostID(tt.postID)
 
 			if err != tt.wantErr {
-				t.Errorf("tagUsecase.GetTagByPostID() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+				t.Errorf("tagUsecase.ListTagsByPostID() error (wantErr %v, gotErr %v)", tt.wantErr, err)
 			}
 
 			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("tagUsecase.GetTagByPostID() mismatch (-want +got):\n%s", diff)
+				t.Errorf("tagUsecase.ListTagsByPostID() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}

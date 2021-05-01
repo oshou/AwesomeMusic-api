@@ -9,9 +9,9 @@ import (
 
 // ITagUsecase is usecase layer Interface for Tag
 type ITagUsecase interface {
-	GetTags() ([]*model.Tag, error)
+	ListTags() ([]*model.Tag, error)
+	ListTagsByPostID(postID int) ([]*model.Tag, error)
 	GetTagByID(tagID int) (*model.Tag, error)
-	GetTagsByPostID(postID int) ([]*model.Tag, error)
 	AddTag(tagName string) (*model.Tag, error)
 	AttachTag(postID, tagID int) (*model.PostTag, error)
 }
@@ -29,16 +29,16 @@ func NewTagUsecase(repo repository.ITagRepository) ITagUsecase {
 	}
 }
 
-func (tu *tagUsecase) GetTags() ([]*model.Tag, error) {
-	return tu.repo.GetAll()
+func (tu *tagUsecase) ListTags() ([]*model.Tag, error) {
+	return tu.repo.List()
+}
+
+func (tu *tagUsecase) ListTagsByPostID(postID int) ([]*model.Tag, error) {
+	return tu.repo.GetByPostID(postID)
 }
 
 func (tu *tagUsecase) GetTagByID(tagID int) (*model.Tag, error) {
 	return tu.repo.GetByID(tagID)
-}
-
-func (tu *tagUsecase) GetTagsByPostID(postID int) ([]*model.Tag, error) {
-	return tu.repo.GetByPostID(postID)
 }
 
 func (tu *tagUsecase) AddTag(tagName string) (*model.Tag, error) {

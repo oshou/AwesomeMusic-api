@@ -15,7 +15,7 @@ import (
 // IUserUsecase is usecase layer Interface for User
 type IUserUsecase interface {
 	Authenticate(username, password string) (*model.User, error)
-	GetUsers() ([]*model.User, error)
+	ListUsers() ([]*model.User, error)
 	GetUserByID(userID int) (*model.User, error)
 	AddUser(name, password string) (*model.User, error)
 }
@@ -56,8 +56,8 @@ func (uu *userUsecase) Authenticate(username, password string) (*model.User, err
 	return user, nil
 }
 
-func (uu *userUsecase) GetUsers() ([]*model.User, error) {
-	return uu.repo.GetAll()
+func (uu *userUsecase) ListUsers() ([]*model.User, error) {
+	return uu.repo.List()
 }
 
 func (uu *userUsecase) GetUserByID(userID int) (*model.User, error) {

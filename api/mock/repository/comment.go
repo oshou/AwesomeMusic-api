@@ -33,19 +33,19 @@ func (m *MockICommentRepository) EXPECT() *MockICommentRepositoryMockRecorder {
 	return m.recorder
 }
 
-// GetAll mocks base method
-func (m *MockICommentRepository) GetAll(postID int) ([]*model.Comment, error) {
+// List mocks base method
+func (m *MockICommentRepository) List(postID int) ([]*model.Comment, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll", postID)
+	ret := m.ctrl.Call(m, "List", postID)
 	ret0, _ := ret[0].([]*model.Comment)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetAll indicates an expected call of GetAll
-func (mr *MockICommentRepositoryMockRecorder) GetAll(postID interface{}) *gomock.Call {
+// List indicates an expected call of List
+func (mr *MockICommentRepositoryMockRecorder) List(postID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockICommentRepository)(nil).GetAll), postID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockICommentRepository)(nil).List), postID)
 }
 
 // GetByID mocks base method

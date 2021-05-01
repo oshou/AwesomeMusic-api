@@ -134,29 +134,29 @@ func main() {
 		r.Post("/logout", authHandler.Logout)
 
 		r.Route("/users", func(r chi.Router) {
-			r.Get("/", userHandler.GetUsers)
+			r.Get("/", userHandler.ListUsers)
 			r.Post("/", userHandler.AddUser)
 			r.Get("/{user_id}", userHandler.GetUserByID)
 		})
 		r.Route("/posts", func(r chi.Router) {
-			r.Get("/", postHandler.GetPosts)
+			r.Get("/", postHandler.ListPosts)
 			r.Post("/", postHandler.AddPost)
 			r.Route("/{post_id}", func(r chi.Router) {
 				r.Get("/", postHandler.GetPostByID)
 				r.Delete("/", postHandler.DeletePostByID)
 				r.Route("/comments", func(r chi.Router) {
-					r.Get("/", commentHandler.GetComments)
+					r.Get("/", commentHandler.ListComments)
 					r.Post("/", commentHandler.AddComment)
 					r.Get("/{comment_id}", commentHandler.GetCommentByID)
 				})
 				r.Route("/tags", func(r chi.Router) {
-					r.Get("/", tagHandler.GetTagsByPostID)
+					r.Get("/", tagHandler.ListTagsByPostID)
 					r.Post("/{tag_id}", tagHandler.AttachTag)
 				})
 			})
 		})
 		r.Route("/tags", func(r chi.Router) {
-			r.Get("/", tagHandler.GetTags)
+			r.Get("/", tagHandler.ListTags)
 			r.Post("/", tagHandler.AddTag)
 			r.Get("/{tag_id}", tagHandler.GetTagByID)
 		})

@@ -22,7 +22,7 @@ func NewTagRepository(db *sqlx.DB) repository.ITagRepository {
 	}
 }
 
-func (tr *tagRepository) GetAll() ([]*model.Tag, error) {
+func (tr *tagRepository) List() ([]*model.Tag, error) {
 	var tt []*model.Tag
 
 	query := `SELECT

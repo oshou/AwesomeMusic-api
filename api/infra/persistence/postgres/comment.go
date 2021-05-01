@@ -22,7 +22,7 @@ func NewCommentRepository(db *sqlx.DB) repository.ICommentRepository {
 	}
 }
 
-func (cr *commentRepository) GetAll(postID int) ([]*model.Comment, error) {
+func (cr *commentRepository) List(postID int) ([]*model.Comment, error) {
 	var cc []*model.Comment
 
 	query := `SELECT

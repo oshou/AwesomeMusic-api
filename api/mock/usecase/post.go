@@ -33,19 +33,49 @@ func (m *MockIPostUsecase) EXPECT() *MockIPostUsecaseMockRecorder {
 	return m.recorder
 }
 
-// GetPosts mocks base method
-func (m *MockIPostUsecase) GetPosts() ([]*model.Post, error) {
+// ListPosts mocks base method
+func (m *MockIPostUsecase) ListPosts() ([]*model.Post, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetPosts")
+	ret := m.ctrl.Call(m, "ListPosts")
 	ret0, _ := ret[0].([]*model.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetPosts indicates an expected call of GetPosts
-func (mr *MockIPostUsecaseMockRecorder) GetPosts() *gomock.Call {
+// ListPosts indicates an expected call of ListPosts
+func (mr *MockIPostUsecaseMockRecorder) ListPosts() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPosts", reflect.TypeOf((*MockIPostUsecase)(nil).GetPosts))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPosts", reflect.TypeOf((*MockIPostUsecase)(nil).ListPosts))
+}
+
+// ListPostsByTagID mocks base method
+func (m *MockIPostUsecase) ListPostsByTagID(tagID int) ([]*model.Post, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListPostsByTagID", tagID)
+	ret0, _ := ret[0].([]*model.Post)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListPostsByTagID indicates an expected call of ListPostsByTagID
+func (mr *MockIPostUsecaseMockRecorder) ListPostsByTagID(tagID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPostsByTagID", reflect.TypeOf((*MockIPostUsecase)(nil).ListPostsByTagID), tagID)
+}
+
+// ListPostsByUserID mocks base method
+func (m *MockIPostUsecase) ListPostsByUserID(userID int) ([]*model.Post, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListPostsByUserID", userID)
+	ret0, _ := ret[0].([]*model.Post)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListPostsByUserID indicates an expected call of ListPostsByUserID
+func (mr *MockIPostUsecaseMockRecorder) ListPostsByUserID(userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPostsByUserID", reflect.TypeOf((*MockIPostUsecase)(nil).ListPostsByUserID), userID)
 }
 
 // GetPostByID mocks base method
@@ -61,36 +91,6 @@ func (m *MockIPostUsecase) GetPostByID(postID int) (*model.Post, error) {
 func (mr *MockIPostUsecaseMockRecorder) GetPostByID(postID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPostByID", reflect.TypeOf((*MockIPostUsecase)(nil).GetPostByID), postID)
-}
-
-// GetPostsByTagID mocks base method
-func (m *MockIPostUsecase) GetPostsByTagID(tagID int) ([]*model.Post, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetPostsByTagID", tagID)
-	ret0, _ := ret[0].([]*model.Post)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetPostsByTagID indicates an expected call of GetPostsByTagID
-func (mr *MockIPostUsecaseMockRecorder) GetPostsByTagID(tagID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPostsByTagID", reflect.TypeOf((*MockIPostUsecase)(nil).GetPostsByTagID), tagID)
-}
-
-// GetPostsByUserID mocks base method
-func (m *MockIPostUsecase) GetPostsByUserID(userID int) ([]*model.Post, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetPostsByUserID", userID)
-	ret0, _ := ret[0].([]*model.Post)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetPostsByUserID indicates an expected call of GetPostsByUserID
-func (mr *MockIPostUsecaseMockRecorder) GetPostsByUserID(userID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPostsByUserID", reflect.TypeOf((*MockIPostUsecase)(nil).GetPostsByUserID), userID)
 }
 
 // AddPost mocks base method

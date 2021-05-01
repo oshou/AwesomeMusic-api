@@ -9,8 +9,8 @@ import (
 
 	"github.com/oshou/AwesomeMusic-api/api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/api/domain/repository"
+	"github.com/oshou/AwesomeMusic-api/api/mock/mock_repository"
 	"github.com/oshou/AwesomeMusic-api/api/usecase"
-	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
 )
 
 func TestNewPostUsecase(t *testing.T) {
@@ -31,7 +31,7 @@ func TestNewPostUsecase(t *testing.T) {
 		})
 	}
 }
-func Test_postUsecase_GetPosts(t *testing.T) {
+func Test_postUsecase_ListPosts(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -49,16 +49,16 @@ func Test_postUsecase_GetPosts(t *testing.T) {
 			t.Parallel()
 
 			mock := mock_repository.NewMockIPostRepository(ctrl)
-			mock.EXPECT().GetAll().Return(tt.mock, tt.mockErr)
+			mock.EXPECT().List().Return(tt.mock, tt.mockErr)
 			pu := usecase.NewPostUsecase(mock)
-			got, err := pu.GetPosts()
+			got, err := pu.ListPosts()
 
 			if err != tt.wantErr {
-				t.Errorf("postUsecase.GetPosts() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+				t.Errorf("postUsecase.ListPosts() error (wantErr %v, gotErr %v)", tt.wantErr, err)
 			}
 
 			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("postUsecase.GetPosts() mismatch (-want +got):\n%s", diff)
+				t.Errorf("postUsecase.ListPosts() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
@@ -98,7 +98,7 @@ func Test_postUsecase_GetPostByID(t *testing.T) {
 	}
 }
 
-func Test_postUsecase_GetPostsByTagID(t *testing.T) {
+func Test_postUsecase_ListPostsByTagID(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -119,7 +119,7 @@ func Test_postUsecase_GetPostsByTagID(t *testing.T) {
 			mock := mock_repository.NewMockIPostRepository(ctrl)
 			mock.EXPECT().GetByTagID(tt.tagID).Return(tt.mock, tt.mockErr)
 			pu := usecase.NewPostUsecase(mock)
-			got, err := pu.GetPostsByTagID(tt.tagID)
+			got, err := pu.ListPostsByTagID(tt.tagID)
 
 			if err != tt.wantErr {
 				t.Errorf("postUsecase.GetPostByTagID() error (wantErr %v, gotErr %v)", tt.wantErr, err)
@@ -132,7 +132,7 @@ func Test_postUsecase_GetPostsByTagID(t *testing.T) {
 	}
 }
 
-func Test_postUsecase_GetPostsByUserID(t *testing.T) {
+func Test_postUsecase_ListPostsByUserID(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -153,7 +153,7 @@ func Test_postUsecase_GetPostsByUserID(t *testing.T) {
 			mock := mock_repository.NewMockIPostRepository(ctrl)
 			mock.EXPECT().GetByUserID(tt.userID).Return(tt.mock, tt.mockErr)
 			pu := usecase.NewPostUsecase(mock)
-			got, err := pu.GetPostsByUserID(tt.userID)
+			got, err := pu.ListPostsByUserID(tt.userID)
 
 			if err != tt.wantErr {
 				t.Errorf("postUsecase.GetPostByUserID() error (wantErr %v, gotErr %v)", tt.wantErr, err)

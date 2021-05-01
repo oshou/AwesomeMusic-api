@@ -20,7 +20,7 @@ type addUserRequest struct {
 
 // IUserHandler is ui layer http-handler interface
 type IUserHandler interface {
-	GetUsers(w http.ResponseWriter, r *http.Request)
+	ListUsers(w http.ResponseWriter, r *http.Request)
 	GetUserByID(w http.ResponseWriter, r *http.Request)
 	AddUser(w http.ResponseWriter, r *http.Request)
 }
@@ -38,8 +38,8 @@ func NewUserHandler(usecase usecase.IUserUsecase) IUserHandler {
 	}
 }
 
-func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := uh.usecase.GetUsers()
+func (uh *userHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
+	users, err := uh.usecase.ListUsers()
 	if err != nil {
 		log.Logger.Error("failed to get users", zap.Error(err))
 		badRequestError(w)
@@ -47,9 +47,17 @@ func (uh *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if len(users) == 0 {
+		log.Logger.Error("failed to get users", zap.Error(err))
+		notFoundError(w)
+
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(users); err != nil {
+		log.Logger.Error("failed to get users", zap.Error(err))
 		internalServerError(w)
 
 		return
@@ -106,6 +114,7 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(user); err != nil {
+		log.Logger.Error("failed to get user by userID", zap.Error(err))
 		internalServerError(w)
 
 		return

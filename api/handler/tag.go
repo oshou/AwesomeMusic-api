@@ -19,9 +19,9 @@ type addTagRequest struct {
 
 // ITagHandler is ui layer http-handler interface
 type ITagHandler interface {
-	GetTags(w http.ResponseWriter, r *http.Request)
+	ListTags(w http.ResponseWriter, r *http.Request)
+	ListTagsByPostID(w http.ResponseWriter, r *http.Request)
 	GetTagByID(w http.ResponseWriter, r *http.Request)
-	GetTagsByPostID(w http.ResponseWriter, r *http.Request)
 	AddTag(w http.ResponseWriter, r *http.Request)
 	AttachTag(w http.ResponseWriter, r *http.Request)
 }
@@ -39,8 +39,8 @@ func NewTagHandler(usecase usecase.ITagUsecase) ITagHandler {
 	}
 }
 
-func (th *tagHandler) GetTags(w http.ResponseWriter, r *http.Request) {
-	tags, err := th.usecase.GetTags()
+func (th *tagHandler) ListTags(w http.ResponseWriter, r *http.Request) {
+	tags, err := th.usecase.ListTags()
 	if err != nil {
 		log.Logger.Error("failed to get tags", zap.Error(err))
 		badRequestError(w)
@@ -51,6 +51,7 @@ func (th *tagHandler) GetTags(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(tags); err != nil {
+		log.Logger.Error("failed to get tags", zap.Error(err))
 		internalServerError(w)
 
 		return
@@ -79,13 +80,14 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(tag); err != nil {
+		log.Logger.Error("failed to get tag by tagID", zap.Error(err))
 		internalServerError(w)
 
 		return
 	}
 }
 
-func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
+func (th *tagHandler) ListTagsByPostID(w http.ResponseWriter, r *http.Request) {
 	postIDString := chi.URLParam(r, "post_id")
 	postID, err := strconv.Atoi(postIDString)
 
@@ -96,7 +98,7 @@ func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tags, err := th.usecase.GetTagsByPostID(postID)
+	tags, err := th.usecase.ListTagsByPostID(postID)
 	if err != nil {
 		log.Logger.Error("failed to get tags by postID", zap.Error(err))
 		badRequestError(w)
@@ -135,6 +137,7 @@ func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(tag); err != nil {
+		log.Logger.Error("failed to add tag", zap.Error(err))
 		internalServerError(w)
 
 		return
@@ -173,6 +176,7 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(postTag); err != nil {
+		log.Logger.Error("failed to attach tag", zap.Error(err))
 		internalServerError(w)
 
 		return

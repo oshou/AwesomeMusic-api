@@ -33,19 +33,34 @@ func (m *MockITagUsecase) EXPECT() *MockITagUsecaseMockRecorder {
 	return m.recorder
 }
 
-// GetTags mocks base method
-func (m *MockITagUsecase) GetTags() ([]*model.Tag, error) {
+// ListTags mocks base method
+func (m *MockITagUsecase) ListTags() ([]*model.Tag, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetTags")
+	ret := m.ctrl.Call(m, "ListTags")
 	ret0, _ := ret[0].([]*model.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetTags indicates an expected call of GetTags
-func (mr *MockITagUsecaseMockRecorder) GetTags() *gomock.Call {
+// ListTags indicates an expected call of ListTags
+func (mr *MockITagUsecaseMockRecorder) ListTags() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTags", reflect.TypeOf((*MockITagUsecase)(nil).GetTags))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTags", reflect.TypeOf((*MockITagUsecase)(nil).ListTags))
+}
+
+// ListTagsByPostID mocks base method
+func (m *MockITagUsecase) ListTagsByPostID(postID int) ([]*model.Tag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListTagsByPostID", postID)
+	ret0, _ := ret[0].([]*model.Tag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListTagsByPostID indicates an expected call of ListTagsByPostID
+func (mr *MockITagUsecaseMockRecorder) ListTagsByPostID(postID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTagsByPostID", reflect.TypeOf((*MockITagUsecase)(nil).ListTagsByPostID), postID)
 }
 
 // GetTagByID mocks base method
@@ -61,21 +76,6 @@ func (m *MockITagUsecase) GetTagByID(tagID int) (*model.Tag, error) {
 func (mr *MockITagUsecaseMockRecorder) GetTagByID(tagID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTagByID", reflect.TypeOf((*MockITagUsecase)(nil).GetTagByID), tagID)
-}
-
-// GetTagsByPostID mocks base method
-func (m *MockITagUsecase) GetTagsByPostID(postID int) ([]*model.Tag, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetTagsByPostID", postID)
-	ret0, _ := ret[0].([]*model.Tag)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetTagsByPostID indicates an expected call of GetTagsByPostID
-func (mr *MockITagUsecaseMockRecorder) GetTagsByPostID(postID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTagsByPostID", reflect.TypeOf((*MockITagUsecase)(nil).GetTagsByPostID), postID)
 }
 
 // AddTag mocks base method

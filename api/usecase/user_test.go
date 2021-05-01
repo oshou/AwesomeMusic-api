@@ -2,15 +2,15 @@
 package usecase_test
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
-
 	"github.com/oshou/AwesomeMusic-api/api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/api/domain/repository"
+	"github.com/oshou/AwesomeMusic-api/api/mock/mock_repository"
 	"github.com/oshou/AwesomeMusic-api/api/usecase"
-	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
 )
 
 func TestNewUserUsecase(t *testing.T) {
@@ -31,7 +31,7 @@ func TestNewUserUsecase(t *testing.T) {
 	}
 }
 
-func Test_userUsecase_GetUsers(t *testing.T) {
+func Test_userUsecase_ListUsers(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -71,16 +71,16 @@ func Test_userUsecase_GetUsers(t *testing.T) {
 			t.Parallel()
 
 			mock := mock_repository.NewMockIUserRepository(ctrl)
-			mock.EXPECT().GetAll().Return(tt.mock, tt.mockErr)
+			mock.EXPECT().List().Return(tt.mock, tt.mockErr)
 			uu := usecase.NewUserUsecase(mock)
-			got, err := uu.GetUsers()
+			got, err := uu.ListUsers()
 
 			if err != tt.wantErr {
-				t.Errorf("userUsecase.GetUsers() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("userUsecase.ListUsers() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
 			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("userUsecase.GetUsers() mismatch (-want +got):\n%s", diff)
+				t.Errorf("userUsecase.ListUsers() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
@@ -179,6 +179,40 @@ func Test_userUsecase_AddUser(t *testing.T) {
 
 			if diff := cmp.Diff(tt.want, got); diff != "" {
 				t.Errorf("userUsecase.AddUser() mismatch (-want +got):\n%s", diff)
+			}
+		})
+	}
+}
+
+func Test_userUsecase_Authenticate(t *testing.T) {
+	type fields struct {
+		repo repository.IUserRepository
+	}
+	type args struct {
+		username string
+		password string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    *model.User
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			uu := &userUsecase{
+				repo: tt.fields.repo,
+			}
+			got, err := uu.Authenticate(tt.args.username, tt.args.password)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("userUsecase.Authenticate() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("userUsecase.Authenticate() = %v, want %v", got, tt.want)
 			}
 		})
 	}

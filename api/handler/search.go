@@ -35,7 +35,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 
 	switch searchType {
 	case "post_title":
-		posts, err := sh.usecase.GetPostsByTitle(q)
+		posts, err := sh.usecase.ListPostsByTitle(q)
 		if err != nil {
 			log.Logger.Error("failed to get posts by title", zap.Error(err))
 			badRequestError(w)
@@ -51,7 +51,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "user_name":
-		posts, err := sh.usecase.GetPostsByUserName(q)
+		posts, err := sh.usecase.ListPostsByUserName(q)
 		if err != nil {
 			log.Logger.Error("failed to get posts by user name", zap.Error(err))
 			badRequestError(w)
@@ -67,7 +67,7 @@ func (sh *searchHandler) SearchByType(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "tag_name":
-		posts, err := sh.usecase.GetPostsByTagName(q)
+		posts, err := sh.usecase.ListPostsByTagName(q)
 		if err != nil {
 			log.Logger.Error("failed to get posts by tag name", zap.Error(err))
 			badRequestError(w)

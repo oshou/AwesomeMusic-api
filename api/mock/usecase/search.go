@@ -33,47 +33,47 @@ func (m *MockISearchUsecase) EXPECT() *MockISearchUsecaseMockRecorder {
 	return m.recorder
 }
 
-// GetPostsByTitle mocks base method
-func (m *MockISearchUsecase) GetPostsByTitle(q string) ([]*model.Post, error) {
+// ListPostsByTitle mocks base method
+func (m *MockISearchUsecase) ListPostsByTitle(q string) ([]*model.Post, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetPostsByTitle", q)
+	ret := m.ctrl.Call(m, "ListPostsByTitle", q)
 	ret0, _ := ret[0].([]*model.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetPostsByTitle indicates an expected call of GetPostsByTitle
-func (mr *MockISearchUsecaseMockRecorder) GetPostsByTitle(q interface{}) *gomock.Call {
+// ListPostsByTitle indicates an expected call of ListPostsByTitle
+func (mr *MockISearchUsecaseMockRecorder) ListPostsByTitle(q interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPostsByTitle", reflect.TypeOf((*MockISearchUsecase)(nil).GetPostsByTitle), q)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPostsByTitle", reflect.TypeOf((*MockISearchUsecase)(nil).ListPostsByTitle), q)
 }
 
-// GetPostsByUserName mocks base method
-func (m *MockISearchUsecase) GetPostsByUserName(q string) ([]*model.Post, error) {
+// ListPostsByUserName mocks base method
+func (m *MockISearchUsecase) ListPostsByUserName(q string) ([]*model.Post, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetPostsByUserName", q)
+	ret := m.ctrl.Call(m, "ListPostsByUserName", q)
 	ret0, _ := ret[0].([]*model.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetPostsByUserName indicates an expected call of GetPostsByUserName
-func (mr *MockISearchUsecaseMockRecorder) GetPostsByUserName(q interface{}) *gomock.Call {
+// ListPostsByUserName indicates an expected call of ListPostsByUserName
+func (mr *MockISearchUsecaseMockRecorder) ListPostsByUserName(q interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPostsByUserName", reflect.TypeOf((*MockISearchUsecase)(nil).GetPostsByUserName), q)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPostsByUserName", reflect.TypeOf((*MockISearchUsecase)(nil).ListPostsByUserName), q)
 }
 
-// GetPostsByTagName mocks base method
-func (m *MockISearchUsecase) GetPostsByTagName(q string) ([]*model.Post, error) {
+// ListPostsByTagName mocks base method
+func (m *MockISearchUsecase) ListPostsByTagName(q string) ([]*model.Post, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetPostsByTagName", q)
+	ret := m.ctrl.Call(m, "ListPostsByTagName", q)
 	ret0, _ := ret[0].([]*model.Post)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetPostsByTagName indicates an expected call of GetPostsByTagName
-func (mr *MockISearchUsecaseMockRecorder) GetPostsByTagName(q interface{}) *gomock.Call {
+// ListPostsByTagName indicates an expected call of ListPostsByTagName
+func (mr *MockISearchUsecaseMockRecorder) ListPostsByTagName(q interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPostsByTagName", reflect.TypeOf((*MockISearchUsecase)(nil).GetPostsByTagName), q)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPostsByTagName", reflect.TypeOf((*MockISearchUsecase)(nil).ListPostsByTagName), q)
 }

@@ -8,7 +8,7 @@ import (
 
 // ICommentRepository is Domain-access interface for Comment
 type ICommentRepository interface {
-	GetAll(postID int) ([]*model.Comment, error)
+	List(postID int) ([]*model.Comment, error)
 	GetByID(commentID int) (*model.Comment, error)
 	Add(postID, userID int, comment string) (*model.Comment, error)
 }

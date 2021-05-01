@@ -48,19 +48,19 @@ func (mr *MockIUserUsecaseMockRecorder) Authenticate(username, password interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Authenticate", reflect.TypeOf((*MockIUserUsecase)(nil).Authenticate), username, password)
 }
 
-// GetUsers mocks base method
-func (m *MockIUserUsecase) GetUsers() ([]*model.User, error) {
+// ListUsers mocks base method
+func (m *MockIUserUsecase) ListUsers() ([]*model.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUsers")
+	ret := m.ctrl.Call(m, "ListUsers")
 	ret0, _ := ret[0].([]*model.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetUsers indicates an expected call of GetUsers
-func (mr *MockIUserUsecaseMockRecorder) GetUsers() *gomock.Call {
+// ListUsers indicates an expected call of ListUsers
+func (mr *MockIUserUsecaseMockRecorder) ListUsers() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsers", reflect.TypeOf((*MockIUserUsecase)(nil).GetUsers))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUsers", reflect.TypeOf((*MockIUserUsecase)(nil).ListUsers))
 }
 
 // GetUserByID mocks base method
