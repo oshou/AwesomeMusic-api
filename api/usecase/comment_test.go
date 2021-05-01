@@ -75,6 +75,7 @@ func Test_commentUsecase_GetComments(t *testing.T) {
 
 			mock := mock_repository.NewMockICommentRepository(ctrl)
 			mock.EXPECT().GetAll(tt.postID).Return(tt.mock, tt.mockErr)
+
 			cu := usecase.NewCommentUsecase(mock)
 			got, err := cu.GetComments(tt.postID)
 
