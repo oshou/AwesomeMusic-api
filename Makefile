@@ -59,21 +59,21 @@ schema:
 restore:
 	psql -h $(DB_HOST) -U $(DB_USER) $(DB_NAME) < _db/dumpall.sql
 
-seed:
-	go run cmd/seed/main.go
-
 mockgen:
 	go generate ./...
 
 testgen:
 	for DIR in $(DIRS); do \
-		gotests -w -all $$DIR; \
+		gotests -w -all -template_dir test/tmpl $$DIR; \
 	done
 
-clean:
+tidy:
 	go mod tidy
 
-fmt: clean
+clean:
+	go clean -modcache
+
+fmt: tidy
 	go fmt ./...
 
 lint: fmt $(GOPATH)/bin/golangci-lint
@@ -99,4 +99,4 @@ build_prd: test
 run:
 	go run cmd/api/main.go
 
-.PHONY: apidoc dbdoc pg_local migrate rollback schema restore seed mockgen clean fmt lint cov test apitest build_local build_prd run
+.PHONY: apidoc dbdoc pg_local migrate rollback schema restore seed mockgen tidy clean fmt lint cov test apitest build_local build_prd run

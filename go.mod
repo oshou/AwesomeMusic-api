@@ -8,7 +8,6 @@ require (
 	github.com/go-chi/cors v1.1.1
 	github.com/go-testfixtures/testfixtures/v3 v3.6.0
 	github.com/golang/mock v1.4.4
-	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.0
 	github.com/jinzhu/configor v1.2.0
 	github.com/jmoiron/sqlx v1.2.1-0.20190826204134-d7d95172beb5
