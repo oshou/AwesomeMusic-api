@@ -29,22 +29,16 @@ func TestNewHealthUsecase(t *testing.T) {
 }
 
 func Test_healthUsecase_GetHealth(t *testing.T) {
-	type fields struct {
-		repo repository.IHealthRepository
-	}
 	tests := []struct {
 		name    string
-		fields  fields
+		hu      *healthUsecase
 		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			hu := &healthUsecase{
-				repo: tt.fields.repo,
-			}
-			if err := hu.GetHealth(); (err != nil) != tt.wantErr {
+			if err := tt.hu.GetHealth(); (err != nil) != tt.wantErr {
 				t.Errorf("healthUsecase.GetHealth() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

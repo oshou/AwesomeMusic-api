@@ -8,12 +8,10 @@ require (
 	github.com/go-chi/cors v1.1.1
 	github.com/go-testfixtures/testfixtures/v3 v3.6.0
 	github.com/golang/mock v1.4.4
-	github.com/google/go-cmp v0.5.4
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.0
 	github.com/jinzhu/configor v1.2.0
 	github.com/jmoiron/sqlx v1.2.1-0.20190826204134-d7d95172beb5
-	github.com/joho/godotenv v1.3.0
 	github.com/kr/text v0.2.0 // indirect
 	github.com/lib/pq v1.10.0
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect

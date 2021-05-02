@@ -70,7 +70,6 @@ testgen:
 		gotests -w -all $$DIR; \
 	done
 
-
 clean:
 	go mod tidy
 
@@ -81,7 +80,7 @@ lint: fmt $(GOPATH)/bin/golangci-lint
 	golangci-lint run
 
 cov: lint
-	go test ./... -cover
+	go test -cover -race -p 1 ./...
 
 test: fmt
 	go test ./...
