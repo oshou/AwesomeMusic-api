@@ -132,7 +132,6 @@ func main() {
 		r.Get("/health", healthHandler.GetHealth)
 		r.Post("/login", authHandler.Login)
 		r.Post("/logout", authHandler.Logout)
-
 		r.Route("/users", func(r chi.Router) {
 			r.Get("/", userHandler.ListUsers)
 			r.Post("/", userHandler.AddUser)

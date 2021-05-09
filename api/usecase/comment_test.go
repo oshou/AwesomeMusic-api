@@ -3,9 +3,12 @@ package usecase
 import (
 	"testing"
 
+	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+
 	"github.com/oshou/AwesomeMusic-api/api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/api/domain/repository"
+	"github.com/oshou/AwesomeMusic-api/api/mock/mock_repository"
 )
 
 func TestNewCommentUsecase(t *testing.T) {
@@ -29,6 +32,8 @@ func TestNewCommentUsecase(t *testing.T) {
 }
 
 func Test_commentUsecase_ListComments(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 	type args struct {
 		postID int
 	}
@@ -39,11 +44,28 @@ func Test_commentUsecase_ListComments(t *testing.T) {
 		want    []*model.Comment
 		wantErr bool
 	}{
+		{
+			name: "Success",
+			args: args{postID: 1},
+			want: []*model.Comment{
+				{
+					ID:      1,
+					UserID:  1,
+					PostID:  1,
+					Comment: "aaa",
+				},
+			},
+			wantErr: false,
+		},
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.cu.ListComments(tt.args.postID)
+			mock := mock_repository.NewMockICommentRepository(ctrl)
+			mock.EXPECT().List(tt.args.postID).Return(tt.want, tt.wantErr)
+
+			cu := NewCommentUsecase(mock)
+			got, err := cu.ListComments(tt.args.postID)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("commentUsecase.ListComments() error = %v, wantErr %v", err, tt.wantErr)
 				return

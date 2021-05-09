@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/golang/mock/gomock"
 	"github.com/oshou/AwesomeMusic-api/api/usecase"
 )
 
@@ -30,6 +31,8 @@ func TestNewCommentHandler(t *testing.T) {
 }
 
 func Test_commentHandler_ListComments(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 	type args struct {
 		w http.ResponseWriter
 		r *http.Request
