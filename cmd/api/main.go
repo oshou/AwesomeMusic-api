@@ -62,7 +62,7 @@ func main() {
 	defer db.Close()
 	log.Logger.Info("set db connection")
 
-	// Session-Store
+	// Session Store
 	sskey := os.Getenv("SESSION_SECRET_KEY")
 	dsn := conf.GetDSN()
 	store, err := pgstore.NewPGStore(dsn, []byte(sskey))
