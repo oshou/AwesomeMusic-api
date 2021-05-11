@@ -45,7 +45,6 @@ type Stats struct {
 
 var (
 	apiKey    string
-	apiHost   string
 	channelID string
 
 	slackCli *slack.Client
@@ -70,13 +69,9 @@ func main() {
 // TODO: 長い。もっとわける。
 func SendDailyStatsReport(ctx context.Context) error {
 	apiPath := "/v3/stats"
-	apiHost = "https://api.sendgrid.com"
+	baseURL := "https://api.sendgrid.com"
 	yesterday := time.Now().AddDate(0, 0, -1).Format("2006-01-02")
-	req := sendgrid.GetRequest(
-		apiKey,
-		apiPath,
-		apiHost,
-	)
+	req := sendgrid.GetRequest(apiKey, apiPath, baseURL)
 	req.Method = "GET"
 	req.QueryParams = map[string]string{
 		"start_date":    yesterday,
@@ -114,6 +109,10 @@ func SendDailyStatsReport(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func fetchSendgridStats() Stats {
+
 }
 
 func severity(s Stats) string {
