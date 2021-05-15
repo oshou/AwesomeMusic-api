@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
 	"github.com/oshou/AwesomeMusic-api/api/usecase"
@@ -30,7 +31,7 @@ func NewHealthHandler(u usecase.IHealthUsecase) IHealthHandler {
 
 func (hu healthHandler) GetHealth(w http.ResponseWriter, r *http.Request) {
 	if err := hu.usecase.GetHealth(); err != nil {
-		log.Logger.Error("failed to get health.", zap.Error(err))
+		log.Logger.Error("failed to get health.", zap.Error(errors.WithStack(err)))
 		internalServerError(w)
 
 		return

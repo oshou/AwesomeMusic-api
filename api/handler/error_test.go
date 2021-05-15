@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Test_writeErrorResponse(t *testing.T) {
+func Test_errorResponse(t *testing.T) {
 	type args struct {
 		w          http.ResponseWriter
 		statusCode int
@@ -18,7 +18,7 @@ func Test_writeErrorResponse(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			writeErrorResponse(tt.args.w, tt.args.statusCode)
+			errorResponse(tt.args.w, tt.args.statusCode)
 		})
 	}
 }

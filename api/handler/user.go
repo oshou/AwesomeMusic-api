@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
 	"github.com/oshou/AwesomeMusic-api/api/usecase"
@@ -41,14 +42,14 @@ func NewUserHandler(usecase usecase.IUserUsecase) IUserHandler {
 func (uh *userHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := uh.usecase.ListUsers()
 	if err != nil {
-		log.Logger.Error("failed to get users", zap.Error(err))
-		badRequestError(w)
+		log.Logger.Error("failed to get users", zap.Error(errors.WithStack(err)))
+		httpError(w, err)
 
 		return
 	}
 
 	if len(users) == 0 {
-		log.Logger.Error("failed to get users", zap.Error(err))
+		log.Logger.Error("failed to get users", zap.Error(errors.WithStack(err)))
 		notFoundError(w)
 
 		return
@@ -57,7 +58,7 @@ func (uh *userHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(users); err != nil {
-		log.Logger.Error("failed to get users", zap.Error(err))
+		log.Logger.Error("failed to get users", zap.Error(errors.WithStack(err)))
 		internalServerError(w)
 
 		return
@@ -68,7 +69,7 @@ func (uh *userHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 	req := addUserRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		log.Logger.Error("failed to add user", zap.Error(err))
+		log.Logger.Error("failed to add user", zap.Error(errors.WithStack(err)))
 		badRequestError(w)
 
 		return
@@ -76,8 +77,8 @@ func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 
 	user, err := uh.usecase.AddUser(req.Name, req.Password)
 	if err != nil {
-		log.Logger.Error("failed to add user", zap.Error(err))
-		badRequestError(w)
+		log.Logger.Error("failed to add user", zap.Error(errors.WithStack(err)))
+		httpError(w, err)
 
 		return
 	}
@@ -95,9 +96,8 @@ func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	userIDString := chi.URLParam(r, "user_id")
 	userID, err := strconv.Atoi(userIDString)
-
 	if err != nil {
-		log.Logger.Error("failed to convert string", zap.Error(err))
+		log.Logger.Error("failed to convert string", zap.Error(errors.WithStack(err)))
 		badRequestError(w)
 
 		return
@@ -105,7 +105,8 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 	user, err := uh.usecase.GetUserByID(userID)
 	if err != nil {
-		log.Logger.Error("failed to get user by userID", zap.Error(err))
+		log.Logger.Error("failed to get user by userID", zap.Error(errors.WithStack(err)))
+		httpError(w, err)
 		notFoundError(w)
 
 		return
@@ -114,7 +115,7 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(user); err != nil {
-		log.Logger.Error("failed to get user by userID", zap.Error(err))
+		log.Logger.Error("failed to get user by userID", zap.Error(errors.WithStack(err)))
 		internalServerError(w)
 
 		return
