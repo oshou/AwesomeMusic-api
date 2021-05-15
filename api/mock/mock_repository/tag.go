@@ -48,6 +48,36 @@ func (mr *MockITagRepositoryMockRecorder) List() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockITagRepository)(nil).List))
 }
 
+// ListByName mocks base method
+func (m *MockITagRepository) ListByName(tagName string) ([]*model.Tag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListByName", tagName)
+	ret0, _ := ret[0].([]*model.Tag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListByName indicates an expected call of ListByName
+func (mr *MockITagRepositoryMockRecorder) ListByName(tagName interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByName", reflect.TypeOf((*MockITagRepository)(nil).ListByName), tagName)
+}
+
+// ListByPostID mocks base method
+func (m *MockITagRepository) ListByPostID(postID int) ([]*model.Tag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListByPostID", postID)
+	ret0, _ := ret[0].([]*model.Tag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListByPostID indicates an expected call of ListByPostID
+func (mr *MockITagRepositoryMockRecorder) ListByPostID(postID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByPostID", reflect.TypeOf((*MockITagRepository)(nil).ListByPostID), postID)
+}
+
 // GetByID mocks base method
 func (m *MockITagRepository) GetByID(tagID int) (*model.Tag, error) {
 	m.ctrl.T.Helper()
@@ -61,36 +91,6 @@ func (m *MockITagRepository) GetByID(tagID int) (*model.Tag, error) {
 func (mr *MockITagRepositoryMockRecorder) GetByID(tagID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockITagRepository)(nil).GetByID), tagID)
-}
-
-// GetByName mocks base method
-func (m *MockITagRepository) GetByName(tagName string) ([]*model.Tag, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByName", tagName)
-	ret0, _ := ret[0].([]*model.Tag)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetByName indicates an expected call of GetByName
-func (mr *MockITagRepositoryMockRecorder) GetByName(tagName interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByName", reflect.TypeOf((*MockITagRepository)(nil).GetByName), tagName)
-}
-
-// GetByPostID mocks base method
-func (m *MockITagRepository) GetByPostID(postID int) ([]*model.Tag, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByPostID", postID)
-	ret0, _ := ret[0].([]*model.Tag)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetByPostID indicates an expected call of GetByPostID
-func (mr *MockITagRepositoryMockRecorder) GetByPostID(postID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByPostID", reflect.TypeOf((*MockITagRepository)(nil).GetByPostID), postID)
 }
 
 // Add mocks base method

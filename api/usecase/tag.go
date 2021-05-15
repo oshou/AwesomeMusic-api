@@ -34,7 +34,7 @@ func (tu *tagUsecase) ListTags() ([]*model.Tag, error) {
 }
 
 func (tu *tagUsecase) ListTagsByPostID(postID int) ([]*model.Tag, error) {
-	return tu.repo.GetByPostID(postID)
+	return tu.repo.ListByPostID(postID)
 }
 
 func (tu *tagUsecase) GetTagByID(tagID int) (*model.Tag, error) {

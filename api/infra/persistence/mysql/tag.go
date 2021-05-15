@@ -56,7 +56,7 @@ func (tr *tagRepository) GetByID(tagID int) (*model.Tag, error) {
 	return &t, nil
 }
 
-func (tr *tagRepository) GetByName(tagName string) ([]*model.Tag, error) {
+func (tr *tagRepository) ListByName(tagName string) ([]*model.Tag, error) {
 	var tt []*model.Tag
 
 	query := `SELECT
@@ -74,7 +74,7 @@ func (tr *tagRepository) GetByName(tagName string) ([]*model.Tag, error) {
 	return tt, nil
 }
 
-func (tr *tagRepository) GetByPostID(postID int) ([]*model.Tag, error) {
+func (tr *tagRepository) ListByPostID(postID int) ([]*model.Tag, error) {
 	var tt []*model.Tag
 
 	query := `SELECT

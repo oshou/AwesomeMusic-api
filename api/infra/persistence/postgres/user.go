@@ -23,14 +23,17 @@ func NewUserRepository(db *sqlx.DB) repository.IUserRepository {
 }
 
 func (ur *userRepository) List() ([]*model.User, error) {
+	const query = `
+		SELECT
+				id
+			, name
+		FROM
+			public.users
+		ORDER BY
+			id
+	`
+
 	var uu []*model.User
-
-	query := `SELECT
-							id,
-							name
-						FROM
-							public.users`
-
 	if err := ur.db.Select(&uu, query); err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -39,16 +42,17 @@ func (ur *userRepository) List() ([]*model.User, error) {
 }
 
 func (ur *userRepository) GetByID(userID int) (*model.User, error) {
+	const query = `
+		SELECT
+				id
+			, name
+		FROM
+			public.users
+		WHERE
+			id = $1
+	`
+
 	var user model.User
-
-	query := `SELECT
-							id,
-							name
-						FROM
-							public.users
-						WHERE
-							id = $1`
-
 	if err := ur.db.Get(&user, query, userID); err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -57,17 +61,18 @@ func (ur *userRepository) GetByID(userID int) (*model.User, error) {
 }
 
 func (ur *userRepository) GetByName(name string) (*model.User, error) {
+	const query = `
+		SELECT
+				id
+			, name
+			, password_hash
+		FROM
+			public.users
+		WHERE
+			name LIKE $1
+	`
+
 	var user model.User
-
-	query := `SELECT
-							id,
-							name,
-							password_hash
-						FROM
-							public.users
-						WHERE
-							name LIKE $1`
-
 	if err := ur.db.Get(&user, query, "%"+name+"%"); err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -76,16 +81,18 @@ func (ur *userRepository) GetByName(name string) (*model.User, error) {
 }
 
 func (ur *userRepository) Add(name string, passwordHash []byte) (*model.User, error) {
+	const query = `
+		INSERT INTO
+			public.users(name,password_hash)
+		VALUES
+			($1, $2)
+		RETURNING
+			id
+	`
+
 	u := model.User{
 		Name: name,
 	}
-
-	query := `INSERT INTO
-							public.users(name,password_hash)
-						VALUES
-							($1, $2)
-						RETURNING
-							id`
 
 	err := ur.db.QueryRow(query, name, passwordHash).Scan(&u.ID)
 	if err != nil {

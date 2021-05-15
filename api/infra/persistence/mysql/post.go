@@ -63,7 +63,7 @@ func (pr *postRepository) GetByID(postID int) (*model.Post, error) {
 	return &p, nil
 }
 
-func (pr *postRepository) GetByTagID(tagID int) ([]*model.Post, error) {
+func (pr *postRepository) ListByTagID(tagID int) ([]*model.Post, error) {
 	var pp []*model.Post
 
 	query := `SELECT
@@ -88,7 +88,7 @@ func (pr *postRepository) GetByTagID(tagID int) ([]*model.Post, error) {
 	return pp, nil
 }
 
-func (pr *postRepository) GetByUserID(userID int) ([]*model.Post, error) {
+func (pr *postRepository) ListByUserID(userID int) ([]*model.Post, error) {
 	var pp []*model.Post
 
 	query := `SELECT

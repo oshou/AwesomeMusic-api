@@ -39,11 +39,11 @@ func (pu *postUsecase) GetPostByID(postID int) (*model.Post, error) {
 }
 
 func (pu *postUsecase) ListPostsByTagID(tagID int) ([]*model.Post, error) {
-	return pu.repo.GetByTagID(tagID)
+	return pu.repo.ListByTagID(tagID)
 }
 
 func (pu *postUsecase) ListPostsByUserID(userID int) ([]*model.Post, error) {
-	return pu.repo.GetByUserID(userID)
+	return pu.repo.ListByUserID(userID)
 }
 
 func (pu *postUsecase) AddPost(userID int, title, url, message string) (*model.Post, error) {
