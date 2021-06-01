@@ -30,9 +30,9 @@ func NewHealthHandler(u usecase.IHealthUsecase) IHealthHandler {
 }
 
 func (hu healthHandler) GetHealth(w http.ResponseWriter, r *http.Request) {
-	if err := hu.usecase.GetHealth(); err != nil {
+	if err := hu.usecase.GetHealth(); err == nil {
 		log.Logger.Error("failed to get health.", zap.Error(errors.WithStack(err)))
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}

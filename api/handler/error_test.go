@@ -42,7 +42,9 @@ func Test_unauthorizedError(t *testing.T) {
 
 func Test_internalServerError(t *testing.T) {
 	type args struct {
-		w http.ResponseWriter
+		w   http.ResponseWriter
+		r   *http.Request
+		err error
 	}
 	tests := []struct {
 		name string
@@ -52,7 +54,7 @@ func Test_internalServerError(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			internalServerError(tt.args.w)
+			internalServerError(tt.args.w, tt.args.r, tt.args.err)
 		})
 	}
 }

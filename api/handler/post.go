@@ -48,7 +48,7 @@ func (ph *postHandler) ListPosts(w http.ResponseWriter, r *http.Request) {
 	posts, err := ph.usecase.ListPosts()
 	if err != nil {
 		log.Logger.Error("failed to get posts", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -64,7 +64,7 @@ func (ph *postHandler) ListPosts(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
 		log.Logger.Error("failed to get posts", zap.Error(errors.WithStack(err)))
-		internalServerError(w)
+		internalServerError(w, r, err)
 	}
 }
 
@@ -81,13 +81,13 @@ func (ph *postHandler) GetPostByID(w http.ResponseWriter, r *http.Request) {
 	post, err := ph.usecase.GetPostByID(postID)
 	if err != nil {
 		log.Logger.Error("failed to get posts by postID", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 	}
 
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(post); err != nil {
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -106,7 +106,7 @@ func (ph *postHandler) ListPostsByTagID(w http.ResponseWriter, r *http.Request) 
 	posts, err := ph.usecase.ListPostsByTagID(tagID)
 	if err != nil {
 		log.Logger.Error("failed to get posts by tagID", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -114,7 +114,7 @@ func (ph *postHandler) ListPostsByTagID(w http.ResponseWriter, r *http.Request) 
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -133,7 +133,7 @@ func (ph *postHandler) ListPostsByUserID(w http.ResponseWriter, r *http.Request)
 	posts, err := ph.usecase.ListPostsByUserID(userID)
 	if err != nil {
 		log.Logger.Error("failed to get posts by userID", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -141,7 +141,7 @@ func (ph *postHandler) ListPostsByUserID(w http.ResponseWriter, r *http.Request)
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -158,7 +158,7 @@ func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := strconv.Atoi(req.UserID)
 	if err != nil {
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -166,7 +166,7 @@ func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
 	post, err := ph.usecase.AddPost(userID, req.Title, req.URL, req.Message)
 	if err != nil {
 		log.Logger.Error("failed to add post", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -174,7 +174,7 @@ func (ph *postHandler) AddPost(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(post); err != nil {
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -194,7 +194,7 @@ func (ph *postHandler) DeletePostByID(w http.ResponseWriter, r *http.Request) {
 
 	if err := ph.usecase.DeletePostByID(postID); err != nil {
 		log.Logger.Error("failed to delete post by postID", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}

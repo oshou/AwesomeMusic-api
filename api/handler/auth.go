@@ -61,14 +61,14 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
 		session, err := h.store.New(r, sessionKey)
 		if err != nil {
 			log.Logger.Error("failed to create new session.", zap.Error(err))
-			internalServerError(w)
+			internalServerError(w, r, err)
 
 			return
 		}
 
 		if err := h.store.Save(r, w, session); err != nil {
 			log.Logger.Error("failed to save new session.", zap.Error(err))
-			internalServerError(w)
+			internalServerError(w, r, err)
 
 			return
 		}
@@ -76,7 +76,7 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(authenticatedUser); err != nil {
 		log.Logger.Error("failed to encode json.", zap.Error(err))
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -94,7 +94,7 @@ func (h *authHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	session.Options.MaxAge = -1
 	if err := h.store.Save(r, w, session); err != nil {
 		log.Logger.Error("failed to expire session.", zap.Error(err))
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}

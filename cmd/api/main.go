@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,11 +11,14 @@ import (
 	"time"
 
 	"github.com/antonlindstrom/pgstore"
+	sentry "github.com/getsentry/sentry-go"
+	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/gorilla/sessions"
 	_ "github.com/lib/pq"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
 	"github.com/oshou/AwesomeMusic-api/api/handler"
@@ -27,6 +31,9 @@ import (
 )
 
 const (
+	name    = "api"
+	version = "v1.5"
+
 	httpGzipLevel     = 6
 	httpTimeoutSecond = 60
 	httpPortString    = ":8080"
@@ -35,6 +42,7 @@ const (
 )
 
 var (
+	env                  string = "local"
 	port                 string = "8080"
 	sessionClearInterval int    = 5
 )
@@ -66,7 +74,6 @@ func main() {
 	sskey := os.Getenv("SESSION_SECRET_KEY")
 	dsn := conf.GetDSN()
 	store, err := pgstore.NewPGStore(dsn, []byte(sskey))
-
 	if err != nil {
 		log.Logger.Fatal("failed to initialize session store", zap.Error(err))
 	}
@@ -81,6 +88,24 @@ func main() {
 	defer store.Close()
 	defer store.StopCleanup(store.Cleanup(time.Duration(sessionClearInterval) * time.Minute))
 	log.Logger.Info("set session store")
+
+	// Error Reporter
+	sentryDSN := conf.GetSentryDSN()
+	if sentryDSN == "" {
+		log.Logger.Warn("not setup sentry", zap.Error(err))
+	} else {
+		err = initSentry(sentryDSN, env, name, version)
+		err = sentry.Init(sentry.ClientOptions{
+			Dsn: sentryDSN,
+		})
+		if err != nil {
+			log.Logger.Fatal("failed to initialize sentry", zap.Error(err))
+		}
+	}
+	defer sentry.Flush(2 * time.Second)
+
+	sentry.CaptureMessage("It works!")
+	sentryHandler := sentryhttp.New(sentryhttp.Options{Repanic: true})
 
 	// Injector
 	healthRepository := persistence.NewHealthRepository(db.Pool)
@@ -125,6 +150,7 @@ func main() {
 			AllowCredentials: false,
 			MaxAge:           corsMaxAgeSecond,
 		}),
+		sentryHandler.Handle,
 	)
 
 	// Routing
@@ -188,4 +214,16 @@ func main() {
 		log.Logger.Error("err", zap.Error(err))
 	}
 	log.Logger.Info("shutdown server")
+}
+
+func initSentry(dsn, env, name, version string) error {
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:         dsn,
+		Environment: env,
+		Release:     fmt.Sprintf("%s@%s", name, version),
+	})
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
 }

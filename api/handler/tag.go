@@ -44,7 +44,7 @@ func (th *tagHandler) ListTags(w http.ResponseWriter, r *http.Request) {
 	tags, err := th.usecase.ListTags()
 	if err != nil {
 		log.Logger.Error("failed to get tags", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -53,7 +53,7 @@ func (th *tagHandler) ListTags(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(tags); err != nil {
 		log.Logger.Error("failed to get tags", zap.Error(errors.WithStack(err)))
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -72,7 +72,7 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 	tag, err := th.usecase.GetTagByID(tagID)
 	if err != nil {
 		log.Logger.Error("failed to get tag by tagID", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -81,7 +81,7 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(tag); err != nil {
 		log.Logger.Error("failed to get tag by tagID", zap.Error(errors.WithStack(err)))
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -100,7 +100,7 @@ func (th *tagHandler) ListTagsByPostID(w http.ResponseWriter, r *http.Request) {
 	tags, err := th.usecase.ListTagsByPostID(postID)
 	if err != nil {
 		log.Logger.Error("failed to get tags by postID", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -108,7 +108,7 @@ func (th *tagHandler) ListTagsByPostID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(tags); err != nil {
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -126,7 +126,7 @@ func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
 	tag, err := th.usecase.AddTag(req.Name)
 	if err != nil {
 		log.Logger.Error("failed to add tag", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -135,7 +135,7 @@ func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(tag); err != nil {
 		log.Logger.Error("failed to add tag", zap.Error(errors.WithStack(err)))
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -163,7 +163,7 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 	postTag, err := th.usecase.AttachTag(postID, tagID)
 	if err != nil {
 		log.Logger.Error("failed to attach tag", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -172,7 +172,7 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(postTag); err != nil {
 		log.Logger.Error("failed to attach tag", zap.Error(errors.WithStack(err)))
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}

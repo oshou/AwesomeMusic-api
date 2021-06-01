@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	sentry "github.com/getsentry/sentry-go"
 	"go.uber.org/zap"
 
 	"github.com/oshou/AwesomeMusic-api/api/usecase"
@@ -26,7 +27,7 @@ func errorResponse(w http.ResponseWriter, statusCode int) {
 	}
 }
 
-func httpError(w http.ResponseWriter, err error) {
+func httpError(w http.ResponseWriter, r *http.Request, err error) {
 	switch err.(type) {
 	case usecase.InvalidParamError:
 		badRequestError(w)
@@ -39,7 +40,7 @@ func httpError(w http.ResponseWriter, err error) {
 	case usecase.ConflictError:
 		confictError(w)
 	default:
-		internalServerError(w)
+		internalServerError(w, r, err)
 	}
 }
 
@@ -63,6 +64,10 @@ func confictError(w http.ResponseWriter) {
 	errorResponse(w, http.StatusConflict)
 }
 
-func internalServerError(w http.ResponseWriter) {
+func internalServerError(w http.ResponseWriter, r *http.Request, err error) {
+	hub := sentry.GetHubFromContext(r.Context())
+	if hub != nil {
+		hub.CaptureException(err)
+	}
 	errorResponse(w, http.StatusInternalServerError)
 }

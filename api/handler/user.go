@@ -43,7 +43,7 @@ func (uh *userHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := uh.usecase.ListUsers()
 	if err != nil {
 		log.Logger.Error("failed to get users", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -59,7 +59,7 @@ func (uh *userHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(users); err != nil {
 		log.Logger.Error("failed to get users", zap.Error(errors.WithStack(err)))
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -78,7 +78,7 @@ func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 	user, err := uh.usecase.AddUser(req.Name, req.Password)
 	if err != nil {
 		log.Logger.Error("failed to add user", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -86,7 +86,7 @@ func (uh *userHandler) AddUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(user); err != nil {
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -106,8 +106,7 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	user, err := uh.usecase.GetUserByID(userID)
 	if err != nil {
 		log.Logger.Error("failed to get user by userID", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
-		notFoundError(w)
+		httpError(w, r, err)
 
 		return
 	}
@@ -116,7 +115,7 @@ func (uh *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(user); err != nil {
 		log.Logger.Error("failed to get user by userID", zap.Error(errors.WithStack(err)))
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}

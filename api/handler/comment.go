@@ -52,7 +52,7 @@ func (ch *commentHandler) ListComments(w http.ResponseWriter, r *http.Request) {
 	comments, err := ch.usecase.ListComments(postID)
 	if err != nil {
 		log.Logger.Error("failed to list comments", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -60,7 +60,7 @@ func (ch *commentHandler) ListComments(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(comments); err != nil {
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -87,7 +87,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(req.UserID)
 	if err != nil {
 		log.Logger.Error("failed to add comment", zap.Error(errors.WithStack(err)))
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -95,7 +95,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 	comment, err := ch.usecase.AddComment(postID, userID, req.Comment)
 	if err != nil {
 		log.Logger.Error("failed to add comment", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -104,7 +104,7 @@ func (ch *commentHandler) AddComment(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(comment); err != nil {
 		log.Logger.Error("failed to add comment", zap.Error(errors.WithStack(err)))
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -123,7 +123,7 @@ func (ch *commentHandler) GetCommentByID(w http.ResponseWriter, r *http.Request)
 	comment, err := ch.usecase.GetCommentByID(commentID)
 	if err != nil {
 		log.Logger.Error("failed to get comment by commentID", zap.Error(errors.WithStack(err)))
-		httpError(w, err)
+		httpError(w, r, err)
 
 		return
 	}
@@ -131,7 +131,7 @@ func (ch *commentHandler) GetCommentByID(w http.ResponseWriter, r *http.Request)
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(comment); err != nil {
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
