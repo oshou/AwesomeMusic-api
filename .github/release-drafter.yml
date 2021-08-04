@@ -17,8 +17,3 @@ template: |
   ## Changes
 
   $CHANGES
-
-template: |
-  ## What’s Changed
-
-  $CHANGES
