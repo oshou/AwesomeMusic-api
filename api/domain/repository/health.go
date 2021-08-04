@@ -1,3 +1,4 @@
+//go:generate mockgen -source=$GOFILE -package=mock_$GOPACKAGE -destination=../../mock/mock_$GOPACKAGE/$GOFILE
 // Package repository is domain-service
 package repository
 

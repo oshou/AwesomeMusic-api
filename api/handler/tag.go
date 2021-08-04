@@ -7,17 +7,22 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
 	"github.com/oshou/AwesomeMusic-api/api/usecase"
 	"github.com/oshou/AwesomeMusic-api/log"
 )
 
+type addTagRequest struct {
+	Name string `json:"name" validate:"required"`
+}
+
 // ITagHandler is ui layer http-handler interface
 type ITagHandler interface {
-	GetTags(w http.ResponseWriter, r *http.Request)
+	ListTags(w http.ResponseWriter, r *http.Request)
+	ListTagsByPostID(w http.ResponseWriter, r *http.Request)
 	GetTagByID(w http.ResponseWriter, r *http.Request)
-	GetTagsByPostID(w http.ResponseWriter, r *http.Request)
 	AddTag(w http.ResponseWriter, r *http.Request)
 	AttachTag(w http.ResponseWriter, r *http.Request)
 }
@@ -35,11 +40,11 @@ func NewTagHandler(usecase usecase.ITagUsecase) ITagHandler {
 	}
 }
 
-func (th *tagHandler) GetTags(w http.ResponseWriter, r *http.Request) {
-	tags, err := th.usecase.GetTags()
+func (th *tagHandler) ListTags(w http.ResponseWriter, r *http.Request) {
+	tags, err := th.usecase.ListTags()
 	if err != nil {
-		log.Logger.Error("failed to get tags", zap.Error(err))
-		badRequestError(w)
+		log.Logger.Error("failed to get tags", zap.Error(errors.WithStack(err)))
+		httpError(w, r, err)
 
 		return
 	}
@@ -47,7 +52,8 @@ func (th *tagHandler) GetTags(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(tags); err != nil {
-		internalServerError(w)
+		log.Logger.Error("failed to get tags", zap.Error(errors.WithStack(err)))
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -56,9 +62,8 @@ func (th *tagHandler) GetTags(w http.ResponseWriter, r *http.Request) {
 func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 	tagIDString := chi.URLParam(r, "tag_id")
 	tagID, err := strconv.Atoi(tagIDString)
-
 	if err != nil {
-		log.Logger.Error("failed to convert string", zap.Error(err))
+		log.Logger.Error("failed to convert string", zap.Error(errors.WithStack(err)))
 		badRequestError(w)
 
 		return
@@ -66,8 +71,8 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 
 	tag, err := th.usecase.GetTagByID(tagID)
 	if err != nil {
-		log.Logger.Error("failed to get tag by tagID", zap.Error(err))
-		badRequestError(w)
+		log.Logger.Error("failed to get tag by tagID", zap.Error(errors.WithStack(err)))
+		httpError(w, r, err)
 
 		return
 	}
@@ -75,27 +80,27 @@ func (th *tagHandler) GetTagByID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(tag); err != nil {
-		internalServerError(w)
+		log.Logger.Error("failed to get tag by tagID", zap.Error(errors.WithStack(err)))
+		internalServerError(w, r, err)
 
 		return
 	}
 }
 
-func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
+func (th *tagHandler) ListTagsByPostID(w http.ResponseWriter, r *http.Request) {
 	postIDString := chi.URLParam(r, "post_id")
 	postID, err := strconv.Atoi(postIDString)
-
 	if err != nil {
-		log.Logger.Error("failed to convert string", zap.Error(err))
+		log.Logger.Error("failed to convert string", zap.Error(errors.WithStack(err)))
 		badRequestError(w)
 
 		return
 	}
 
-	tags, err := th.usecase.GetTagsByPostID(postID)
+	tags, err := th.usecase.ListTagsByPostID(postID)
 	if err != nil {
-		log.Logger.Error("failed to get tags by postID", zap.Error(err))
-		badRequestError(w)
+		log.Logger.Error("failed to get tags by postID", zap.Error(errors.WithStack(err)))
+		httpError(w, r, err)
 
 		return
 	}
@@ -103,29 +108,25 @@ func (th *tagHandler) GetTagsByPostID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(tags); err != nil {
-		internalServerError(w)
+		internalServerError(w, r, err)
 
 		return
 	}
 }
 
 func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
-	req := struct {
-		Name string `json:"name" validate:"required"`
-	}{}
-
+	req := addTagRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		log.Logger.Error("failed to add tag", zap.Error(err))
+		log.Logger.Error("failed to add tag", zap.Error(errors.WithStack(err)))
 		badRequestError(w)
 
 		return
 	}
 
 	tag, err := th.usecase.AddTag(req.Name)
-
 	if err != nil {
-		log.Logger.Error("failed to add tag", zap.Error(err))
-		badRequestError(w)
+		log.Logger.Error("failed to add tag", zap.Error(errors.WithStack(err)))
+		httpError(w, r, err)
 
 		return
 	}
@@ -133,7 +134,8 @@ func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(tag); err != nil {
-		internalServerError(w)
+		log.Logger.Error("failed to add tag", zap.Error(errors.WithStack(err)))
+		internalServerError(w, r, err)
 
 		return
 	}
@@ -142,9 +144,8 @@ func (th *tagHandler) AddTag(w http.ResponseWriter, r *http.Request) {
 func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 	postIDString := chi.URLParam(r, "post_id")
 	postID, err := strconv.Atoi(postIDString)
-
 	if err != nil {
-		log.Logger.Error("failed to convert string", zap.Error(err))
+		log.Logger.Error("failed to convert string", zap.Error(errors.WithStack(err)))
 		badRequestError(w)
 
 		return
@@ -152,9 +153,8 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 
 	tagIDString := chi.URLParam(r, "tag_id")
 	tagID, err := strconv.Atoi(tagIDString)
-
 	if err != nil {
-		log.Logger.Error("failed to convert string", zap.Error(err))
+		log.Logger.Error("failed to convert string", zap.Error(errors.WithStack(err)))
 		badRequestError(w)
 
 		return
@@ -162,8 +162,8 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 
 	postTag, err := th.usecase.AttachTag(postID, tagID)
 	if err != nil {
-		log.Logger.Error("failed to attach tag", zap.Error(err))
-		badRequestError(w)
+		log.Logger.Error("failed to attach tag", zap.Error(errors.WithStack(err)))
+		httpError(w, r, err)
 
 		return
 	}
@@ -171,7 +171,8 @@ func (th *tagHandler) AttachTag(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(postTag); err != nil {
-		internalServerError(w)
+		log.Logger.Error("failed to attach tag", zap.Error(errors.WithStack(err)))
+		internalServerError(w, r, err)
 
 		return
 	}

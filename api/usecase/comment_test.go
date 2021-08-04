@@ -1,178 +1,111 @@
-// Package usecase is application layer package
-package usecase_test
+package usecase
 
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
-
 	"github.com/oshou/AwesomeMusic-api/api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/api/domain/repository"
-	"github.com/oshou/AwesomeMusic-api/api/usecase"
-	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
 )
 
 func TestNewCommentUsecase(t *testing.T) {
+	type args struct {
+		repo repository.ICommentRepository
+	}
 	tests := []struct {
 		name string
-		repo repository.ICommentRepository
-		want usecase.ICommentUsecase
+		args args
+		want ICommentUsecase
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := usecase.NewCommentUsecase(tt.repo); !cmp.Equal(got, tt.want) {
+			if got := NewCommentUsecase(tt.args.repo); !cmp.Equal(got, tt.want) {
 				t.Errorf("NewCommentUsecase() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
 }
 
-func Test_commentUsecase_GetComments(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
+func Test_commentUsecase_ListComments(t *testing.T) {
+	type args struct {
+		postID int
+	}
 	tests := []struct {
 		name    string
-		postID  int
-		mock    []*model.Comment
-		mockErr error
+		cu      *commentUsecase
+		args    args
 		want    []*model.Comment
-		wantErr error
+		wantErr bool
 	}{
-		{
-			name:   "success",
-			postID: 1,
-			mock: []*model.Comment{
-				{ID: 1, UserID: 1, PostID: 1, Comment: "sample01"},
-				{ID: 2, UserID: 1, PostID: 1, Comment: "sample02"},
-				{ID: 3, UserID: 2, PostID: 1, Comment: "sample03"},
-			},
-			mockErr: nil,
-			want: []*model.Comment{
-				{ID: 1, UserID: 1, PostID: 1, Comment: "sample01"},
-				{ID: 2, UserID: 1, PostID: 1, Comment: "sample02"},
-				{ID: 3, UserID: 2, PostID: 1, Comment: "sample03"},
-			},
-			wantErr: nil,
-		},
-		{
-			name:    "no data",
-			postID:  0,
-			mock:    []*model.Comment{},
-			mockErr: nil,
-			want:    []*model.Comment{},
-			wantErr: nil,
-		},
+		// TODO: Add test cases.
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			mock := mock_repository.NewMockICommentRepository(ctrl)
-			mock.EXPECT().GetAll(tt.postID).Return(tt.mock, tt.mockErr)
-			cu := usecase.NewCommentUsecase(mock)
-			got, err := cu.GetComments(tt.postID)
-
-			if err != tt.wantErr {
-				t.Errorf("commentUsecase.GetComments() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+			got, err := tt.cu.ListComments(tt.args.postID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("commentUsecase.ListComments() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
-
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("commentUsecase.GetComments() mismatch (-want +got):\n%s", diff)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("commentUsecase.ListComments() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
 }
 
 func Test_commentUsecase_GetCommentByID(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	tests := []struct {
-		name      string
+	type args struct {
 		commentID int
-		mock      *model.Comment
-		mockErr   error
-		want      *model.Comment
-		wantErr   error
-	}{
-		{
-			name:      "success",
-			commentID: 1,
-			mock:      &model.Comment{},
-			mockErr:   nil,
-			want:      &model.Comment{},
-			wantErr:   nil,
-		},
 	}
-
+	tests := []struct {
+		name    string
+		cu      *commentUsecase
+		args    args
+		want    *model.Comment
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			mock := mock_repository.NewMockICommentRepository(ctrl)
-			mock.EXPECT().GetByID(tt.commentID).Return(tt.mock, tt.mockErr)
-			cu := usecase.NewCommentUsecase(mock)
-			got, err := cu.GetCommentByID(tt.commentID)
-
-			if err != tt.wantErr {
-				t.Errorf("commentUsecase.GetCommentByID() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+			got, err := tt.cu.GetCommentByID(tt.args.commentID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("commentUsecase.GetCommentByID() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
-
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("commentUsecase.GetCommentByID() mismatch (-want +got):\n%s", diff)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("commentUsecase.GetCommentByID() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
 }
 
 func Test_commentUsecase_AddComment(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	tests := []struct {
-		name        string
+	type args struct {
 		postID      int
 		userID      int
 		commentText string
-		mock        *model.Comment
-		mockErr     error
-		want        *model.Comment
-		wantErr     error
+	}
+	tests := []struct {
+		name    string
+		cu      *commentUsecase
+		args    args
+		want    *model.Comment
+		wantErr bool
 	}{
 		// TODO: Add test cases.
-		{
-			name:        "success",
-			postID:      1,
-			userID:      1,
-			commentText: "hello",
-			mock:        &model.Comment{},
-			mockErr:     nil,
-			want:        &model.Comment{},
-			wantErr:     nil,
-		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			mock := mock_repository.NewMockICommentRepository(ctrl)
-			mock.EXPECT().Add(tt.postID, tt.userID, tt.commentText).Return(tt.mock, tt.mockErr)
-			cu := usecase.NewCommentUsecase(mock)
-			got, err := cu.AddComment(tt.postID, tt.userID, tt.commentText)
-
-			if err != tt.wantErr {
-				t.Errorf("commentUsecase.AddComment() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+			got, err := tt.cu.AddComment(tt.args.postID, tt.args.userID, tt.args.commentText)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("commentUsecase.AddComment() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
-
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("commentUsecase.AddComment() mismatch (-want +got):\n%s", diff)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("commentUsecase.AddComment() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}

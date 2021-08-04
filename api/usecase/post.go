@@ -1,3 +1,4 @@
+//go:generate mockgen -source=$GOFILE -package=mock_$GOPACKAGE -destination=../mock/mock_$GOPACKAGE/$GOFILE
 // Package usecase is application layer package
 package usecase
 
@@ -8,10 +9,10 @@ import (
 
 // IPostUsecase is usecase layer Interface for Post
 type IPostUsecase interface {
-	GetPosts() ([]*model.Post, error)
+	ListPosts() ([]*model.Post, error)
+	ListPostsByTagID(tagID int) ([]*model.Post, error)
+	ListPostsByUserID(userID int) ([]*model.Post, error)
 	GetPostByID(postID int) (*model.Post, error)
-	GetPostsByTagID(tagID int) ([]*model.Post, error)
-	GetPostsByUserID(userID int) ([]*model.Post, error)
 	AddPost(userID int, title, url, message string) (*model.Post, error)
 	DeletePostByID(postID int) error
 }
@@ -29,20 +30,20 @@ func NewPostUsecase(repo repository.IPostRepository) IPostUsecase {
 	}
 }
 
-func (pu *postUsecase) GetPosts() ([]*model.Post, error) {
-	return pu.repo.GetAll()
+func (pu *postUsecase) ListPosts() ([]*model.Post, error) {
+	return pu.repo.List()
 }
 
 func (pu *postUsecase) GetPostByID(postID int) (*model.Post, error) {
 	return pu.repo.GetByID(postID)
 }
 
-func (pu *postUsecase) GetPostsByTagID(tagID int) ([]*model.Post, error) {
-	return pu.repo.GetByTagID(tagID)
+func (pu *postUsecase) ListPostsByTagID(tagID int) ([]*model.Post, error) {
+	return pu.repo.ListByTagID(tagID)
 }
 
-func (pu *postUsecase) GetPostsByUserID(userID int) ([]*model.Post, error) {
-	return pu.repo.GetByUserID(userID)
+func (pu *postUsecase) ListPostsByUserID(userID int) ([]*model.Post, error) {
+	return pu.repo.ListByUserID(userID)
 }
 
 func (pu *postUsecase) AddPost(userID int, title, url, message string) (*model.Post, error) {

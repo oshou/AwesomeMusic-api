@@ -5,12 +5,12 @@ import (
 	"net/http"
 )
 
-type errorResponse struct {
+type errorMessage struct {
 	Message string `json:"message"`
 }
 
-func writeErrorResponse(w http.ResponseWriter, statusCode int) {
-	e := &errorResponse{
+func errorResponse(w http.ResponseWriter, statusCode int) {
+	e := &errorMessage{
 		Message: http.StatusText(statusCode),
 	}
 	w.WriteHeader(statusCode)
@@ -18,17 +18,17 @@ func writeErrorResponse(w http.ResponseWriter, statusCode int) {
 }
 
 func unauthorizedError(w http.ResponseWriter) {
-	writeErrorResponse(w, http.StatusUnauthorized)
+	errorResponse(w, http.StatusUnauthorized)
 }
 
 func forbiddenError(w http.ResponseWriter) {
-	writeErrorResponse(w, http.StatusForbidden)
+	errorResponse(w, http.StatusForbidden)
 }
 
 func notFoundError(w http.ResponseWriter) {
-	writeErrorResponse(w, http.StatusNotFound)
+	errorResponse(w, http.StatusNotFound)
 }
 
 func internalServerError(w http.ResponseWriter) {
-	writeErrorResponse(w, http.StatusInternalServerError)
+	errorResponse(w, http.StatusInternalServerError)
 }

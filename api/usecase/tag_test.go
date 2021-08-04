@@ -1,201 +1,160 @@
-// Package usecase is application layer package
-package usecase_test
+package usecase
 
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
-
 	"github.com/oshou/AwesomeMusic-api/api/domain/model"
 	"github.com/oshou/AwesomeMusic-api/api/domain/repository"
-	"github.com/oshou/AwesomeMusic-api/api/usecase"
-	"github.com/oshou/AwesomeMusic-api/mock/mock_repository"
 )
 
 func TestNewTagUsecase(t *testing.T) {
+	type args struct {
+		repo repository.ITagRepository
+	}
 	tests := []struct {
 		name string
-		repo repository.ITagRepository
-		want usecase.ITagUsecase
+		args args
+		want ITagUsecase
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := usecase.NewTagUsecase(tt.repo); !cmp.Equal(got, tt.want) {
+			if got := NewTagUsecase(tt.args.repo); !cmp.Equal(got, tt.want) {
 				t.Errorf("NewTagUsecase() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
 }
 
-func Test_tagUsecase_GetTags(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
+func Test_tagUsecase_ListTags(t *testing.T) {
 	tests := []struct {
 		name    string
-		mock    []*model.Tag
-		mockErr error
+		tu      *tagUsecase
 		want    []*model.Tag
-		wantErr error
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			mock := mock_repository.NewMockITagRepository(ctrl)
-			mock.EXPECT().GetAll().Return(tt.mock, tt.mockErr)
-			tu := usecase.NewTagUsecase(mock)
-			got, err := tu.GetTags()
-
-			if err != tt.wantErr {
-				t.Errorf("tagUsecase.GetTags() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+			got, err := tt.tu.ListTags()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("tagUsecase.ListTags() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("tagUsecase.ListTags() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
+			}
+		})
+	}
+}
 
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("tagUsecase.GetTags() mismatch (-want +got):\n%s", diff)
+func Test_tagUsecase_ListTagsByPostID(t *testing.T) {
+	type args struct {
+		postID int
+	}
+	tests := []struct {
+		name    string
+		tu      *tagUsecase
+		args    args
+		want    []*model.Tag
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.tu.ListTagsByPostID(tt.args.postID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("tagUsecase.ListTagsByPostID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("tagUsecase.ListTagsByPostID() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
 }
 
 func Test_tagUsecase_GetTagByID(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
+	type args struct {
+		tagID int
+	}
 	tests := []struct {
 		name    string
-		tagID   int
-		mock    *model.Tag
-		mockErr error
+		tu      *tagUsecase
+		args    args
 		want    *model.Tag
-		wantErr error
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			mock := mock_repository.NewMockITagRepository(ctrl)
-			mock.EXPECT().GetByID(tt.tagID).Return(tt.mock, tt.mockErr)
-			tu := usecase.NewTagUsecase(mock)
-			got, err := tu.GetTagByID(tt.tagID)
-
-			if err != tt.wantErr {
-				t.Errorf("tagUsecase.GetTagByID() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+			got, err := tt.tu.GetTagByID(tt.args.tagID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("tagUsecase.GetTagByID() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
-
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("tagUsecase.GetTagByID() mismatch (-want +got):\n%s", diff)
-			}
-		})
-	}
-}
-
-func Test_tagUsecase_GetTagsByPostID(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	tests := []struct {
-		name    string
-		postID  int
-		mock    []*model.Tag
-		mockErr error
-		want    []*model.Tag
-		wantErr error
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			mock := mock_repository.NewMockITagRepository(ctrl)
-			mock.EXPECT().GetByPostID(tt.postID).Return(tt.mock, tt.mockErr)
-			tu := usecase.NewTagUsecase(mock)
-			got, err := tu.GetTagsByPostID(tt.postID)
-
-			if err != tt.wantErr {
-				t.Errorf("tagUsecase.GetTagByPostID() error (wantErr %v, gotErr %v)", tt.wantErr, err)
-			}
-
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("tagUsecase.GetTagByPostID() mismatch (-want +got):\n%s", diff)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("tagUsecase.GetTagByID() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
 }
 
 func Test_tagUsecase_AddTag(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
+	type args struct {
+		tagName string
+	}
 	tests := []struct {
 		name    string
-		tagName string
-		mock    *model.Tag
-		mockErr error
+		tu      *tagUsecase
+		args    args
 		want    *model.Tag
-		wantErr error
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			mock := mock_repository.NewMockITagRepository(ctrl)
-			mock.EXPECT().Add(tt.tagName).Return(tt.mock, tt.mockErr)
-			tu := usecase.NewTagUsecase(mock)
-			got, err := tu.AddTag(tt.tagName)
-
-			if err != tt.wantErr {
-				t.Errorf("tagUsecase.AddTag() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+			got, err := tt.tu.AddTag(tt.args.tagName)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("tagUsecase.AddTag() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
-
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("tagUsecase.AddTag() mismatch (-want +got):\n%s", diff)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("tagUsecase.AddTag() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
 }
 
 func Test_tagUsecase_AttachTag(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
+	type args struct {
+		postID int
+		tagID  int
+	}
 	tests := []struct {
 		name    string
-		postID  int
-		tagID   int
-		mock    *model.PostTag
-		mockErr error
+		tu      *tagUsecase
+		args    args
 		want    *model.PostTag
-		wantErr error
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			mock := mock_repository.NewMockITagRepository(ctrl)
-			mock.EXPECT().Attach(tt.postID, tt.tagID).Return(tt.mock, tt.mockErr)
-			tu := usecase.NewTagUsecase(mock)
-			got, err := tu.AttachTag(tt.postID, tt.tagID)
-
-			if err != tt.wantErr {
-				t.Errorf("tagUsecase.AttachTag() error (wantErr %v, gotErr %v)", tt.wantErr, err)
+			got, err := tt.tu.AttachTag(tt.args.postID, tt.args.tagID)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("tagUsecase.AttachTag() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
-
-			if diff := cmp.Diff(tt.want, got); diff != "" {
-				t.Errorf("tagUsecase.AttachTag() mismatch (-want +got):\n%s", diff)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("tagUsecase.AttachTag() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}

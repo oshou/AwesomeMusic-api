@@ -7,30 +7,36 @@ import (
 )
 
 type IConfig interface {
-	GetDSN() string
 	GetDriver() string
+	GetDSN() string
+	GetSentryDSN() string
 }
 
 type config struct {
-	DB     DB
-	Server Server
+	DB     db
+	Server server
+	Sentry sentry
 }
 
-type DB struct {
+type db struct {
+	Driver   string `required:"true" env:"DB_DRIVER" default:"postgres"`
 	Host     string `required:"true" env:"DB_HOST"`
 	Port     int    `required:"true" env:"DB_PORT"`
 	DBName   string `required:"true" env:"DB_NAME"`
 	SSLMode  string `required:"true" env:"DB_SSL_MODE"`
 	User     string `required:"true" env:"DB_USER"`
 	Password string `required:"true" env:"DB_PASSWORD"`
-	Driver   string `required:"true" env:"DB_DRIVER" default:"postgres"`
 }
 
-type Server struct {
+type server struct {
 	Port             int `required:"true" env:"API_SERVER_PORT" default:"5432"`
 	TimeoutSec       int `required:"true" env:"API_TIMEOUT_SECOND"`
 	GzipLevel        int
 	CorsMaxAgeSecond int
+}
+
+type sentry struct {
+	DSN string `required:"true" env:"SENTRY_DSN"`
 }
 
 var _ IConfig = &config{}
@@ -42,6 +48,10 @@ func NewConfig(filePath string) (IConfig, error) {
 	}
 
 	return conf, nil
+}
+
+func (c *config) GetDriver() string {
+	return c.DB.Driver
 }
 
 func (c *config) GetDSN() string {
@@ -58,6 +68,6 @@ func (c *config) GetDSN() string {
 	return dsn
 }
 
-func (c *config) GetDriver() string {
-	return c.DB.Driver
+func (c *config) GetSentryDSN() string {
+	return c.Sentry.DSN
 }

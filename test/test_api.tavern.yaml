@@ -43,10 +43,10 @@ stages:
       status_code: 200
 
 ---
-test_name: GetUsers_200
+test_name: ListUsers_200
 stages:
   - *stage_Login_200
-  - name: GetUsers_200
+  - name: ListUsers_200
     request:
       url: "{api.base_url}/v1/users"
       method: GET

@@ -22,19 +22,22 @@ func NewCommentRepository(db *sqlx.DB) repository.ICommentRepository {
 	}
 }
 
-func (cr *commentRepository) GetAll(postID int) ([]*model.Comment, error) {
+func (cr *commentRepository) List(postID int) ([]*model.Comment, error) {
+	const query = `
+		SELECT
+				id,
+			, user_id
+			, post_id
+			, comment
+		FROM
+			public.comments
+		WHERE
+			post_id = $1
+		ORDER BY
+			id
+	`
+
 	var cc []*model.Comment
-
-	query := `SELECT
-							id,
-							user_id,
-							post_id,
-							comment
-						FROM
-							public.comments
-						WHERE
-							post_id = $1`
-
 	if err := cr.db.Select(&cc, query, postID); err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -43,18 +46,19 @@ func (cr *commentRepository) GetAll(postID int) ([]*model.Comment, error) {
 }
 
 func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
+	const query = `
+		SELECT
+				id
+			, user_id
+			, post_id
+			, comment
+		FROM
+			public.comments
+		WHERE
+			id = $1
+	`
+
 	var c model.Comment
-
-	query := `SELECT
-							id,
-							user_id,
-							post_id,
-							comment
-						FROM
-							public.comments
-						WHERE
-							id = $1`
-
 	if err := cr.db.Get(&c, query, commentID); err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -63,12 +67,14 @@ func (cr *commentRepository) GetByID(commentID int) (*model.Comment, error) {
 }
 
 func (cr *commentRepository) Add(postID, userID int, comment string) (*model.Comment, error) {
-	query := `INSERT INTO
-							public.comments(post_id, user_id, comment)
-						VALUES
-							($1, $2, $3)
-						RETURNING
-							id`
+	const query = `
+		INSERT INTO
+				public.comments(post_id, user_id, comment)
+		VALUES
+			($1, $2, $3)
+		RETURNING
+			id
+	`
 
 	c := model.Comment{
 		UserID:  userID,

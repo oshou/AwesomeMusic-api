@@ -1,3 +1,4 @@
+//go:generate mockgen -source=$GOFILE -package=mock_$GOPACKAGE -destination=../mock/mock_$GOPACKAGE/$GOFILE
 // Package usecase is application layer package
 package usecase
 
@@ -8,7 +9,7 @@ import (
 
 // ICommentUsecase is usecase layer Interface for Comment
 type ICommentUsecase interface {
-	GetComments(postID int) ([]*model.Comment, error)
+	ListComments(postID int) ([]*model.Comment, error)
 	GetCommentByID(commentID int) (*model.Comment, error)
 	AddComment(postID, userID int, comment string) (*model.Comment, error)
 }
@@ -26,8 +27,8 @@ func NewCommentUsecase(repo repository.ICommentRepository) ICommentUsecase {
 	}
 }
 
-func (cu *commentUsecase) GetComments(postID int) ([]*model.Comment, error) {
-	return cu.repo.GetAll(postID)
+func (cu *commentUsecase) ListComments(postID int) ([]*model.Comment, error) {
+	return cu.repo.List(postID)
 }
 
 func (cu *commentUsecase) GetCommentByID(commentID int) (*model.Comment, error) {

@@ -34,7 +34,7 @@ paths:
   /v1/users:
     get:
       summary: ユーザー一覧
-      operationId: V1GetUsers
+      operationId: V1ListUsers
       tags:
         - /users
       responses:
@@ -130,7 +130,7 @@ paths:
   /v1/posts:
     get:
       summary: 投稿一覧
-      operationId: V1GetPosts
+      operationId: V1ListPosts
       tags:
         - /posts
       responses:
@@ -286,7 +286,7 @@ paths:
   /v1/posts/{post_id}/comments:
     get:
       summary: コメント一覧
-      operationId: V1GetComments
+      operationId: V1ListComments
       tags:
         - /comments
       responses:
@@ -346,7 +346,7 @@ paths:
   /v1/tags:
     get:
       summary: タグ一覧
-      operationId: V1GetTags
+      operationId: V1ListTags
       tags:
         - /tags
       responses:

@@ -1,3 +1,4 @@
+//go:generate mockgen -source=$GOFILE -package=mock_$GOPACKAGE -destination=../../mock/mock_$GOPACKAGE/$GOFILE
 // Package repository is domain-service
 package repository
 
@@ -7,7 +8,7 @@ import (
 
 // ISearchRepository is Domain-access interface for Post
 type ISearchRepository interface {
-	GetByTitle(q string) ([]*model.Post, error)
-	GetByUserName(q string) ([]*model.Post, error)
-	GetByTagName(q string) ([]*model.Post, error)
+	ListByTitle(q string) ([]*model.Post, error)
+	ListByUserName(q string) ([]*model.Post, error)
+	ListByTagName(q string) ([]*model.Post, error)
 }

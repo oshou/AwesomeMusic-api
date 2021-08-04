@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/antonlindstrom/pgstore"
+	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
@@ -24,35 +25,39 @@ import (
 	"github.com/oshou/AwesomeMusic-api/config"
 	"github.com/oshou/AwesomeMusic-api/db"
 	"github.com/oshou/AwesomeMusic-api/log"
+	"github.com/oshou/AwesomeMusic-api/sentry"
 )
 
 const (
-	httpGzipLevel     = 6
-	httpTimeoutSecond = 60
-	httpPortString    = ":8080"
-	corsMaxAgeSecond  = 300
-	filePath          = "./config/config.yml"
+	name    = "api"
+	version = "v1.5"
+
+	httpGzipLevel        = 6
+	httpTimeoutSecond    = 60
+	httpPortString       = ":8080"
+	corsMaxAgeSecond     = 300
+	filePath             = "./config/config.yml"
+	sessionClearInterval = 5
 )
 
 var (
-	port                 string = "8080"
-	sessionClearInterval int    = 5
+	env  string = "local"
+	port string = "8080"
 )
 
 func main() {
+	flag.StringVar(&port, "port", httpPortString, "tcp host:port to connect")
+
 	// Logger
 	log.Init()
+	// nolint: errcheck
 	defer log.Logger.Sync()
-	log.Logger.Info("set logger")
-
-	flag.StringVar(&port, "port", httpPortString, "tcp host:port to connect")
 
 	// Config
 	conf, err := config.NewConfig(filePath)
 	if err != nil {
 		log.Logger.Fatal("failed to initialize config", zap.Error(err))
 	}
-	log.Logger.Info("set config")
 
 	// DBConnection
 	db, err := db.NewDB(conf)
@@ -60,13 +65,10 @@ func main() {
 		log.Logger.Fatal("failed to initialize db", zap.Error(err))
 	}
 	defer db.Close()
-	log.Logger.Info("set db connection")
 
-	// Session-Store
-	sskey := os.Getenv("SESSION_SECRET_KEY")
+	// Session Store
 	dsn := conf.GetDSN()
-	store, err := pgstore.NewPGStore(dsn, []byte(sskey))
-
+	store, err := pgstore.NewPGStore(dsn, []byte(os.Getenv("SESSION_SECRET_KEY")))
 	if err != nil {
 		log.Logger.Fatal("failed to initialize session store", zap.Error(err))
 	}
@@ -80,7 +82,20 @@ func main() {
 	}
 	defer store.Close()
 	defer store.StopCleanup(store.Cleanup(time.Duration(sessionClearInterval) * time.Minute))
-	log.Logger.Info("set session store")
+
+	// Error Reporter
+	sentryDSN := conf.GetSentryDSN()
+	if sentryDSN == "" {
+		log.Logger.Warn("not setup sentry", zap.Error(err))
+	} else {
+		if err = sentry.Init(sentryDSN, os.Getenv("GO_ENV"), name, version); err != nil {
+			log.Logger.Warn("failed to initialize sentry", zap.Error(err))
+		}
+	}
+	defer sentry.Recover()
+	sentryHandler := sentryhttp.New(sentryhttp.Options{
+		Repanic: true,
+	})
 
 	// Injector
 	healthRepository := persistence.NewHealthRepository(db.Pool)
@@ -125,6 +140,7 @@ func main() {
 			AllowCredentials: false,
 			MaxAge:           corsMaxAgeSecond,
 		}),
+		sentryHandler.Handle,
 	)
 
 	// Routing
@@ -132,31 +148,30 @@ func main() {
 		r.Get("/health", healthHandler.GetHealth)
 		r.Post("/login", authHandler.Login)
 		r.Post("/logout", authHandler.Logout)
-
 		r.Route("/users", func(r chi.Router) {
-			r.Get("/", userHandler.GetUsers)
+			r.Get("/", userHandler.ListUsers)
 			r.Post("/", userHandler.AddUser)
 			r.Get("/{user_id}", userHandler.GetUserByID)
 		})
 		r.Route("/posts", func(r chi.Router) {
-			r.Get("/", postHandler.GetPosts)
+			r.Get("/", postHandler.ListPosts)
 			r.Post("/", postHandler.AddPost)
 			r.Route("/{post_id}", func(r chi.Router) {
 				r.Get("/", postHandler.GetPostByID)
 				r.Delete("/", postHandler.DeletePostByID)
 				r.Route("/comments", func(r chi.Router) {
-					r.Get("/", commentHandler.GetComments)
+					r.Get("/", commentHandler.ListComments)
 					r.Post("/", commentHandler.AddComment)
 					r.Get("/{comment_id}", commentHandler.GetCommentByID)
 				})
 				r.Route("/tags", func(r chi.Router) {
-					r.Get("/", tagHandler.GetTagsByPostID)
+					r.Get("/", tagHandler.ListTagsByPostID)
 					r.Post("/{tag_id}", tagHandler.AttachTag)
 				})
 			})
 		})
 		r.Route("/tags", func(r chi.Router) {
-			r.Get("/", tagHandler.GetTags)
+			r.Get("/", tagHandler.ListTags)
 			r.Post("/", tagHandler.AddTag)
 			r.Get("/{tag_id}", tagHandler.GetTagByID)
 		})
@@ -176,6 +191,7 @@ func main() {
 			os.Exit(1)
 		}
 	}()
+
 	log.Logger.Info("start server")
 
 	sigCh := make(chan os.Signal, 1)
@@ -188,5 +204,6 @@ func main() {
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Logger.Error("err", zap.Error(err))
 	}
+
 	log.Logger.Info("shutdown server")
 }
