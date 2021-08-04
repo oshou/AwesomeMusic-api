@@ -11,7 +11,7 @@ https://github.com/oshou/Portfolio
 - Onion Architecture を参考にしています。
 - ポートはデフォルト 8080 で受付
 - 環境変数: レポジトリ直下の.env を読み込みます。<br>
-  ビルド時に指定の「.env.(環境名)」を「.env」としてコピー作成いたします。<br>
+  ビルド時に指定の「.env.(環境名)」を「.env」としてコピー作成します。<br>
   ex) cp -rp .env.local -> .env
 
 ## API ドキュメント
