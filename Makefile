@@ -4,12 +4,7 @@ GO ?= $(shell which go)
 PG_DUMP ?= /usr/local/bin/pg_dump
 PG_DUMPALL ?= /usr/local/bin/pg_dumpall
 PGDUMP_PATH ?= /usr/local/bin/pg_dump
-API_PATH ?= "cmd/api/main.go"
-DB_USER ?= root
-DB_HOST ?= 127.0.0.1
-DB_NAME ?= postgres
 DEPLOY_REPO = "oshou/awesome-music-api"
-BINARY_NAME = main
 DIRS = \
 	api/usecase \
 	api/handler
@@ -53,7 +48,7 @@ migrate: $(GOPATH)/bin/sql-migrate
 rollback: $(GOPATH)/bin/sql-migrate
 	sql-migrate down -config=_db/config.yaml
 
-schema:
+schema: migrate
 	$(PGDUMP_PATH) -h $(DB_HOST) -U $(DB_USER) -s $(DB_NAME) -f _db/schema.sql
 
 restore:
@@ -67,11 +62,11 @@ testgen:
 		gotests -w -all -template_dir test/tmpl $$DIR; \
 	done
 
-tidy:
-	go mod tidy
-
 clean:
 	go clean -modcache
+
+tidy: clean
+	go mod tidy
 
 fmt: tidy
 	go fmt ./...
@@ -89,12 +84,8 @@ apitest:
 	docker build -t tavern -f deployments/apitest/Dockerfile ./test/ \
 	&& docker run --rm tavern
 
-build_local:
-	go build -o $(BINARY_NAME) $(API_PATH)
-
-build_prd: test
-	cp -rp .env.production .env
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-s -w" -o $(BINARY_NAME)
+build: test
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-s -w" -o main
 
 run:
 	go run cmd/api/main.go

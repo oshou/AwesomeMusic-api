@@ -18,7 +18,6 @@ type db struct {
 
 var _ IDB = &db{}
 
-// Init is constructor for db
 func NewDB(c config.IConfig) (*db, error) {
 	dsn := c.GetDSN()
 	driver := c.GetDriver()

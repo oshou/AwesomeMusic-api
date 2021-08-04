@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -11,14 +10,12 @@ import (
 	"time"
 
 	"github.com/antonlindstrom/pgstore"
-	sentry "github.com/getsentry/sentry-go"
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/gorilla/sessions"
 	_ "github.com/lib/pq"
-	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
 	"github.com/oshou/AwesomeMusic-api/api/handler"
@@ -28,39 +25,39 @@ import (
 	"github.com/oshou/AwesomeMusic-api/config"
 	"github.com/oshou/AwesomeMusic-api/db"
 	"github.com/oshou/AwesomeMusic-api/log"
+	"github.com/oshou/AwesomeMusic-api/sentry"
 )
 
 const (
 	name    = "api"
 	version = "v1.5"
 
-	httpGzipLevel     = 6
-	httpTimeoutSecond = 60
-	httpPortString    = ":8080"
-	corsMaxAgeSecond  = 300
-	filePath          = "./config/config.yml"
+	httpGzipLevel        = 6
+	httpTimeoutSecond    = 60
+	httpPortString       = ":8080"
+	corsMaxAgeSecond     = 300
+	filePath             = "./config/config.yml"
+	sessionClearInterval = 5
 )
 
 var (
-	env                  string = "local"
-	port                 string = "8080"
-	sessionClearInterval int    = 5
+	env  string = "local"
+	port string = "8080"
 )
 
 func main() {
+	flag.StringVar(&port, "port", httpPortString, "tcp host:port to connect")
+
 	// Logger
 	log.Init()
+	// nolint: errcheck
 	defer log.Logger.Sync()
-	log.Logger.Info("set logger")
-
-	flag.StringVar(&port, "port", httpPortString, "tcp host:port to connect")
 
 	// Config
 	conf, err := config.NewConfig(filePath)
 	if err != nil {
 		log.Logger.Fatal("failed to initialize config", zap.Error(err))
 	}
-	log.Logger.Info("set config")
 
 	// DBConnection
 	db, err := db.NewDB(conf)
@@ -68,12 +65,10 @@ func main() {
 		log.Logger.Fatal("failed to initialize db", zap.Error(err))
 	}
 	defer db.Close()
-	log.Logger.Info("set db connection")
 
 	// Session Store
-	sskey := os.Getenv("SESSION_SECRET_KEY")
 	dsn := conf.GetDSN()
-	store, err := pgstore.NewPGStore(dsn, []byte(sskey))
+	store, err := pgstore.NewPGStore(dsn, []byte(os.Getenv("SESSION_SECRET_KEY")))
 	if err != nil {
 		log.Logger.Fatal("failed to initialize session store", zap.Error(err))
 	}
@@ -87,25 +82,20 @@ func main() {
 	}
 	defer store.Close()
 	defer store.StopCleanup(store.Cleanup(time.Duration(sessionClearInterval) * time.Minute))
-	log.Logger.Info("set session store")
 
 	// Error Reporter
 	sentryDSN := conf.GetSentryDSN()
 	if sentryDSN == "" {
 		log.Logger.Warn("not setup sentry", zap.Error(err))
 	} else {
-		err = initSentry(sentryDSN, env, name, version)
-		err = sentry.Init(sentry.ClientOptions{
-			Dsn: sentryDSN,
-		})
-		if err != nil {
-			log.Logger.Fatal("failed to initialize sentry", zap.Error(err))
+		if err = sentry.Init(sentryDSN, os.Getenv("GO_ENV"), name, version); err != nil {
+			log.Logger.Warn("failed to initialize sentry", zap.Error(err))
 		}
 	}
-	defer sentry.Flush(2 * time.Second)
-
-	sentry.CaptureMessage("It works!")
-	sentryHandler := sentryhttp.New(sentryhttp.Options{Repanic: true})
+	defer sentry.Recover()
+	sentryHandler := sentryhttp.New(sentryhttp.Options{
+		Repanic: true,
+	})
 
 	// Injector
 	healthRepository := persistence.NewHealthRepository(db.Pool)
@@ -201,6 +191,7 @@ func main() {
 			os.Exit(1)
 		}
 	}()
+
 	log.Logger.Info("start server")
 
 	sigCh := make(chan os.Signal, 1)
@@ -213,17 +204,6 @@ func main() {
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Logger.Error("err", zap.Error(err))
 	}
-	log.Logger.Info("shutdown server")
-}
 
-func initSentry(dsn, env, name, version string) error {
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn:         dsn,
-		Environment: env,
-		Release:     fmt.Sprintf("%s@%s", name, version),
-	})
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	return nil
+	log.Logger.Info("shutdown server")
 }
